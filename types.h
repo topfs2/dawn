@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <boost/any.hpp>
 #include <Eigen/Dense>
+#include <map>
 
 namespace dawn
 {
@@ -30,4 +31,5 @@ namespace dawn
   typedef Eigen::Matrix4f mat4f;
 
   typedef boost::any uniform;
+  typedef std::map<std::string, uniform> UniformMap;
 }

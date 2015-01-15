@@ -118,8 +118,11 @@ int main (int argc, char *argv[]) {
     scene->push(group);
     scene->push(q4);
 
-    q1->filters(Filter(FILTER_GRAYSCALE, 1.0f));
-    q3->filters(Filter(FILTER_GRAYSCALE, 1.0f));
+    UniformMap uniforms;
+    uniforms["strength"] = 1.0f;
+
+    q1->filters(Filter(FILTER_GRAYSCALE, uniforms));
+    q3->filters(Filter(FILTER_GRAYSCALE, uniforms));
 
     cout << "q1 " << q1->uuid.uuid() << endl;
     cout << "q2 " << q2->uuid.uuid() << endl;
@@ -159,7 +162,7 @@ int main (int argc, char *argv[]) {
 
           q4->visible(popup);
           if (popup) {
-            group->filters(Filter(FILTER_GAUSIAN_BLUR, 1.0f));
+            group->filters(Filter(FILTER_GAUSIAN_BLUR, uniforms));
           } else {
             group->filters(FilterList()); // TODO Better way to disable it?
           }
@@ -167,19 +170,19 @@ int main (int argc, char *argv[]) {
           if (selected == 0) {
             q1->filters(FilterList());
           } else {
-            q1->filters(Filter(FILTER_GRAYSCALE, 1.0f));
+            q1->filters(Filter(FILTER_GRAYSCALE, uniforms));
           }
 
           if (selected == 1) {
             q2->filters(FilterList());
           } else {
-            q2->filters(Filter(FILTER_GRAYSCALE, 1.0f));
+            q2->filters(Filter(FILTER_GRAYSCALE, uniforms));
           }
 
           if (selected == 2) {
             q3->filters(FilterList());
           } else {
-            q3->filters(Filter(FILTER_GRAYSCALE, 1.0f));
+            q3->filters(Filter(FILTER_GRAYSCALE, uniforms));
           }
 
           break;

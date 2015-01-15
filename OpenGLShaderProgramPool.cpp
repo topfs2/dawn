@@ -8,7 +8,6 @@
 
 using namespace std;
 using namespace dawn;
-using namespace dawn::uniforms;
 
 static string readFile(const string &path)
 {

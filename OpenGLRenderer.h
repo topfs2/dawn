@@ -24,11 +24,11 @@ namespace dawn
 
   private:
     void Render(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target = NULL);
-    void RenderFullscreenQuad(OpenGLShaderProgramPtr shader, uniforms::UniformMap uniforms);
+    void RenderFullscreenQuad(OpenGLShaderProgramPtr shader, UniformMap uniforms);
 
     void ApplyBasicMaterial(IMaterial *material);
     void ApplyShaderMaterial(const mat4f &mvp, ShaderMaterial *material);
-    void ApplyShader(OpenGLShaderProgramPtr shader, uniforms::UniformMap uniforms);
+    void ApplyShader(OpenGLShaderProgramPtr shader, UniformMap uniforms);
     void ApplyMaterial(const mat4f &mvp, IMaterial *material);
     void RenderCircle(CircleGeometry *circle);
     void RenderPlane(PlaneGeometry *plane);
@@ -38,7 +38,7 @@ namespace dawn
     void RenderObject(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target);
     void InitializeGL();
 
-    typedef std::pair<OpenGLShaderProgramPtr, float> OpenGLFilter; // TODO Move to opengl_types.h?
+    typedef std::pair<OpenGLShaderProgramPtr, UniformMap> OpenGLFilter; // TODO Move to opengl_types.h?
     void GetFilterPasses(Filter filter, std::vector<OpenGLFilter> &passes);
 
     OpenGLRenderTargetPtr AcquireRenderTarget(); // TODO Move to a util of sorts?

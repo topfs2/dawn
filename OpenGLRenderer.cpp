@@ -25,7 +25,7 @@ void OpenGLRenderer::render(ICamera *camera, Object3D *scene)
   OpenGLDebug::WriteFBO("final");
 }
 
-void OpenGLRenderer::RenderFullscreenQuad(OpenGLShaderProgramPtr shader, uniforms::UniformMap uniforms)
+void OpenGLRenderer::RenderFullscreenQuad(OpenGLShaderProgramPtr shader, UniformMap uniforms)
 {
   uniforms["uMVP"] = ortho(-0.5f, 0.5f, 0.5f, -0.5f, -1.0f, 1.0f);
   ApplyShader(shader, uniforms);
@@ -62,10 +62,9 @@ void OpenGLRenderer::Render(const mat4f &projection, const mat4f viewmodel, Obje
     for (vector<OpenGLFilter>::iterator itr = passes.begin(); itr != passes.end(); itr++) {
       OpenGLShaderProgramPtr shader = itr->first;
 
-      uniforms::UniformMap uniforms;
+      UniformMap uniforms = itr->second;
       uniforms["map"] = targets[targets_index]->colorAttachments[0];
       uniforms["texelSize"] = vec2f(1.0f / WINDOW_WIDTH, 1.0f / WINDOW_HEIGHT);
-      uniforms["strength"] = itr->second;
 
       targets[1 - targets_index]->Bind();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -78,7 +77,7 @@ void OpenGLRenderer::Render(const mat4f &projection, const mat4f viewmodel, Obje
 
     // TODO Optimize so that final output in above loop pushes to screen
     OpenGLShaderProgramPtr shader = m_shaders.GetResource("shaders/map");
-    uniforms::UniformMap uniforms;
+    UniformMap uniforms;
     uniforms["map"] = targets[targets_index]->colorAttachments[0];
 
     if (target) {
@@ -100,10 +99,10 @@ void OpenGLRenderer::Render(const mat4f &projection, const mat4f viewmodel, Obje
 void OpenGLRenderer::GetFilterPasses(Filter filter, vector<OpenGLFilter> &passes)
 {
   if (filter.type == FILTER_GRAYSCALE) {
-    passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bw"), filter.strength));
+    passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bw"), filter.uniforms));
   } else if (filter.type == FILTER_GAUSIAN_BLUR) {
-    passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bh"), filter.strength));
-    passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bv"), filter.strength));
+    passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bh"), filter.uniforms));
+    passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bv"), filter.uniforms));
   }
 }
 
@@ -119,17 +118,17 @@ void OpenGLRenderer::ApplyShaderMaterial(const mat4f &mvp, ShaderMaterial *mater
 {
   OpenGLShaderProgramPtr shader = m_shaders.GetResource(material->id());
 
-  uniforms::UniformMap uniforms = material->uniforms;
+  UniformMap uniforms = material->uniforms;
   uniforms["uMVP"] = mvp;
   ApplyShader(shader, uniforms);
 }
 
-void OpenGLRenderer::ApplyShader(OpenGLShaderProgramPtr shader, uniforms::UniformMap uniforms)
+void OpenGLRenderer::ApplyShader(OpenGLShaderProgramPtr shader, UniformMap uniforms)
 {
   shader->Bind();
 
   GLint textureUnit = 0;
-  for (uniforms::UniformMap::iterator itr = uniforms.begin(); itr != uniforms.end(); itr++) {
+  for (UniformMap::iterator itr = uniforms.begin(); itr != uniforms.end(); itr++) {
     uniform u = itr->second;
 
     if (u.type() == typeid(int)) {

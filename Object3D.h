@@ -18,11 +18,11 @@ namespace dawn
   class Filter
   {
   public:
-    Filter() : type(FILTER_INVALID), strength(0.0f) { }
-    Filter(FilterType type, float strength) : type(type), strength(strength) { }
+    Filter() : type(FILTER_INVALID) { }
+    Filter(FilterType type, UniformMap uniforms) : type(type), uniforms(uniforms) { }
 
     FilterType type;
-    float strength;
+    UniformMap uniforms;
   };
 
   typedef std::vector<Filter> FilterList;

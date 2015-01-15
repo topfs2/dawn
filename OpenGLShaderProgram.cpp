@@ -3,7 +3,6 @@
 
 using namespace std;
 using namespace dawn;
-using namespace dawn::uniforms;
 
 OpenGLShaderProgram::OpenGLShaderProgram() : program(0)
 {
