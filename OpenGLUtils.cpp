@@ -163,10 +163,11 @@ GLuint OpenGLUtils::Compile(GLenum shaderType, const string &shader)
 GLuint OpenGLUtils::CreateTexture(Image *image)
 {
   BufferPtr buffer = image->buffer();
+  CONSTANTS::PixelFormat format = image->format();
 
   GLuint texture = 0;
-  GLenum texture_format = ParseFormat(image->format);
-  GLuint texture_bpp = ParseBPP(image->format);
+  GLenum texture_format = ParseFormat(format);
+  GLuint texture_bpp = ParseBPP(format);
 
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
@@ -177,7 +178,7 @@ GLuint OpenGLUtils::CreateTexture(Image *image)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, texture_bpp, image->width, image->height, 0, texture_format, GL_UNSIGNED_BYTE, buffer->raw());
+  glTexImage2D(GL_TEXTURE_2D, 0, texture_bpp, image->width(), image->height(), 0, texture_format, GL_UNSIGNED_BYTE, buffer->raw());
   glBindTexture(GL_TEXTURE_2D, 0);
 
   return texture;

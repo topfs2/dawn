@@ -27,7 +27,7 @@ using namespace dawn;
 class SDLImage : public Image
 {
 public:
-  SDLImage(const string &path) : Image(0, 0, CONSTANTS::UnknownFormat), m_path(path)
+  SDLImage(const string &path) : m_path(path)
   {
     SDL_Surface *surface = IMG_Load(path.c_str());
     if (surface)
@@ -47,12 +47,12 @@ public:
 
       GLint bpp = surface->format->BytesPerPixel;
       if (bpp == 4)
-        format = (surface->format->Rmask == 0x000000ff) ? CONSTANTS::RGBAFormat : CONSTANTS::BGRAFormat;
+        m_format = (surface->format->Rmask == 0x000000ff) ? CONSTANTS::RGBAFormat : CONSTANTS::BGRAFormat;
       else if (bpp == 3)
-        format = (surface->format->Rmask == 0x000000ff) ? CONSTANTS::RGBFormat : CONSTANTS::BGRFormat;
+        m_format = (surface->format->Rmask == 0x000000ff) ? CONSTANTS::RGBFormat : CONSTANTS::BGRFormat;
 
-      width = surface->w;
-      height = surface->h;
+      m_width = surface->w;
+      m_height = surface->h;
 
       SDL_FreeSurface(surface);
     }
@@ -60,10 +60,16 @@ public:
 
   virtual std::string id() { return m_path; }
   virtual BufferPtr buffer() { return m_buffer; }
+  virtual unsigned int width() { return m_width; }
+  virtual unsigned int height() { return m_height; }
+  virtual CONSTANTS::PixelFormat format() { return m_format; }
 
 private:
   std::string m_path;
   BufferPtr m_buffer;
+  unsigned int m_width;
+  unsigned int m_height;
+  CONSTANTS::PixelFormat m_format;
 };
 
 int main (int argc, char *argv[]) {
@@ -96,8 +102,8 @@ int main (int argc, char *argv[]) {
     ShaderMaterial * popupShader = new ShaderMaterial("shaders/map");
     popupShader->uniforms["map"] = logo;
 
-    float bgAR = bg->width / (float)bg->height;
-    float logoAR = logo->width / (float)logo->height;
+    float bgAR = bg->width() / (float)bg->height();
+    float logoAR = logo->width() / (float)logo->height();
 
     Mesh *q1 = new Mesh(new PlaneGeometry(1.0 * bgAR, 1.0), listShader);
     Mesh *q2 = new Mesh(new PlaneGeometry(1.0 * bgAR, 1.0), listShader);
