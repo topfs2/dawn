@@ -60,10 +60,24 @@ namespace dawn
     iterator end() { return m_children.end(); }
     const_iterator end() const { return m_children.end(); }
     void children(Object3DList children) { m_children = children; changed(); }
-    void push(Object3D *child)
-    {
-      if (child)
-        m_children.push_back(child);
+
+    void appendChild(Object3D *c) {
+        if (c) {
+            m_children.push_back(c);
+        }
+    }
+
+    void removeChild(Object3D *c) {
+        if (c) {
+            std::remove(m_children.begin(), m_children.end(), c);
+        }
+    }
+
+    void replaceChild(Object3D *a, Object3D *b) {
+        // TODO Should we replace if a exist
+        if (a && b) {
+            std::replace(m_children.begin(), m_children.end(), a, b);
+        }
     }
 
   protected:

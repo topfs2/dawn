@@ -117,12 +117,12 @@ int main (int argc, char *argv[]) {
     q2->transform(translation( 0.0f, 0.0f, 0.0f) * scaling(1.1f, 1.1f, 1.0f));
     q3->transform(translation( 2.0f, 0.0f, 0.0f));
 
-    group->push(q1);
-    group->push(q2);
-    group->push(q3);
+    group->appendChild(q1);
+    group->appendChild(q2);
+    group->appendChild(q3);
 
-    scene->push(group);
-    scene->push(q4);
+    scene->appendChild(group);
+    scene->appendChild(q4);
 
     UniformMap uniforms;
     uniforms["strength"] = 1.0f;
