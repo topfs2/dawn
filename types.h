@@ -30,6 +30,6 @@ namespace dawn
 
   typedef Eigen::Matrix4f mat4f;
 
-  typedef boost::any uniform;
-  typedef std::map<std::string, uniform> UniformMap;
+  typedef boost::any uniform_t;
+  typedef std::map<std::string, uniform_t> UniformMap;
 }

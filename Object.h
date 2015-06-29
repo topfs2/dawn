@@ -1,39 +1,25 @@
 #pragma once
-#include "UUID.h"
 #include <cassert>
 #include "to_string.h" // Remove on c++11
 
 namespace dawn
 {
-  typedef uint32_t etag_t; // TODO Move?
-
-  class Object
-  {
-  public:
-    Object() : uuid(UUID::Acquire()), m_etag(0) { }
-    virtual ~Object() { UUID::Release(uuid); }
-
-    virtual std::string id() { return to_string(uuid.uuid()); }
-
-    bool changed(etag_t *etag)
+    class Object
     {
-      assert(etag);
+    public:
+        Object() : m_id(to_string(this)), m_dirty(true) { }
+        Object(std::string id) : m_id(id), m_dirty(true) { }
 
-      if (*etag != m_etag) {
-        *etag = m_etag;
-        return true;
-      }
+        virtual bool isDirty(bool recursive = false) const { return m_dirty; }
+        void markDirty(bool dirty = true) { m_dirty = dirty; }
 
-      return false;
-    }
+        // TODO combine with markDirty?
+        virtual void clean() { markDirty(false); }
 
-    const uuid_t uuid;
+        std::string id() const { return m_id; }
 
-  protected:
-    void changed(etag_t etag) { m_etag = etag; }
-    void changed() { m_etag += 1; }
-
-  private:
-    etag_t m_etag;
-  };
+    private:
+        std::string m_id;
+        bool m_dirty;
+    };
 }

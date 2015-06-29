@@ -3,7 +3,6 @@
 #include <cstring>
 #include <boost/shared_ptr.hpp>
 
-#include "hashlib/md5.h"
 #include "constants.h"
 #include "Object.h"
 
@@ -17,9 +16,6 @@ namespace dawn
       m_data = new uint8_t[length];
       std::memcpy(m_data, data, length);
       m_length = length;
-
-      MD5 md5;
-      m_hash = md5(data, length);
     }
 
     virtual ~Buffer()
@@ -32,15 +28,9 @@ namespace dawn
       return m_data;
     }
 
-    std::string hash() const
-    {
-      return m_hash;
-    }
-
   private:
     uint8_t *m_data;
     size_t m_length;
-    std::string m_hash;
   };
 
   typedef boost::shared_ptr<Buffer> BufferPtr;
@@ -57,23 +47,4 @@ namespace dawn
   };
 
   typedef boost::shared_ptr<Image> ImagePtr;
-
-  class BufferImage : public Image
-  {
-  public:
-    BufferImage(BufferPtr buffer, unsigned int width, unsigned int height, CONSTANTS::PixelFormat format) : m_buffer(buffer), m_width(width), m_height(height), m_format(format) { }
-
-    virtual std::string id() { return m_buffer->hash(); }
-
-    virtual BufferPtr buffer() { return m_buffer; }
-    virtual unsigned int width() { return m_width; }
-    virtual unsigned int height() { return m_height; }
-    virtual CONSTANTS::PixelFormat format() { return m_format; }
-
-  private:
-    BufferPtr m_buffer;
-    unsigned int m_width;
-    unsigned int m_height;
-    CONSTANTS::PixelFormat m_format;
-  };
 }

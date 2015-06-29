@@ -21,7 +21,7 @@ void OpenGLDebug::WriteFBO(const std::string &title)
 void OpenGLDebug::WriteFilterInput(Object3D *object)
 {
   std::stringstream ss;
-  ss << order++ << "_object_" << object->uuid.uuid() << "_input";
+  ss << order++ << "_object_" << object->id() << "_input";
 
   WriteFBO(ss.str());
 }
@@ -29,7 +29,7 @@ void OpenGLDebug::WriteFilterInput(Object3D *object)
 void OpenGLDebug::WriteFilterPass(Object3D *object, unsigned int pass)
 {
   std::stringstream ss;
-  ss << order++ << "_object_" << object->uuid.uuid() << "_pass_" << pass;
+  ss << order++ << "_object_" << object->id() << "_pass_" << pass;
 
   WriteFBO(ss.str());
 }
@@ -37,7 +37,7 @@ void OpenGLDebug::WriteFilterPass(Object3D *object, unsigned int pass)
 void OpenGLDebug::WriteFilterOutput(Object3D *object)
 {
   std::stringstream ss;
-  ss << order++ << "_object_" << object->uuid.uuid() << "_final";
+  ss << order++ << "_object_" << object->id() << "_final";
 
   WriteFBO(ss.str());
 }

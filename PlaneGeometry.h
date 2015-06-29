@@ -10,13 +10,13 @@ namespace dawn
 
     CONSTANTS::GeometryType type() const { return CONSTANTS::PlaneGeometry; }
 
-    float width() { return m_width; }
-    void width(float width) { m_width = width; changed(); }
+    float width() const { return m_width; }
+    void width(float width) { markDirty(m_width != width); m_width = width; }
 
-    float height() { return m_height; }
-    void height(float height) { m_height = height; changed(); }
+    float height() const { return m_height; }
+    void height(float height) { markDirty(m_height != height); m_height = height; }
 
-    void size(float width, float height) { m_width = width; m_height = height; changed(); }
+    void size(float width, float height) { markDirty(m_height != height || m_width != width); m_width = width; m_height = height; }
 
   protected:
     float m_width;

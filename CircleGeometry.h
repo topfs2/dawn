@@ -11,13 +11,13 @@ namespace dawn
     CONSTANTS::GeometryType type() const { return CONSTANTS::CircleGeometry; }
 
     float width() const { return m_width; }
-    void width(float width) { m_width = width; changed(); }
+    void width(float width) { markDirty(m_width != width); m_width = width; }
 
     float height() const { return m_height; }
-    void height(float height) { m_height = height; changed(); }
+    void height(float height) { markDirty(m_height != height); m_height = height; }
 
     unsigned int segments() const { return m_segments; }
-    void segments(unsigned int segments) { m_segments = segments; changed(); }
+    void segments(unsigned int segments) { markDirty(m_segments != segments); m_segments = segments; }
 
   protected:
     float m_width;

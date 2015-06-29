@@ -116,9 +116,10 @@ void OpenGLRenderer::ApplyBasicMaterial(IMaterial *material)
 
 void OpenGLRenderer::ApplyShaderMaterial(const mat4f &mvp, ShaderMaterial *material)
 {
-  OpenGLShaderProgramPtr shader = m_shaders.GetResource(material->id());
+  std::string path = material->path();
+  OpenGLShaderProgramPtr shader = m_shaders.GetResource(path);
 
-  UniformMap uniforms = material->uniforms;
+  UniformMap uniforms = material->uniforms();
   uniforms["uMVP"] = mvp;
   ApplyShader(shader, uniforms);
 }
@@ -129,7 +130,7 @@ void OpenGLRenderer::ApplyShader(OpenGLShaderProgramPtr shader, UniformMap unifo
 
   GLint textureUnit = 0;
   for (UniformMap::iterator itr = uniforms.begin(); itr != uniforms.end(); itr++) {
-    uniform u = itr->second;
+    uniform_t u = itr->second;
 
     if (u.type() == typeid(int)) {
       shader->uniform(itr->first, any_cast<int>(u));
@@ -156,9 +157,9 @@ void OpenGLRenderer::ApplyShader(OpenGLShaderProgramPtr shader, UniformMap unifo
       t->Bind(textureUnit);
       textureUnit++;
     }
-  }
 
-  check_gl_error();
+    check_gl_error();
+  }
 }
 
 void OpenGLRenderer::ApplyMaterial(const mat4f &mvp, IMaterial *material)

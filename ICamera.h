@@ -1,9 +1,10 @@
 #pragma once
 #include <boost/shared_ptr.hpp>
+#include "Object.h"
 
 namespace dawn
 {
-  class ICamera
+  class ICamera : public Object
   {
   public:
     virtual ~ICamera() { }

@@ -12,10 +12,27 @@ namespace dawn
     virtual CONSTANTS::Type type() const { return CONSTANTS::Mesh; }
 
     IGeometry *geometry() const { return m_geometry; }
-    void geometry(IGeometry *g) { m_geometry = g; changed(); }
+    void geometry(IGeometry *g) { markDirty(m_geometry != g); m_geometry = g; }
 
     IMaterial *material() const { return m_material; }
-    void material(IMaterial *m) { m_material = m; changed(); }
+    void material(IMaterial *m) { markDirty(m_material != m); m_material = m; }
+
+    virtual bool isDirty(bool recursive = false) const {
+        if (Object::isDirty(recursive)) {
+            return true;
+        } else if (recursive) {
+            return m_geometry->isDirty(recursive) || m_material->isDirty(recursive);
+        }
+
+        return false;
+    }
+
+    virtual void clean() {
+        Object3D::clean();
+
+        m_geometry->clean();
+        m_material->clean();
+    }
 
   protected:
     IGeometry *m_geometry;

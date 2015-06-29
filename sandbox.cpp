@@ -97,10 +97,10 @@ int main (int argc, char *argv[]) {
     Image *bg = new SDLImage("kodi-background.jpg");
 
     ShaderMaterial * listShader = new ShaderMaterial("shaders/map");
-    listShader->uniforms["map"] = bg;
+    listShader->uniform("map", bg);
 
     ShaderMaterial * popupShader = new ShaderMaterial("shaders/map");
-    popupShader->uniforms["map"] = logo;
+    popupShader->uniform("map", logo);
 
     float bgAR = bg->width() / (float)bg->height();
     float logoAR = logo->width() / (float)logo->height();
@@ -130,11 +130,11 @@ int main (int argc, char *argv[]) {
     q1->filters(Filter(FILTER_GRAYSCALE, uniforms));
     q3->filters(Filter(FILTER_GRAYSCALE, uniforms));
 
-    cout << "q1 " << q1->uuid.uuid() << endl;
-    cout << "q2 " << q2->uuid.uuid() << endl;
-    cout << "q3 " << q3->uuid.uuid() << endl;
-    cout << "group " << group->uuid.uuid() << endl;
-    cout << "scene " << scene->uuid.uuid() << endl;
+    cout << "q1 " << q1->id() << endl;
+    cout << "q2 " << q2->id() << endl;
+    cout << "q3 " << q3->id() << endl;
+    cout << "group " << group->id() << endl;
+    cout << "scene " << scene->id() << endl;
 
     float angle = 0.0f;
     float rootGray = 0.0f;
