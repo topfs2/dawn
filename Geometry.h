@@ -6,13 +6,11 @@
 
 namespace dawn
 {
-  class IGeometry : public Object
+  class Geometry : public Object
   {
   public:
-    virtual ~IGeometry() { }
+    virtual ~Geometry() { }
 
     virtual CONSTANTS::GeometryType type() const = 0;
   };
-
-  typedef boost::shared_ptr<IGeometry> GeometryPtr;
 }

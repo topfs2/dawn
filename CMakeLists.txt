@@ -33,7 +33,10 @@ include_directories(dbtweener)
 
 set(LIBRARIES ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${GLEW_LIBRARIES} ${GLU_LIBRARIES} ${GL_LIBRARIES} ${EIGEN3_LIBRARIES} ${LIBPNG_LIBRARIES} ${LIBLOG4CXX_LIBRARIES})
 
-set(SOURCES hashlib/md5.cpp dbtweener/dbtweener.cpp UUID.cpp ImageUtils.cpp OpenGLUtils.cpp OpenGLDebug.cpp OpenGLTexture.cpp OpenGLTexturePool.cpp OpenGLShaderProgram.cpp OpenGLShaderProgramPool.cpp OpenGLRenderTarget.cpp OpenGLRenderer.cpp)
+set(SOURCES hashlib/md5.cpp dbtweener/dbtweener.cpp UUID.cpp ImageUtils.cpp OpenGLUtils.cpp OpenGLDebug.cpp OpenGLTexture.cpp OpenGLTexturePool.cpp OpenGLShaderProgram.cpp OpenGLShaderProgramPool.cpp OpenGLRenderTarget.cpp OpenGLRenderer.cpp duktape.c libdawn.cpp)
 
 add_executable(sandbox ${SOURCES} sandbox.cpp)
 target_link_libraries(sandbox ${LIBRARIES})
+
+add_executable(sandboxjs ${SOURCES} sandboxjs.cpp)
+target_link_libraries(sandboxjs ${LIBRARIES})

@@ -16,7 +16,7 @@ OpenGLRenderer::OpenGLRenderer()
   InitializeGL();
 }
 
-void OpenGLRenderer::render(ICamera *camera, Object3D *scene)
+void OpenGLRenderer::render(Camera *camera, Object3D *scene)
 {
   OpenGLRenderTarget::revertToDisplayRenderTarget();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -106,7 +106,7 @@ void OpenGLRenderer::GetFilterPasses(Filter filter, vector<OpenGLFilter> &passes
   }
 }
 
-void OpenGLRenderer::ApplyBasicMaterial(IMaterial *material)
+void OpenGLRenderer::ApplyBasicMaterial(Material *material)
 {
   glUseProgram(0);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -162,7 +162,7 @@ void OpenGLRenderer::ApplyShader(OpenGLShaderProgramPtr shader, UniformMap unifo
   }
 }
 
-void OpenGLRenderer::ApplyMaterial(const mat4f &mvp, IMaterial *material)
+void OpenGLRenderer::ApplyMaterial(const mat4f &mvp, Material *material)
 {
   switch (material->type())
   {
@@ -250,7 +250,7 @@ void OpenGLRenderer::RenderCircle(CircleGeometry *circle)
   check_gl_error();
 }
 
-void OpenGLRenderer::RenderGeometry(IGeometry *geometry)
+void OpenGLRenderer::RenderGeometry(Geometry *geometry)
 {
   switch (geometry->type())
   {
@@ -264,7 +264,7 @@ void OpenGLRenderer::RenderGeometry(IGeometry *geometry)
   }
 }
 
-void OpenGLRenderer::RenderMesh(const mat4f &mvp, Mesh *mesh)
+void OpenGLRenderer::RenderMesh(const mat4f &mvp, Mesh3D *mesh)
 {
   ApplyMaterial(mvp, mesh->material());
   RenderGeometry(mesh->geometry());
@@ -284,7 +284,7 @@ void OpenGLRenderer::RenderObject(const mat4f &projection, const mat4f viewmodel
   switch (object->type())
   {
     case CONSTANTS::Mesh:
-      RenderMesh(mvp, (Mesh *)object);
+      RenderMesh(mvp, (Mesh3D *)object);
   }
 
   for (Object3D::iterator itr = object->begin(); itr != object->end(); itr++) {

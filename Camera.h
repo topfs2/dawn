@@ -4,10 +4,10 @@
 
 namespace dawn
 {
-  class ICamera : public Object
+  class Camera : public Object
   {
   public:
-    virtual ~ICamera() { }
+    virtual ~Camera() { }
 
     virtual CONSTANTS::CameraType type() const = 0;
 

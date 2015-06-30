@@ -1,6 +1,7 @@
 #pragma once
 #include <cassert>
 #include "to_string.h" // Remove on c++11
+#include "types.h"
 
 namespace dawn
 {

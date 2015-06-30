@@ -12,65 +12,19 @@
 #include "OpenGLRenderer.h"
 #include "OrthographicCamera.h"
 
-#include "Mesh.h"
+#include "Mesh3D.h"
 #include "ShaderMaterial.h"
 #include "PlaneGeometry.h"
 #include "CircleGeometry.h"
 
-#include "Image.h"
+#include "SDLImage.h"
 
 #include "LinearAlgebra.h"
 
 using namespace std;
 using namespace dawn;
 
-class SDLImage : public Image
-{
-public:
-  SDLImage(const string &path) : m_path(path)
-  {
-    SDL_Surface *surface = IMG_Load(path.c_str());
-    if (surface)
-    {
-      const uint8_t *originalRaw = static_cast<uint8_t *>(surface->pixels);
-      uint8_t *flippedRaw = new uint8_t[surface->pitch * surface->h];
 
-      for (unsigned i = 0; i < surface->h; ++i)
-      {
-          const uint8_t *srcBeg = originalRaw + (surface->pitch *(surface->h - i - 1));
-          const uint8_t *srcEnd = srcBeg + surface->pitch;
-
-          std::copy(srcBeg, srcEnd, flippedRaw + surface->pitch * i);
-      }
-
-      m_buffer = BufferPtr(new Buffer(flippedRaw, surface->pitch * surface->h));
-
-      GLint bpp = surface->format->BytesPerPixel;
-      if (bpp == 4)
-        m_format = (surface->format->Rmask == 0x000000ff) ? CONSTANTS::RGBAFormat : CONSTANTS::BGRAFormat;
-      else if (bpp == 3)
-        m_format = (surface->format->Rmask == 0x000000ff) ? CONSTANTS::RGBFormat : CONSTANTS::BGRFormat;
-
-      m_width = surface->w;
-      m_height = surface->h;
-
-      SDL_FreeSurface(surface);
-    }
-  }
-
-  virtual std::string id() { return m_path; }
-  virtual BufferPtr buffer() { return m_buffer; }
-  virtual unsigned int width() { return m_width; }
-  virtual unsigned int height() { return m_height; }
-  virtual CONSTANTS::PixelFormat format() { return m_format; }
-
-private:
-  std::string m_path;
-  BufferPtr m_buffer;
-  unsigned int m_width;
-  unsigned int m_height;
-  CONSTANTS::PixelFormat m_format;
-};
 
 int main (int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -89,7 +43,7 @@ int main (int argc, char *argv[]) {
 
     IRenderer *renderer = new OpenGLRenderer();
     Object3D *scene = new Object3D();
-    ICamera *camera = new OrthographicCamera(4.0 * WINDOW_WIDTH / (float)WINDOW_HEIGHT, 4.0, -1.0, 1000.0);
+    Camera *camera = new OrthographicCamera(4.0 * WINDOW_WIDTH / (float)WINDOW_HEIGHT, 4.0, -1.0, 1000.0);
 
     Object3D *group = new Object3D();
 
@@ -105,13 +59,13 @@ int main (int argc, char *argv[]) {
     float bgAR = bg->width() / (float)bg->height();
     float logoAR = logo->width() / (float)logo->height();
 
-    Mesh *q1 = new Mesh(new PlaneGeometry(1.0 * bgAR, 1.0), listShader);
-    Mesh *q2 = new Mesh(new PlaneGeometry(1.0 * bgAR, 1.0), listShader);
-    Mesh *q3 = new Mesh(new PlaneGeometry(1.0 * bgAR, 1.0), listShader);
+    Mesh3D *q1 = new Mesh3D(new PlaneGeometry(1.0 * bgAR, 1.0), listShader);
+    Mesh3D *q2 = new Mesh3D(new PlaneGeometry(1.0 * bgAR, 1.0), listShader);
+    Mesh3D *q3 = new Mesh3D(new PlaneGeometry(1.0 * bgAR, 1.0), listShader);
 
-    Mesh *q4 = new Mesh(new PlaneGeometry(1.0 * logoAR, 1.0), popupShader);
+    Mesh3D *q4 = new Mesh3D(new PlaneGeometry(1.0 * logoAR, 1.0), popupShader);
     q4->visible(false);
-//    Mesh *q3 = new Mesh(new PlaneGeometry(2, 2, 1, 1), new VideoMaterial("default"));
+//    Mesh3D *q3 = new Mesh3D(new PlaneGeometry(2, 2, 1, 1), new VideoMaterial("default"));
 
     q1->transform(translation(-2.0f, 0.0f, 0.0f));
     q2->transform(translation( 0.0f, 0.0f, 0.0f) * scaling(1.1f, 1.1f, 1.0f));

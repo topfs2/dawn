@@ -1,9 +1,9 @@
 #pragma once
-#include "IGeometry.h"
+#include "Geometry.h"
 
 namespace dawn
 {
-  class CircleGeometry : public IGeometry
+  class CircleGeometry : public Geometry
   {
   public:
     CircleGeometry(float width, float height, unsigned int segments) : m_width(width), m_height(height), m_segments(segments) { }

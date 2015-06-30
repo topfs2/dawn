@@ -1,6 +1,6 @@
 #pragma once
 #include "Object3D.h"
-#include "ICamera.h"
+#include "Camera.h"
 
 namespace dawn
 {
@@ -9,6 +9,6 @@ namespace dawn
   public:
     virtual ~IRenderer() { }
 
-    virtual void render(ICamera *camera, Object3D *scene) = 0;
+    virtual void render(Camera *camera, Object3D *scene) = 0;
   };
 }

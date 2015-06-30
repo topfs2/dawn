@@ -6,13 +6,11 @@
 
 namespace dawn
 {
-  class IMaterial : public Object
+  class Material : public Object
   {
   public:
-    virtual ~IMaterial() { }
+    virtual ~Material() { }
 
     virtual CONSTANTS::MaterialType type() const = 0;
   };
-
-  typedef boost::shared_ptr<IMaterial> MaterialPtr;
 }

@@ -1,21 +1,21 @@
 #pragma once
 #include "Object3D.h"
-#include "IGeometry.h"
-#include "IMaterial.h"
+#include "Geometry.h"
+#include "Material.h"
 
 namespace dawn
 {
-  class Mesh : public Object3D
+  class Mesh3D : public Object3D
   {
   public:
-    Mesh(IGeometry *geometry, IMaterial *material) : m_geometry(geometry), m_material(material) { }
+    Mesh3D(Geometry *geometry, Material *material) : m_geometry(geometry), m_material(material) { }
     virtual CONSTANTS::Type type() const { return CONSTANTS::Mesh; }
 
-    IGeometry *geometry() const { return m_geometry; }
-    void geometry(IGeometry *g) { markDirty(m_geometry != g); m_geometry = g; }
+    Geometry *geometry() const { return m_geometry; }
+    void geometry(Geometry *g) { markDirty(m_geometry != g); m_geometry = g; }
 
-    IMaterial *material() const { return m_material; }
-    void material(IMaterial *m) { markDirty(m_material != m); m_material = m; }
+    Material *material() const { return m_material; }
+    void material(Material *m) { markDirty(m_material != m); m_material = m; }
 
     virtual bool isDirty(bool recursive = false) const {
         if (Object::isDirty(recursive)) {
@@ -35,9 +35,7 @@ namespace dawn
     }
 
   protected:
-    IGeometry *m_geometry;
-    IMaterial *m_material;
+    Geometry *m_geometry;
+    Material *m_material;
   };
-
-  typedef boost::shared_ptr<Mesh> MeshPtr;
 }

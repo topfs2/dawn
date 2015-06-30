@@ -1,12 +1,12 @@
 #pragma once
 #include <map>
-#include "IMaterial.h"
+#include "Material.h"
 #include "Image.h"
 #include "types.h"
 
 namespace dawn
 {
-    class ShaderMaterial : public IMaterial
+    class ShaderMaterial : public Material
     {
     public:
         ShaderMaterial(std::string path) : m_path(path) { }
@@ -23,7 +23,7 @@ namespace dawn
         void uniform(std::string key, uniform_t value) { markDirty(); m_uniforms[key] = value; }
 
         virtual bool isDirty(bool recursive = false) const {
-            if (IMaterial::isDirty(recursive)) {
+            if (Material::isDirty(recursive)) {
                 return true;
             } else if (recursive) {
                 for (UniformMap::const_iterator itr = m_uniforms.begin(); itr != m_uniforms.end(); itr++) {
@@ -39,7 +39,7 @@ namespace dawn
         }
 
         virtual void clean() {
-            IMaterial::clean();
+            Material::clean();
 
             for (UniformMap::const_iterator itr = m_uniforms.begin(); itr != m_uniforms.end(); itr++) {
                 uniform_t u = itr->second;

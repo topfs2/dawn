@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ICamera.h"
+#include "Camera.h"
 #include "LinearAlgebra.h"
 
 namespace dawn
 {
-  class PerspectiveCamera : public ICamera
+  class PerspectiveCamera : public Camera
   {
   public:
     PerspectiveCamera(float fovy, float aspect, float near, float far) { projection(fovy, aspect, near, far); }

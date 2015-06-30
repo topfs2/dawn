@@ -44,7 +44,7 @@ namespace dawn
     void transform(mat4f transform) { m_transform = transform; markDirty(); }
 
     bool visible() const { return m_visible; }
-    void visible(bool visible) { m_visible = visible; markDirty(); }
+    void visible(bool visible) { markDirty(visible != m_visible); m_visible = visible; }
 
     FilterList filters() const { return m_filters; }
     void filters(Filter filter) { m_filters.clear(); m_filters.push_back(filter); markDirty(); } // Helper

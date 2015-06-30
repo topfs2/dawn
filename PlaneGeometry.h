@@ -1,9 +1,9 @@
 #pragma once
-#include "IGeometry.h"
+#include "Geometry.h"
 
 namespace dawn
 {
-  class PlaneGeometry : public IGeometry
+  class PlaneGeometry : public Geometry
   {
   public:
     PlaneGeometry(float width, float height) : m_width(width), m_height(height) { }
