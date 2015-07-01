@@ -792,7 +792,7 @@ TWEEN.Interpolation = {
 
 var scene = new dawn.Object3D();
 
-var map = new dawn.Mesh3D(new dawn.PlaneGeometry(1, 1), new dawn.ShaderMaterial("shaders/map"));
+var map = new dawn.Mesh3D(new dawn.PlaneGeometry(1, 1), new dawn.ShaderMaterial("shaders/map_diffuse"));
 map.material.uniform("map", new dawn.Image("kodi-thumbnail.png"));
 map.material.uniform("color", new dawn.vec4(1));
 

@@ -1,10 +1,9 @@
 //
-uniform vec4 color;
 uniform sampler2D map;
 
 varying vec2 vUV;
 
 void main()
 {
-  gl_FragColor = texture2D(map, vUV) * color;
+  gl_FragColor = texture2D(map, vUV);
 }
