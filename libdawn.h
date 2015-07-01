@@ -23,6 +23,10 @@ extern duk_ret_t ellipsisgeometry_segments(duk_context *ctx);
 extern duk_ret_t shadermaterial_create(duk_context *ctx);
 extern duk_ret_t shadermaterial_uniform(duk_context *ctx);
 
+extern duk_ret_t scene3d_create(duk_context *ctx);
+extern duk_ret_t scene3d_camera(duk_context *ctx);
+extern duk_ret_t scene3d_stage(duk_context *ctx);
+
 extern duk_ret_t object3d_create(duk_context *ctx);
 extern duk_ret_t object3d_transform(duk_context *ctx);
 extern duk_ret_t object3d_visible(duk_context *ctx);
@@ -57,6 +61,10 @@ static const duk_function_list_entry libdawn_funcs[] = {
 
     { "shadermaterial_create", shadermaterial_create, 1 },
     { "shadermaterial_uniform", shadermaterial_uniform, 3 },
+
+    { "scene3d_create", scene3d_create, 2 },
+    { "scene3d_camera", scene3d_camera, 2 },
+    { "scene3d_stage", scene3d_stage, 2 },
 
     { "object3d_create", object3d_create, 0 },
     { "object3d_transform", object3d_transform, 2 },

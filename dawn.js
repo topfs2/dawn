@@ -195,6 +195,13 @@ var dawn = { };
         });
     };
 
+    dawn.Scene3D = function (camera, stage) {
+        prepareObject(this, libdawn.scene3d_create(obj2ptr(camera), obj2ptr(stage)));
+
+        prepare_prop(this, 'scene3d', 'camera', camera, obj2ptr);
+        prepare_prop(this, 'scene3d', 'stage', stage, obj2ptr);
+    };
+
     dawn.Object3D = function () {
         prepareObject(this, libdawn.object3d_create());
 
@@ -242,8 +249,14 @@ var dawn = { };
     OrthographicCamera(float width, float height, float near, float far) { projection(width / -2.0f, width / 2.0f, height / 2.0f, height / -2.0f, near, far); }
     OrthographicCamera(float left, float right, float top, float bottom, float near, float far) { projection(left, right, top, bottom, near, far); }
 */
-    dawn.OrthographicCamera = function (left, right, top, bottom, near, far) {
-        prepareObject(this, libdawn.orthographiccamera_create(left, right, top, bottom, near, far));
+    dawn.OrthographicCamera = function () {
+        if (arguments.length == 4) {
+            prepareObject(this, libdawn.orthographiccamera_create(arguments[0] / -2, arguments[0] / 2, arguments[1] / 2, arguments[1] / -2, arguments[2], arguments[3]));
+        } else if (arguments.length == 6) {
+            prepareObject(this, libdawn.orthographiccamera_create(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]));
+        } else {
+            throw "Bad amount of arguments";
+        }
     };
 
 /*

@@ -176,24 +176,36 @@ extern duk_ret_t shadermaterial_uniform(duk_context *ctx) {
             m->uniform(key, dynamic_cast<Object3D *>(p));
         } else if (dynamic_cast<Image *>(p)) {
             m->uniform(key, dynamic_cast<Image *>(p));
-/*
-        } else if (static_cast<vec2f *>(p)) {
-            cout << "Casted to vec2f" << endl;
-            m->uniform(key, static_cast<vec2f *>(p));
-        } else if (static_cast<vec3f *>(p)) {
-            cout << "Casted to vec3f" << endl;
-            m->uniform(key, static_cast<vec3f *>(p));
-        } else if (static_cast<vec4f *>(p)) {
-            cout << "Casted to vec4f" << endl;
-            m->uniform(key, static_cast<vec4f *>(p));
-        } else if (static_cast<mat4f *>(p)) {
-            cout << "Casted to mat4f" << endl;
-            m->uniform(key, static_cast<mat4f *>(p));
-*/
         } else {
             cout << "Bad pointer" << endl;
         }
     }
+
+    return 0;
+}
+
+extern duk_ret_t scene3d_create(duk_context *ctx) {
+    Camera *camera = static_cast<Camera *>(duk_require_pointer(ctx, 0));
+    Object3D *stage = static_cast<Object3D *>(duk_require_pointer(ctx, 1));
+
+    Scene3D *p = new Scene3D(camera, stage);
+    cout << "Scene3D.Create " << p << " " << p->camera() << " " << p->stage() << endl;
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t scene3d_camera(duk_context *ctx) {
+    Scene3D *p = static_cast<Scene3D *>(duk_require_pointer(ctx, 0));
+    p->camera(static_cast<Camera *>(duk_require_pointer(ctx, 1)));
+
+    return 0;
+}
+
+extern duk_ret_t scene3d_stage(duk_context *ctx) {
+    duk_push_this(ctx); 
+    Scene3D *p = static_cast<Scene3D *>(duk_require_pointer(ctx, 0));
+    p->stage(static_cast<Object3D *>(duk_require_pointer(ctx, 1)));
 
     return 0;
 }
@@ -307,7 +319,12 @@ extern duk_ret_t orthographiccamera_create(duk_context *ctx) {
                                                     duk_require_number(ctx, 5)
                                                 );
     
-    cout << "OrthographicCamera.Create " << p << endl;
+    cout << "OrthographicCamera.Create " << p <<    duk_require_number(ctx, 0) << ", " <<
+                                                    duk_require_number(ctx, 1) << ", " <<
+                                                    duk_require_number(ctx, 2) << ", " <<
+                                                    duk_require_number(ctx, 3) << ", " <<
+                                                    duk_require_number(ctx, 4) << ", " <<
+                                                    duk_require_number(ctx, 5) << endl;
     duk_push_pointer(ctx, p);
 
     return 1;

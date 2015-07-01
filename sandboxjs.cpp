@@ -18,6 +18,20 @@ void fatal(duk_context *ctx, int code, const char *msg) {
     printf("FATAL: %i %s\n", code, msg);
 }
 
+bool resize(duk_context *ctx, int width, int height) {
+    duk_push_global_object(ctx);
+    duk_get_prop_string(ctx, -1, "resize");
+    duk_push_int(ctx, width);
+    duk_push_int(ctx, height);
+
+    if (duk_pcall(ctx, 2) != 0) {
+        printf("resize.error: %s\n", duk_safe_to_string(ctx, -1));
+        return false;
+    }
+
+    return true;
+}
+
 int main(int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -34,7 +48,6 @@ int main(int argc, char *argv[]) {
     glewInit();
 
     IRenderer *renderer = new OpenGLRenderer();
-    Camera *camera = new OrthographicCamera(4.0 * WINDOW_WIDTH / (float)WINDOW_HEIGHT, 4.0, -1.0, 1000.0);
 
     duk_context *ctx = duk_create_heap(NULL, NULL, NULL, NULL, fatal);
 
@@ -46,18 +59,20 @@ int main(int argc, char *argv[]) {
     duk_eval_string(ctx, "document = window = this;");
 
     if (duk_peval_file(ctx, "dawn.js") != 0) {
-        printf("Error: %s\n", duk_safe_to_string(ctx, -1));
+        printf("core.error: %s\n", duk_safe_to_string(ctx, -1));
     }
 
     for (int i = 1; i < argc; i++) {
         printf("Running %s\n", argv[i]);
 
         if (duk_peval_file(ctx, argv[i]) != 0) {
-            printf("Error: %s\n", duk_safe_to_string(ctx, -1));
+            printf("eval.error: %s\n", duk_safe_to_string(ctx, -1));
         }
     }
 
     duk_gc(ctx, 0);
+
+    resize(ctx, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     bool lastDirty = false;
     bool running = true;
@@ -82,8 +97,8 @@ int main(int argc, char *argv[]) {
             running = false;
         } else {
             if (duk_is_pointer(ctx, -1)) {
-                void *p = duk_get_pointer(ctx, -1);
-                Object3D *scene = static_cast<Object3D *>(p);
+                Object *p = static_cast<Object *>(duk_get_pointer(ctx, -1));
+                Scene3D *scene = dynamic_cast<Scene3D *>(p);
                 if (scene) {
                     if (scene->isDirty(true)) {
                         if (!lastDirty) {
@@ -91,7 +106,7 @@ int main(int argc, char *argv[]) {
                             lastDirty = true;
                         }
 
-                        renderer->render(camera, scene);
+                        renderer->render(scene->camera(), scene->stage());
                         SDL_GL_SwapWindow(window);
                         scene->clean();
                     } else {

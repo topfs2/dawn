@@ -1,9 +1,13 @@
-var scene = new dawn.Object3D();
+var camera = new dawn.OrthographicCamera(4 * 16 / 9, 4, -1, 1000);
 
-var map = new dawn.Mesh3D(new dawn.PlaneGeometry(1, 1), new dawn.ShaderMaterial("shaders/map"));
-map.material.uniform("map", new dawn.Image("kodi-thumbnail.png"));
+var mesh = new dawn.Mesh3D(new dawn.PlaneGeometry(1, 1), new dawn.ShaderMaterial("shaders/map"));
+mesh.material.uniform("map", new dawn.Image("kodi-thumbnail.png"));
 
-scene.appendChild(map);
+var scene = new dawn.Scene3D(camera, mesh);
+
+resize = function (width, height) {
+    scene.camera = new dawn.OrthographicCamera(4.0 * width / height, 4.0, -1.0, 1000.0);
+}
 
 var time = function () {
     return (new Date()).getTime();
@@ -17,7 +21,7 @@ update = function () {
 
     if (Math.floor(t) % 2 == 1) {
         frame += 0.01;
-        map.transform = dawn.mat4.rotationZ(frame);
+        mesh.transform = dawn.mat4.rotationZ(frame);
     }
 
     return scene.instance;
