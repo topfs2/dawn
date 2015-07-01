@@ -14,7 +14,7 @@ namespace dawn
     CONSTANTS::CameraType type() const { return CONSTANTS::OrthographicCamera; }
 
     virtual mat4f projection() const { return m_projection; }
-    mat4f projection(float left, float right, float top, float bottom, float near, float far) { m_projection = ortho(left, right, top, bottom, near, far); markDirty(); }
+    void projection(float left, float right, float top, float bottom, float near, float far) { m_projection = ortho(left, right, top, bottom, near, far); markDirty(); }
 
   private:
     mat4f m_projection;

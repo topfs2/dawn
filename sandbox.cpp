@@ -42,8 +42,10 @@ int main (int argc, char *argv[]) {
     glewInit();
 
     IRenderer *renderer = new OpenGLRenderer();
-    Object3D *scene = new Object3D();
+    Object3D *stage = new Object3D();
     Camera *camera = new OrthographicCamera(4.0 * WINDOW_WIDTH / (float)WINDOW_HEIGHT, 4.0, -1.0, 1000.0);
+
+    Scene3D *scene = new Scene3D(camera, stage, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     Object3D *group = new Object3D();
 
@@ -75,8 +77,8 @@ int main (int argc, char *argv[]) {
     group->appendChild(q2);
     group->appendChild(q3);
 
-    scene->appendChild(group);
-    scene->appendChild(q4);
+    stage->appendChild(group);
+    stage->appendChild(q4);
 
     UniformMap uniforms;
     uniforms["strength"] = 1.0f;
@@ -149,7 +151,7 @@ int main (int argc, char *argv[]) {
         }
       }
 
-      renderer->render(camera, scene);
+      renderer->render(scene);
       SDL_GL_SwapWindow(window);
 
 #ifdef DEBUG_WRITE_FBO

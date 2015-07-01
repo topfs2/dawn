@@ -6,14 +6,15 @@ var ellipsis = new dawn.EllipsisGeometry(1, 1, 32);
 var mesh = new dawn.Mesh3D(plane, new dawn.ShaderMaterial("shaders/color"));
 mesh.material.uniform("color", new dawn.vec4(1));
 
-var scene = new dawn.Scene3D(camera, mesh);
+var scene = new dawn.Scene3D(camera, mesh, 1280, 720);
 
 var time = function () {
     return (new Date()).getTime();
 };
 
 resize = function (width, height) {
-    scene.camera = new dawn.OrthographicCamera(4.0 * width / height, 4.0, -1.0, 1000.0);
+    scene.camera.projection(4.0 * width / height, 4.0, -1.0, 1000.0);
+    scene.size(width, height);
 }
 
 var frame = 0;

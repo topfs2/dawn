@@ -115,7 +115,6 @@ extern duk_ret_t ellipsisgeometry_width(duk_context *ctx) {
     return 0;
 }
 
-
 extern duk_ret_t ellipsisgeometry_height(duk_context *ctx) {
     EllipsisGeometry *p = static_cast<EllipsisGeometry *>(duk_require_pointer(ctx, 0));
 
@@ -187,9 +186,11 @@ extern duk_ret_t shadermaterial_uniform(duk_context *ctx) {
 extern duk_ret_t scene3d_create(duk_context *ctx) {
     Camera *camera = static_cast<Camera *>(duk_require_pointer(ctx, 0));
     Object3D *stage = static_cast<Object3D *>(duk_require_pointer(ctx, 1));
+    unsigned int width = duk_require_int(ctx, 2);
+    unsigned int height = duk_require_int(ctx, 3);
 
-    Scene3D *p = new Scene3D(camera, stage);
-    cout << "Scene3D.Create " << p << " " << p->camera() << " " << p->stage() << endl;
+    Scene3D *p = new Scene3D(camera, stage, width, height);
+    cout << "Scene3D.Create " << p << " " << p->camera() << " " << p->stage() << " " << p->width() << " " << p->height() << endl;
 
     duk_push_pointer(ctx, p);
     return 1;
@@ -207,6 +208,27 @@ extern duk_ret_t scene3d_stage(duk_context *ctx) {
     Scene3D *p = static_cast<Scene3D *>(duk_require_pointer(ctx, 0));
     p->stage(static_cast<Object3D *>(duk_require_pointer(ctx, 1)));
 
+    return 0;
+}
+
+extern duk_ret_t scene3d_width(duk_context *ctx) {
+    Scene3D *p = static_cast<Scene3D *>(duk_require_pointer(ctx, 0));
+
+    p->width(duk_get_number(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t scene3d_height(duk_context *ctx) {
+    Scene3D *p = static_cast<Scene3D *>(duk_require_pointer(ctx, 0));
+
+    p->height(duk_get_number(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t scene3d_size(duk_context *ctx) {
+    Scene3D *p = static_cast<Scene3D *>(duk_require_pointer(ctx, 0));
+
+    p->size(duk_require_int(ctx, 1), duk_require_int(ctx, 2));
     return 0;
 }
 
@@ -319,15 +341,24 @@ extern duk_ret_t orthographiccamera_create(duk_context *ctx) {
                                                     duk_require_number(ctx, 5)
                                                 );
     
-    cout << "OrthographicCamera.Create " << p <<    duk_require_number(ctx, 0) << ", " <<
-                                                    duk_require_number(ctx, 1) << ", " <<
-                                                    duk_require_number(ctx, 2) << ", " <<
-                                                    duk_require_number(ctx, 3) << ", " <<
-                                                    duk_require_number(ctx, 4) << ", " <<
-                                                    duk_require_number(ctx, 5) << endl;
+    cout << "OrthographicCamera.Create " << p << " " << p->projection() << endl;
     duk_push_pointer(ctx, p);
 
     return 1;
+}
+
+extern duk_ret_t orthographiccamera_projection(duk_context *ctx) {
+    OrthographicCamera *p = static_cast<OrthographicCamera *>(duk_require_pointer(ctx, 0));
+    p->projection(
+        duk_require_number(ctx, 1),
+        duk_require_number(ctx, 2),
+        duk_require_number(ctx, 3),
+        duk_require_number(ctx, 4),
+        duk_require_number(ctx, 5),
+        duk_require_number(ctx, 6)
+    );
+
+    return 0;
 }
 
 extern duk_ret_t perspectivecamera_create(duk_context *ctx) {
@@ -338,10 +369,22 @@ extern duk_ret_t perspectivecamera_create(duk_context *ctx) {
                                                     duk_require_number(ctx, 3)
                                                 );
     
-    cout << "PerspectiveCamera.Create " << p << endl;
+    cout << "PerspectiveCamera.Create " << p << " " << p->projection() << endl;
     duk_push_pointer(ctx, p);
 
     return 1;
+}
+
+extern duk_ret_t perspectivecamera_projection(duk_context *ctx) {
+    PerspectiveCamera *p = static_cast<PerspectiveCamera *>(duk_require_pointer(ctx, 0));
+    p->projection(
+        duk_require_number(ctx, 1),
+        duk_require_number(ctx, 2),
+        duk_require_number(ctx, 3),
+        duk_require_number(ctx, 4)
+    );
+
+    return 0;
 }
 
 extern duk_ret_t dukopen_libdawn(duk_context *ctx) {

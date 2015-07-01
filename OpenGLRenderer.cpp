@@ -11,17 +11,32 @@ using namespace std;
 using namespace dawn;
 using boost::any_cast;
 
-OpenGLRenderer::OpenGLRenderer()
+OpenGLRenderer::OpenGLRenderer() : m_width(0), m_height(0)
 {
   InitializeGL();
 }
 
-void OpenGLRenderer::render(Camera *camera, Object3D *scene)
+void OpenGLRenderer::render(Scene3D *scene)
 {
+  render(scene->camera(), scene->stage(), scene->width(), scene->height());
+}
+
+void OpenGLRenderer::render(Camera *camera, Object3D *stage, unsigned int width, unsigned int height)
+{
+  cout << "Rendering " << width << " " << height << endl;
   OpenGLRenderTarget::revertToDisplayRenderTarget();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  Render(camera->projection(), camera->view(), scene);
+  if (m_width != width || m_height != height) {
+    cout << "Resizing from [" << m_width << ", " << m_height << "] to [" << width << ", " << height << "]" << endl;
+    m_width = width;
+    m_height = height;
+    m_targets.clear();
+
+    glViewport(0.0f, 0.0f, (float)m_width, (float)m_height);
+  }
+
+  Render(camera->projection(), camera->view(), stage);
   OpenGLDebug::WriteFBO("final");
 }
 
@@ -306,8 +321,6 @@ void OpenGLRenderer::InitializeGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  glViewport(0.0f, 0.0f, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT);
-
 #ifdef DEBUG_RENDER_WIREFRAME
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 #endif
@@ -324,7 +337,7 @@ OpenGLRenderTargetPtr OpenGLRenderer::AcquireRenderTarget()
     m_targets.pop_back();
   } else {
     cout << "Creating a render target" << endl;
-    target = OpenGLRenderTargetPtr(new OpenGLRenderTarget(WINDOW_WIDTH, WINDOW_HEIGHT));
+    target = OpenGLRenderTargetPtr(new OpenGLRenderTarget(m_width, m_height));
   }
 
   return target;

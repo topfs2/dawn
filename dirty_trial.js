@@ -3,10 +3,11 @@ var camera = new dawn.OrthographicCamera(4 * 16 / 9, 4, -1, 1000);
 var mesh = new dawn.Mesh3D(new dawn.PlaneGeometry(1, 1), new dawn.ShaderMaterial("shaders/map"));
 mesh.material.uniform("map", new dawn.Image("kodi-thumbnail.png"));
 
-var scene = new dawn.Scene3D(camera, mesh);
+var scene = new dawn.Scene3D(camera, mesh, 1280, 720);
 
 resize = function (width, height) {
-    scene.camera = new dawn.OrthographicCamera(4.0 * width / height, 4.0, -1.0, 1000.0);
+    scene.camera.projection(4.0 * width / height, 4.0, -1.0, 1000.0);
+    scene.size(width, height);
 }
 
 var time = function () {

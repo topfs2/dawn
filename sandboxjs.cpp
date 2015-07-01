@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
         SDL_WINDOWPOS_UNDEFINED,
         WINDOW_WIDTH,
         WINDOW_HEIGHT,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
     SDL_GLContext context = SDL_GL_CreateContext(window);
 
@@ -71,7 +71,6 @@ int main(int argc, char *argv[]) {
     }
 
     duk_gc(ctx, 0);
-
     resize(ctx, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     bool lastDirty = false;
@@ -82,6 +81,13 @@ int main(int argc, char *argv[]) {
             switch (event.type) {
             case SDL_QUIT:
                 running = false;
+                break;
+
+            case SDL_WINDOWEVENT:
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    resize(ctx, event.window.data1, event.window.data2);
+                }
+
                 break;
 
             case SDL_KEYDOWN:
@@ -106,7 +112,7 @@ int main(int argc, char *argv[]) {
                             lastDirty = true;
                         }
 
-                        renderer->render(scene->camera(), scene->stage());
+                        renderer->render(scene);
                         SDL_GL_SwapWindow(window);
                         scene->clean();
                     } else {
@@ -115,13 +121,14 @@ int main(int argc, char *argv[]) {
                             lastDirty = false;
                         }
 
+                        duk_gc(ctx, 0); // TODO need to call gc at other points aswell?
                         usleep(16666);
                     }
                 }
             }
         }
 
-        duk_pop(ctx);  /* pop result/error */
+        duk_pop(ctx);
     }
 
     SDL_Quit();

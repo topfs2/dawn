@@ -26,6 +26,9 @@ extern duk_ret_t shadermaterial_uniform(duk_context *ctx);
 extern duk_ret_t scene3d_create(duk_context *ctx);
 extern duk_ret_t scene3d_camera(duk_context *ctx);
 extern duk_ret_t scene3d_stage(duk_context *ctx);
+extern duk_ret_t scene3d_width(duk_context *ctx);
+extern duk_ret_t scene3d_height(duk_context *ctx);
+extern duk_ret_t scene3d_size(duk_context *ctx);
 
 extern duk_ret_t object3d_create(duk_context *ctx);
 extern duk_ret_t object3d_transform(duk_context *ctx);
@@ -39,7 +42,10 @@ extern duk_ret_t mesh3d_geometry(duk_context *ctx);
 extern duk_ret_t mesh3d_material(duk_context *ctx);
 
 extern duk_ret_t orthographiccamera_create(duk_context *ctx);
+extern duk_ret_t orthographiccamera_projection(duk_context *ctx);
+
 extern duk_ret_t perspectivecamera_create(duk_context *ctx);
+extern duk_ret_t perspectivecamera_projection(duk_context *ctx);
 
 /* Module initialization */
 static const duk_function_list_entry libdawn_funcs[] = {
@@ -62,9 +68,12 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "shadermaterial_create", shadermaterial_create, 1 },
     { "shadermaterial_uniform", shadermaterial_uniform, 3 },
 
-    { "scene3d_create", scene3d_create, 2 },
+    { "scene3d_create", scene3d_create, 4 },
     { "scene3d_camera", scene3d_camera, 2 },
     { "scene3d_stage", scene3d_stage, 2 },
+    { "scene3d_width", scene3d_width, 2 },
+    { "scene3d_height", scene3d_height, 2 },
+    { "scene3d_size", scene3d_size, 3 },
 
     { "object3d_create", object3d_create, 0 },
     { "object3d_transform", object3d_transform, 2 },
@@ -78,7 +87,10 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "mesh3d_material", mesh3d_material, 2 },
 
     { "orthographiccamera_create", orthographiccamera_create, 6 },
+    { "orthographiccamera_projection", orthographiccamera_projection, 7 },
+
     { "perspectivecamera_create", perspectivecamera_create, 4 },
+    { "perspectivecamera_projection", perspectivecamera_projection, 5 },
 
     { NULL, NULL, 0 }
 };

@@ -797,7 +797,7 @@ var mesh = new dawn.Mesh3D(new dawn.PlaneGeometry(1, 1), new dawn.ShaderMaterial
 mesh.material.uniform("map", new dawn.Image("kodi-thumbnail.png"));
 mesh.material.uniform("color", new dawn.vec4(1));
 
-var scene = new dawn.Scene3D(camera, mesh);
+var scene = new dawn.Scene3D(camera, mesh, 1280, 720);
 
 var tween1 = new TWEEN.Tween( { width: 1 } )
             .to( { width: 4 }, 4000 )
@@ -844,7 +844,8 @@ var tween5 = new TWEEN.Tween( { a: 1 } )
             .start();
 
 resize = function (width, height) {
-    scene.camera = new dawn.OrthographicCamera(4.0 * width / height, 4.0, -1.0, 1000.0);
+    scene.camera.projection(4.0 * width / height, 4.0, -1.0, 1000.0);
+    scene.size(width, height);
 }
 
 update = function () {

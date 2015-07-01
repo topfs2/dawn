@@ -20,7 +20,8 @@ namespace dawn
 
     virtual ~OpenGLRenderer() { }
 
-    void render(Camera *camera, Object3D *scene);
+    void render(Scene3D *scene);
+    void render(Camera *camera, Object3D *stage, unsigned int width, unsigned int height);
 
   private:
     void Render(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target = NULL);
@@ -43,6 +44,9 @@ namespace dawn
 
     OpenGLRenderTargetPtr AcquireRenderTarget(); // TODO Move to a util of sorts?
     void ReleaseRenderTarget(OpenGLRenderTargetPtr target);
+
+    unsigned int m_width;
+    unsigned int m_height;
 
     std::vector<OpenGLRenderTargetPtr> m_targets;
 
