@@ -18,7 +18,7 @@ namespace dawn
 
     enum GeometryType {
       PlaneGeometry = 0,
-      CircleGeometry
+      EllipsisGeometry
     };
 
     enum MaterialType {

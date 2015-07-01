@@ -208,6 +208,14 @@ var dawn = { };
         prepare_prop(this, 'planegeometry', 'height', height);
     };
 
+    dawn.EllipsisGeometry = function (width, height, segments) {
+        prepareObject(this, libdawn.ellipsisgeometry_create(width, height, segments));
+
+        prepare_prop(this, 'ellipsisgeometry', 'width', width);
+        prepare_prop(this, 'ellipsisgeometry', 'height', height);
+        prepare_prop(this, 'ellipsisgeometry', 'segments', segments);
+    };
+
     dawn.ShaderMaterial = function (path) {
         prepareObject(this, libdawn.shadermaterial_create(path));
 

@@ -15,7 +15,7 @@
 #include "Mesh3D.h"
 #include "ShaderMaterial.h"
 #include "PlaneGeometry.h"
-#include "CircleGeometry.h"
+#include "EllipsisGeometry.h"
 
 #include "SDLImage.h"
 

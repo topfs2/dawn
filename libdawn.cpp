@@ -1,4 +1,3 @@
-#include "dawn_duktape_helpers.h"
 #include "libdawn.h"
 #include "dawn.h"
 #include "SDLImage.h"
@@ -37,158 +36,6 @@ extern duk_ret_t object_clean(duk_context *ctx) {
 
     return 0;
 }
-/*
-extern duk_ret_t vec_create(duk_context *ctx) {
-    int length = duk_get_top(ctx);
-
-    gsl_vector *p = gsl_vector_alloc(length);
-    for (unsigned int i = 0; i < length; i++) {
-        double v = duk_get_number(ctx, i);
-        gsl_vector_set(p, i, v);
-        cout << "array[" << i << "] = " << v << endl;
-    }
-
-    duk_push_pointer(ctx, p);
-
-    return 1;
-}
-
-extern duk_ret_t vec_set(duk_context *ctx) {
-    gsl_vector *p = static_cast<gsl_vector *>(duk_require_pointer(ctx, 0));
-    int i = duk_require_int(ctx, 1);
-    double v = duk_require_number(ctx, 3);
-
-    gsl_vector_set(p, i, v);
-    return 0;
-}
-
-extern duk_ret_t vec_get(duk_context *ctx) {
-    gsl_vector *p = static_cast<gsl_vector *>(duk_require_pointer(ctx, 0));
-    int i = duk_require_int(ctx, 1);
-    double v = gsl_vector_get(p, i);
-
-    duk_put_number(ctx, v);
-    return 1;
-}
-
-extern duk_ret_t vec_destroy(duk_context *ctx) {    
-    gsl_vector *p = static_cast<gsl_vector *>(duk_require_pointer(ctx, 0));
-    gsl_vector_free(static_cast<gsl_vector *>(p));
-
-    return 0;
-}
-
-extern duk_ret_t mat_create(duk_context *ctx) {
-    int length = duk_get_top(ctx);
-
-    if (length == 16) {
-        gsl_matrix *p = gsl_matrix_alloc(4, 4);
-
-
-        duk_push_pointer(ctx, p);
-
-        return 1;
-    }
-
-    return 0;
-}
-
-extern duk_ret_t mat_set(duk_context *ctx) {
-    gsl_matrix *p = static_cast<gsl_matrix *>(duk_require_pointer(ctx, 0));
-    int i = duk_require_int(ctx, 1);
-    int j = duk_require_int(ctx, 2);
-    double v = duk_require_number(ctx, 3);
-
-    gsl_vector_set(p, i, j, v);
-    return 0;
-}
-
-extern duk_ret_t mat_get(duk_context *ctx) {
-    gsl_vector *p = static_cast<gsl_vector *>(duk_require_pointer(ctx, 0));
-    int i = duk_require_int(ctx, 1);
-    int j = duk_require_int(ctx, 2);
-    double v = gsl_vector_get(p, i, j);
-
-    duk_put_number(ctx, v);
-    return 1;
-}
-
-extern duk_ret_t mat_destroy(duk_context *ctx) {    
-    void *p = duk_require_pointer(ctx, 0);
-    gsl_matrix_free(static_cast<gsl_matrix *>(p));
-
-    return 0;
-}
-*/
-
-/*
-extern duk_ret_t vec_create(duk_context *ctx) {
-    int length = duk_get_top(ctx);
-
-    cout << "Current length " << length << endl;
-    if (length < 2 || length > 4) {
-        cout << "Bad length " << length << endl;
-    }
-
-    float array[length];
-    for (unsigned int i = 0; i < length; i++) {
-        array[i] = duk_require_number(ctx, i);
-        cout << "array[" << i << "] = " << array[i] << endl;
-    }
-
-    if (length == 2) {
-        cout << "Creating vec2" << endl;
-        duk_push_pointer(ctx, new vec2f(array[0], array[1]));
-    } else if (length == 3) {
-        cout << "Creating vec3" << endl;
-        duk_push_pointer(ctx, new vec3f(array[0], array[1], array[2]));
-    } else if (length == 4) {
-        cout << "Creating vec4" << endl;
-        duk_push_pointer(ctx, new vec4f(array[0], array[1], array[2], array[3]));
-    }
-
-    return 1;
-}
-
-extern duk_ret_t vec_destroy(duk_context *ctx) {    
-    void *p = duk_require_pointer(ctx, 0);
-    int length = duk_require_number(ctx, 1);
-
-    if (length == 4) {
-        cout << "Destroying vec4" << endl;
-        delete static_cast<vec4f *>(p);
-    } else if (length == 3) {
-        cout << "Destroying vec3" << endl;
-        delete static_cast<vec3f *>(p);
-    } else if (length == 2) {
-        cout << "Destroying vec2" << endl;
-        delete static_cast<vec2f *>(p);
-    }
-
-    return 0;
-}
-
-extern duk_ret_t mat4_create(duk_context *ctx) {
-    mat4f *p = new mat4f();
-    (*p) << duk_require_number(ctx, 0),  duk_require_number(ctx, 1),  duk_require_number(ctx, 2),  duk_require_number(ctx, 3),
-            duk_require_number(ctx, 4),  duk_require_number(ctx, 5),  duk_require_number(ctx, 6),  duk_require_number(ctx, 7),
-            duk_require_number(ctx, 8),  duk_require_number(ctx, 9),  duk_require_number(ctx, 10), duk_require_number(ctx, 11),
-            duk_require_number(ctx, 12), duk_require_number(ctx, 13), duk_require_number(ctx, 14), duk_require_number(ctx, 15);
-    duk_push_pointer(ctx, p);
-
-    return 1;
-}
-
-extern duk_ret_t mat_destroy(duk_context *ctx) {    
-    void *p = duk_require_pointer(ctx, 0);
-
-    if (static_cast<mat4f *>(p)) {
-        delete static_cast<mat4f *>(p);
-    }
-
-    return 0;
-}
-*/
 
 extern duk_ret_t sdl_image_create(duk_context *ctx) {
     const char *path = duk_get_string(ctx, 0);
@@ -245,6 +92,41 @@ extern duk_ret_t planegeometry_size(duk_context *ctx) {
     PlaneGeometry *p = static_cast<PlaneGeometry *>(duk_require_pointer(ctx, 0));
 
     p->size(duk_get_number(ctx, 1), duk_get_number(ctx, 2));
+    return 0;
+}
+
+extern duk_ret_t ellipsisgeometry_create(duk_context *ctx) {
+    int width = duk_get_number(ctx, 0);
+    int height = duk_get_number(ctx, 1);
+    int segments = duk_get_number(ctx, 2);
+
+    EllipsisGeometry *p = new EllipsisGeometry(width, height, segments);
+    cout << "EllipsisGeometry.Create " << p << " " << p->width() << " " << p->height() <<  " " << p->segments() << endl;
+
+    duk_push_pointer(ctx, p);
+
+    return 1;
+}
+
+extern duk_ret_t ellipsisgeometry_width(duk_context *ctx) {
+    EllipsisGeometry *p = static_cast<EllipsisGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->width(duk_get_number(ctx, 1));
+    return 0;
+}
+
+
+extern duk_ret_t ellipsisgeometry_height(duk_context *ctx) {
+    EllipsisGeometry *p = static_cast<EllipsisGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->height(duk_get_number(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t ellipsisgeometry_segments(duk_context *ctx) {
+    EllipsisGeometry *p = static_cast<EllipsisGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->segments(duk_get_number(ctx, 1));
     return 0;
 }
 

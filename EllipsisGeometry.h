@@ -3,12 +3,12 @@
 
 namespace dawn
 {
-  class CircleGeometry : public Geometry
+  class EllipsisGeometry : public Geometry
   {
   public:
-    CircleGeometry(float width, float height, unsigned int segments) : m_width(width), m_height(height), m_segments(segments) { }
+    EllipsisGeometry(float width, float height, unsigned int segments) : m_width(width), m_height(height), m_segments(segments) { }
 
-    CONSTANTS::GeometryType type() const { return CONSTANTS::CircleGeometry; }
+    CONSTANTS::GeometryType type() const { return CONSTANTS::EllipsisGeometry; }
 
     float width() const { return m_width; }
     void width(float width) { markDirty(m_width != width); m_width = width; }

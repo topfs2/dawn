@@ -6,13 +6,7 @@ extern duk_ret_t object_destroy(duk_context *ctx);
 extern duk_ret_t object_id(duk_context *ctx);
 extern duk_ret_t object_isdirty(duk_context *ctx);
 extern duk_ret_t object_clean(duk_context *ctx);
-/*
-extern duk_ret_t vec_create(duk_context *ctx);
-extern duk_ret_t vec_destroy(duk_context *ctx);
 
-extern duk_ret_t mat_create(duk_context *ctx);
-extern duk_ret_t mat_destroy(duk_context *ctx);
-*/
 extern duk_ret_t image_width(duk_context *ctx);
 extern duk_ret_t image_height(duk_context *ctx);
 
@@ -20,6 +14,11 @@ extern duk_ret_t planegeometry_create(duk_context *ctx);
 extern duk_ret_t planegeometry_width(duk_context *ctx);
 extern duk_ret_t planegeometry_height(duk_context *ctx);
 extern duk_ret_t planegeometry_size(duk_context *ctx);
+
+extern duk_ret_t ellipsisgeometry_create(duk_context *ctx);
+extern duk_ret_t ellipsisgeometry_width(duk_context *ctx);
+extern duk_ret_t ellipsisgeometry_height(duk_context *ctx);
+extern duk_ret_t ellipsisgeometry_segments(duk_context *ctx);
 
 extern duk_ret_t shadermaterial_create(duk_context *ctx);
 extern duk_ret_t shadermaterial_uniform(duk_context *ctx);
@@ -42,13 +41,7 @@ extern duk_ret_t perspectivecamera_create(duk_context *ctx);
 static const duk_function_list_entry libdawn_funcs[] = {
     { "object_destroy", object_destroy, 1 },
     { "object_id", object_id, 1 },
-/*
-    { "vec_create", vec_create, DUK_VARARGS },
-    { "vec_destroy", vec_destroy, 1 },
 
-    { "mat_create", mat_create, DUK_VARARGS },
-    { "mat_destroy", mat_destroy, 1 },
-*/
     { "image_width", image_width, 1 },
     { "image_height", image_height, 1 },
 
@@ -56,6 +49,11 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "planegeometry_width", planegeometry_width, 2 },
     { "planegeometry_height", planegeometry_height, 2 },
     { "planegeometry_size", planegeometry_size, 3 },
+
+    { "ellipsisgeometry_create", ellipsisgeometry_create, 3 },
+    { "ellipsisgeometry_width", ellipsisgeometry_width, 2 },
+    { "ellipsisgeometry_height", ellipsisgeometry_height, 2 },
+    { "ellipsisgeometry_segments", ellipsisgeometry_segments, 3 },
 
     { "shadermaterial_create", shadermaterial_create, 1 },
     { "shadermaterial_uniform", shadermaterial_uniform, 3 },

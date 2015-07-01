@@ -9,7 +9,7 @@
 #include "OrthographicCamera.h"
 #include "ShaderMaterial.h"
 #include "PlaneGeometry.h"
-#include "CircleGeometry.h"
+#include "EllipsisGeometry.h"
 
 namespace dawn
 {
@@ -30,7 +30,7 @@ namespace dawn
     void ApplyShaderMaterial(const mat4f &mvp, ShaderMaterial *material);
     void ApplyShader(OpenGLShaderProgramPtr shader, UniformMap uniforms);
     void ApplyMaterial(const mat4f &mvp, Material *material);
-    void RenderCircle(CircleGeometry *circle);
+    void RenderEllipsis(EllipsisGeometry *ellipsis);
     void RenderPlane(PlaneGeometry *plane);
     void RenderPlane(float w, float h);
     void RenderGeometry(Geometry *geometry);

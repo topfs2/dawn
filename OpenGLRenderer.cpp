@@ -208,13 +208,13 @@ void OpenGLRenderer::RenderPlane(float w, float h)
   check_gl_error();
 }
 
-void OpenGLRenderer::RenderCircle(CircleGeometry *circle)
+void OpenGLRenderer::RenderEllipsis(EllipsisGeometry *ellipsis)
 {
-  float w2 = circle->width() * 0.5f;
-  float h2 = circle->height() * 0.5f;
-  float degrees = 2.0f * M_PI / (float)circle->segments();
+  float w2 = ellipsis->width() * 0.5f;
+  float h2 = ellipsis->height() * 0.5f;
+  float degrees = 2.0f * M_PI / (float)ellipsis->segments();
 
-  unsigned int vertexCount = circle->segments() * 2 + 1;
+  unsigned int vertexCount = ellipsis->segments() * 2 + 1;
   GLfloat aVertices[vertexCount * 2];
   GLfloat aUV[vertexCount * 2];
 
@@ -258,8 +258,8 @@ void OpenGLRenderer::RenderGeometry(Geometry *geometry)
     RenderPlane((PlaneGeometry *)geometry);
     break;
 
-  case CONSTANTS::CircleGeometry:
-    RenderCircle((CircleGeometry *)geometry);
+  case CONSTANTS::EllipsisGeometry:
+    RenderEllipsis((EllipsisGeometry *)geometry);
     break;
   }
 }
