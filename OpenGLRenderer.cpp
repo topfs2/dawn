@@ -331,7 +331,9 @@ void OpenGLRenderer::InitializeGL()
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
   glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // post multiplied alpha
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE); // pre multiplied alpha according to https://developer.nvidia.com/content/alpha-blending-pre-or-not-pre
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // pre multiplied alpha according to http://www.gamedev.net/topic/413204-premultiplied-alpha/ which makes text_trial generate fbo perfectly matching pango output
 
 #ifdef DEBUG_RENDER_WIREFRAME
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

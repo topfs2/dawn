@@ -29,15 +29,15 @@ namespace dawn
             setupContext(&width, &height);
             int stride = width * 4;
 
-            size_t raw_length = width * height * 4;
-            uint8_t *raw = new uint8_t[raw_length];
+            size_t raw_length = stride * height;
+            uint8_t *raw = new uint8_t[raw_length]();
             uint8_t *flippedRaw = new uint8_t[raw_length];
 
             cairo_surface_t *surface = cairo_image_surface_create_for_data((unsigned char *)raw,
                                                          CAIRO_FORMAT_ARGB32,
                                                          width,
                                                          height,
-                                                         4 * width);
+                                                         stride);
             cairo_t *render_context = cairo_create(surface);
 
             vec4f foreground = m_layout->foreground();
@@ -54,8 +54,23 @@ namespace dawn
                 std::copy(srcBeg, srcEnd, flippedRaw + stride * i);
             }
 
+            for(unsigned int pos = 0; pos < (width * height); pos += 4) {
+                unsigned char a = flippedRaw[pos+0];
+                unsigned char r = flippedRaw[pos+1];
+                unsigned char g = flippedRaw[pos+2];
+                unsigned char b = flippedRaw[pos+3];
+                flippedRaw[pos+0] = r;
+                flippedRaw[pos+1] = g;
+                flippedRaw[pos+2] = b;
+                flippedRaw[pos+3] = a;
+            }
+
+            BufferPtr buffer = BufferPtr(new Buffer(flippedRaw, raw_length));
+
             delete [] raw;
-            return BufferPtr(new Buffer(flippedRaw, raw_length));
+            delete [] flippedRaw;
+
+            return buffer;
         }
 
         virtual unsigned int width() {

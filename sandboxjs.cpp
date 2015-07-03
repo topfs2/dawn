@@ -129,6 +129,10 @@ int main(int argc, char *argv[]) {
         }
 
         duk_pop(ctx);
+
+#ifdef DEBUG_WRITE_FBO
+        running = false;
+#endif
     }
 
     SDL_Quit();
