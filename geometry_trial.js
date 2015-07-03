@@ -2,8 +2,9 @@ var camera = new dawn.OrthographicCamera(4 * 16 / 9, 4, -1, 1000);
 
 var plane = new dawn.PlaneGeometry(1, 1);
 var ellipsis = new dawn.EllipsisGeometry(1, 1, 32);
+var arc = new dawn.ArcGeometry(1, 1, 2, 32);
 
-var mesh = new dawn.Mesh3D(plane, new dawn.ShaderMaterial("shaders/color"));
+var mesh = new dawn.Mesh3D(arc, new dawn.ShaderMaterial("shaders/color"));
 mesh.material.uniform("color", new dawn.vec4(1));
 
 var scene = new dawn.Scene3D(camera, mesh, 1280, 720);
@@ -23,8 +24,11 @@ update = function () {
     var now = time();
     var t = (now - start) / 1000;
 
-    if (Math.floor(t) % 2 == 1) {
+    var index = Math.floor(t) % 3;
+    if (index == 1) {
         mesh.geometry = ellipsis;
+    } else if (index == 2) {
+        mesh.geometry = arc;
     } else {
         mesh.geometry = plane;
     }

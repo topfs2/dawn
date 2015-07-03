@@ -22,6 +22,12 @@ extern duk_ret_t ellipsisgeometry_width(duk_context *ctx);
 extern duk_ret_t ellipsisgeometry_height(duk_context *ctx);
 extern duk_ret_t ellipsisgeometry_segments(duk_context *ctx);
 
+extern duk_ret_t arcgeometry_create(duk_context *ctx);
+extern duk_ret_t arcgeometry_radius(duk_context *ctx);
+extern duk_ret_t arcgeometry_angle1(duk_context *ctx);
+extern duk_ret_t arcgeometry_angle2(duk_context *ctx);
+extern duk_ret_t arcgeometry_segments(duk_context *ctx);
+
 extern duk_ret_t shadermaterial_create(duk_context *ctx);
 extern duk_ret_t shadermaterial_uniform(duk_context *ctx);
 
@@ -68,6 +74,12 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "ellipsisgeometry_width", ellipsisgeometry_width, 2 },
     { "ellipsisgeometry_height", ellipsisgeometry_height, 2 },
     { "ellipsisgeometry_segments", ellipsisgeometry_segments, 3 },
+
+    { "arcgeometry_create", arcgeometry_create, 4 },
+    { "arcgeometry_radius", arcgeometry_radius, 2 },
+    { "arcgeometry_angle1", arcgeometry_angle1, 2 },
+    { "arcgeometry_angle2", arcgeometry_angle2, 2 },
+    { "arcgeometry_segments", arcgeometry_segments, 3 },
 
     { "shadermaterial_create", shadermaterial_create, 1 },
     { "shadermaterial_uniform", shadermaterial_uniform, 3 },

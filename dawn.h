@@ -12,3 +12,4 @@
 #include "ShaderMaterial.h"
 #include "PlaneGeometry.h"
 #include "EllipsisGeometry.h"
+#include "ArcGeometry.h"

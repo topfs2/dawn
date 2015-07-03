@@ -222,13 +222,11 @@ void OpenGLRenderer::RenderPlane(float w, float h)
   check_gl_error();
 }
 
-void OpenGLRenderer::RenderEllipsis(EllipsisGeometry *ellipsis)
+void OpenGLRenderer::RenderEllipsisArc(float w2, float h2, float angle1, float angle2, unsigned int segments)
 {
-  float w2 = ellipsis->width() * 0.5f;
-  float h2 = ellipsis->height() * 0.5f;
-  float degrees = 2.0f * M_PI / (float)ellipsis->segments();
+  float degrees = (angle2 - angle1) / (float)segments;
 
-  unsigned int vertexCount = ellipsis->segments() * 2 + 1;
+  unsigned int vertexCount = segments * 2 + 1;
   GLfloat aVertices[vertexCount * 2];
   GLfloat aUV[vertexCount * 2];
 
@@ -240,9 +238,10 @@ void OpenGLRenderer::RenderEllipsis(EllipsisGeometry *ellipsis)
 
   unsigned int idx = 2;
   unsigned int outerVertexCount = vertexCount - 1;
+
   for (int i = 0; i < outerVertexCount; ++i) {
-    float x = cos(degrees * (float)i);
-    float y = sin(degrees * (float)i);
+    float x = cos(degrees * (float)i + angle1);
+    float y = sin(degrees * (float)i + angle1);
 
     aVertices[idx]     = x * w2;
     aVertices[idx + 1] = y * h2;
@@ -264,6 +263,16 @@ void OpenGLRenderer::RenderEllipsis(EllipsisGeometry *ellipsis)
   check_gl_error();
 }
 
+void OpenGLRenderer::RenderArc(ArcGeometry *arc)
+{
+  RenderEllipsisArc(arc->radius(), arc->radius(), arc->angle1(), arc->angle2(), arc->segments());
+}
+
+void OpenGLRenderer::RenderEllipsis(EllipsisGeometry *ellipsis)
+{
+  RenderEllipsisArc(ellipsis->width() / 2.0f, ellipsis->height() / 2.0f, 0, 2.0f * M_PI, ellipsis->segments());
+}
+
 void OpenGLRenderer::RenderGeometry(Geometry *geometry)
 {
   switch (geometry->type())
@@ -274,6 +283,10 @@ void OpenGLRenderer::RenderGeometry(Geometry *geometry)
 
   case CONSTANTS::EllipsisGeometry:
     RenderEllipsis((EllipsisGeometry *)geometry);
+    break;
+
+  case CONSTANTS::ArcGeometry:
+    RenderArc((ArcGeometry *)geometry);
     break;
   }
 }

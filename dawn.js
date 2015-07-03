@@ -235,6 +235,15 @@ var dawn = { };
         prepare_prop(this, 'ellipsisgeometry', 'segments', segments);
     };
 
+    dawn.ArcGeometry = function (radius, angle1, angle2, segments) {
+        prepareObject(this, libdawn.arcgeometry_create(radius, angle1, angle2, segments));
+
+        prepare_prop(this, 'arcgeometry', 'radius', radius);
+        prepare_prop(this, 'arcgeometry', 'angle1', angle1);
+        prepare_prop(this, 'arcgeometry', 'angle2', angle2);
+        prepare_prop(this, 'arcgeometry', 'segments', segments);
+    };
+
     dawn.ShaderMaterial = function (path) {
         prepareObject(this, libdawn.shadermaterial_create(path));
 

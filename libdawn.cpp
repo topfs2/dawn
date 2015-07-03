@@ -136,6 +136,50 @@ extern duk_ret_t ellipsisgeometry_segments(duk_context *ctx) {
     return 0;
 }
 
+
+extern duk_ret_t arcgeometry_create(duk_context *ctx) {
+    float radius = duk_get_number(ctx, 0);
+    float angle1 = duk_get_number(ctx, 1);
+    float angle2 = duk_get_number(ctx, 2);
+    int segments = duk_get_number(ctx, 3);
+
+    ArcGeometry *p = new ArcGeometry(radius, angle1, angle2, segments);
+    cout << "ArcGeometry.Create " << p << " " << p->radius() << " " << p->angle1() << " " << p->angle2() <<  " " << p->segments() << endl;
+
+    duk_push_pointer(ctx, p);
+
+    return 1;
+}
+
+extern duk_ret_t arcgeometry_radius(duk_context *ctx) {
+    ArcGeometry *p = static_cast<ArcGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->radius(duk_get_number(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t arcgeometry_angle1(duk_context *ctx) {
+    ArcGeometry *p = static_cast<ArcGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->angle1(duk_get_number(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t arcgeometry_angle2(duk_context *ctx) {
+    ArcGeometry *p = static_cast<ArcGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->angle2(duk_get_number(ctx, 1));
+    return 0;
+}
+
+
+extern duk_ret_t arcgeometry_segments(duk_context *ctx) {
+    ArcGeometry *p = static_cast<ArcGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->segments(duk_get_number(ctx, 1));
+    return 0;
+}
+
 extern duk_ret_t shadermaterial_create(duk_context *ctx) {
     const char *path = duk_get_string(ctx, 0);
 
