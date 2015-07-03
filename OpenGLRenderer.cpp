@@ -158,8 +158,8 @@ void OpenGLRenderer::ApplyShader(OpenGLShaderProgramPtr shader, UniformMap unifo
       shader->uniform(itr->first, any_cast<vec4f>(u));
     } else if (u.type() == typeid(mat4f)) {
       shader->uniform(itr->first, any_cast<mat4f>(u));
-    } else if (u.type() == typeid(Image*)) {
-      Image *i = any_cast<Image *>(u);
+    } else if (u.type() == typeid(Pixmap *)) {
+      Pixmap *i = any_cast<Pixmap *>(u);
 
       shader->uniform(itr->first, textureUnit);
       m_textures.GetResource(i)->Bind(textureUnit);

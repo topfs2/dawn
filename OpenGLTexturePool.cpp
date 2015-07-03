@@ -13,12 +13,12 @@ OpenGLTexturePool::OpenGLTexturePool() { }
 
 OpenGLTexturePool::~OpenGLTexturePool() { }
 
-string OpenGLTexturePool::id(Image *k)
+string OpenGLTexturePool::id(Pixmap *k)
 {
-  return k->path();
+  return k->id();
 }
 
-OpenGLTexturePtr OpenGLTexturePool::LoadResource(Image *k)
+OpenGLTexturePtr OpenGLTexturePool::LoadResource(Pixmap *k)
 {
   GLuint texture = OpenGLUtils::CreateTexture(k);
   return OpenGLTexturePtr(new OpenGLTexture(texture));

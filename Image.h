@@ -9,6 +9,8 @@ namespace dawn
         Image(const std::string &path) : m_path(path) { }
         virtual ~Image() { }
 
+        virtual std::string id() const { return m_path; }
+
         std::string path() const { return m_path; }
         virtual void path(const std::string &path) { markDirty(m_path != path); m_path = path; }
 

@@ -1,11 +1,29 @@
 #include "libdawn.h"
 #include "dawn.h"
 #include "SDLImage.h"
+#include "PangoCairoTextImage.h"
 
 #include <iostream>
 
 using namespace std;
 using namespace dawn;
+
+// TODO Error when not length == 4
+vec4f duk_require_vec4f(duk_context *ctx, duk_idx_t index) {
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        float array[length];
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array[i] = duk_require_number(ctx, -1);
+            duk_pop(ctx);
+        }
+
+        return vec4f(array[0], array[1], array[2], array[3]);
+    }
+
+    return vec4f(0, 0, 0, 0);
+}
 
 extern duk_ret_t object_destroy(duk_context *ctx) {
     Object *p = static_cast<Object *>(duk_require_pointer(ctx, 0));
@@ -33,6 +51,60 @@ extern duk_ret_t object_isdirty(duk_context *ctx) {
 extern duk_ret_t object_clean(duk_context *ctx) {
     Object *p = static_cast<Object *>(duk_require_pointer(ctx, 0));
     p->clean();
+
+    return 0;
+}
+
+extern duk_ret_t textlayout_create(duk_context *ctx) {
+    TextLayout *p = new TextLayout(duk_require_string(ctx, 0), duk_require_string(ctx, 1), duk_require_vec4f(ctx, 2), (CONSTANTS::TextAlign)duk_require_int(ctx, 3));
+    cout << "TextLayout.Create " << p << endl;
+
+    duk_push_pointer(ctx, p);
+
+    return 1;
+}
+
+extern duk_ret_t textlayout_text(duk_context *ctx) {
+    TextLayout *p = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+
+    p->text(duk_require_string(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t textlayout_font(duk_context *ctx) {
+    TextLayout *p = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+
+    p->font(duk_require_string(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t textlayout_foreground(duk_context *ctx) {
+    TextLayout *p = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+    p->foreground(duk_require_vec4f(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t textlayout_align(duk_context *ctx) {
+    TextLayout *p = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+    p->align((CONSTANTS::TextAlign)duk_require_int(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t pango_textimage_create(duk_context *ctx) {
+    TextLayout *layout = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+
+    TextImage *p = new PangoCairoTextImage(layout);
+    cout << "PangoCairoTextImage.Create " << p << " " << p->layout() << endl;
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t textimage_layout(duk_context *ctx) {
+    TextImage *p = static_cast<TextImage *>(duk_require_pointer(ctx, 0));
+    p->layout(static_cast<TextLayout *>(duk_require_pointer(ctx, 1)));
 
     return 0;
 }
@@ -224,8 +296,8 @@ extern duk_ret_t shadermaterial_uniform(duk_context *ctx) {
 
         if (dynamic_cast<Object3D *>(p)) {
             m->uniform(key, dynamic_cast<Object3D *>(p));
-        } else if (dynamic_cast<Image *>(p)) {
-            m->uniform(key, dynamic_cast<Image *>(p));
+        } else if (dynamic_cast<Pixmap *>(p)) {
+            m->uniform(key, dynamic_cast<Pixmap *>(p));
         } else {
             cout << "Bad pointer" << endl;
         }
@@ -443,6 +515,7 @@ extern duk_ret_t dukopen_libdawn(duk_context *ctx) {
     duk_put_function_list(ctx, -1, libdawn_funcs);
     duk_put_function_list(ctx, -1, libdawn_debug_funcs); // TODO only on debug
     duk_put_function_list(ctx, -1, libdawn_sdl_funcs); // TODO hide this from binding
+    duk_put_function_list(ctx, -1, libdawn_cairopango_funcs); // TODO hide this from binding
     duk_put_number_list(ctx, -1, libdawn_consts);
 
     /* Return value is the module object.  It's up to the caller to decide

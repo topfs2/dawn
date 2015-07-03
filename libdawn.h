@@ -7,8 +7,16 @@ extern duk_ret_t object_id(duk_context *ctx);
 extern duk_ret_t object_isdirty(duk_context *ctx);
 extern duk_ret_t object_clean(duk_context *ctx);
 
+extern duk_ret_t textlayout_create(duk_context *ctx);
+extern duk_ret_t textlayout_text(duk_context *ctx);
+extern duk_ret_t textlayout_font(duk_context *ctx);
+extern duk_ret_t textlayout_foreground(duk_context *ctx);
+extern duk_ret_t textlayout_align(duk_context *ctx);
+
 extern duk_ret_t pixmap_width(duk_context *ctx);
 extern duk_ret_t pixmap_height(duk_context *ctx);
+
+extern duk_ret_t textimage_layout(duk_context *ctx);
 
 extern duk_ret_t image_path(duk_context *ctx);
 
@@ -60,10 +68,18 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "object_destroy", object_destroy, 1 },
     { "object_id", object_id, 1 },
 
+    { "textlayout_create", textlayout_create, 4 },
+    { "textlayout_text", textlayout_text, 2 },
+    { "textlayout_font", textlayout_font, 2 },
+    { "textlayout_foreground", textlayout_foreground, 2 },
+    { "textlayout_align", textlayout_align, 2 },
+
     { "pixmap_width", pixmap_width, 1 },
     { "pixmap_height", pixmap_height, 1 },
 
-    { "image_path", image_path, 2 },
+    { "textimage_layout", textimage_layout, 2 }, 
+
+    { "image_path", image_path, 2 }, 
 
     { "planegeometry_create", planegeometry_create, 2 },
     { "planegeometry_width", planegeometry_width, 2 },
@@ -124,6 +140,15 @@ extern duk_ret_t sdl_image_create(duk_context *ctx);
 static const duk_function_list_entry libdawn_sdl_funcs[] = {
     // TODO Remove the below two from api, UI Shouldn't need to worry
     { "image_create", sdl_image_create, 1 },
+
+    { NULL, NULL, 0 }
+};
+
+extern duk_ret_t pango_textimage_create(duk_context *ctx);
+
+static const duk_function_list_entry libdawn_cairopango_funcs[] = {
+    // TODO Remove the below two from api, UI Shouldn't need to worry
+    { "textimage_create", pango_textimage_create, 1 },
 
     { NULL, NULL, 0 }
 };

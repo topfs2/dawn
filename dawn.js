@@ -179,6 +179,33 @@ var dawn = { };
                              0, 0, 0, 1);
     };
 
+    dawn.TextLayout = function (text, font, foreground, align) {
+        prepareObject(this, libdawn.textlayout_create(text, font, obj2ptr(foreground), align));
+
+        prepare_prop(this, 'textlayout', 'text', text);
+        prepare_prop(this, 'textlayout', 'font', font);
+        prepare_prop(this, 'textlayout', 'foreground', foreground, obj2ptr);
+        prepare_prop(this, 'textlayout', 'align', align);
+    };
+
+    dawn.TextImage = function (layout) {
+        prepareObject(this, libdawn.textimage_create(obj2ptr(layout)));
+
+        prepare_prop(this, 'textimage', 'layout', layout, obj2ptr);
+
+        Object.defineProperty(this, "width", {
+            get: function() { return libdawn.pixmap_width(obj2ptr(this)); },
+            enumerable: true,
+            configurable: false
+        });
+
+        Object.defineProperty(this, "height", {
+            get: function() { return libdawn.pixmap_height(obj2ptr(this)); },
+            enumerable: true,
+            configurable: false
+        });
+    };
+
     dawn.Image = function (src) {
         prepareObject(this, libdawn.image_create(src));
 

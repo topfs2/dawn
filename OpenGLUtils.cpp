@@ -160,10 +160,10 @@ GLuint OpenGLUtils::Compile(GLenum shaderType, const string &shader)
   return s;
 }
 
-GLuint OpenGLUtils::CreateTexture(Image *image)
+GLuint OpenGLUtils::CreateTexture(Pixmap *pixmap)
 {
-  BufferPtr buffer = image->buffer();
-  CONSTANTS::PixelFormat format = image->format();
+  BufferPtr buffer = pixmap->buffer();
+  CONSTANTS::PixelFormat format = pixmap->format();
 
   GLuint texture = 0;
   GLenum texture_format = ParseFormat(format);
@@ -178,7 +178,7 @@ GLuint OpenGLUtils::CreateTexture(Image *image)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, texture_bpp, image->width(), image->height(), 0, texture_format, GL_UNSIGNED_BYTE, buffer->raw());
+  glTexImage2D(GL_TEXTURE_2D, 0, texture_bpp, pixmap->width(), pixmap->height(), 0, texture_format, GL_UNSIGNED_BYTE, buffer->raw());
   glBindTexture(GL_TEXTURE_2D, 0);
 
   return texture;

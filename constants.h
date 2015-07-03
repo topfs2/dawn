@@ -41,5 +41,11 @@ namespace dawn
 
       LuminanceFormat
     };
+
+    enum TextAlign {
+        Left = 0,
+        Center,
+        Right
+    };
   }
 }

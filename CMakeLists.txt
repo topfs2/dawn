@@ -5,6 +5,12 @@ add_definitions(-Os)
 
 include(FindPkgConfig)
 
+pkg_search_module(CAIRO REQUIRED cairo)
+include_directories(${CAIRO_INCLUDE_DIRS})
+
+pkg_search_module(PANGOCAIRO REQUIRED pangocairo)
+include_directories(${PANGOCAIRO_INCLUDE_DIRS})
+
 pkg_search_module(SDL2 REQUIRED sdl2)
 include_directories(${SDL2_INCLUDE_DIRS})
 
@@ -31,7 +37,7 @@ include_directories(${LIBLOG4CXX_INCLUDE_DIRS})
 
 include_directories(dbtweener)
 
-set(LIBRARIES ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${GLEW_LIBRARIES} ${GLU_LIBRARIES} ${GL_LIBRARIES} ${EIGEN3_LIBRARIES} ${LIBPNG_LIBRARIES} ${LIBLOG4CXX_LIBRARIES})
+set(LIBRARIES ${CAIRO_LIBRARIES} ${PANGOCAIRO_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${GLEW_LIBRARIES} ${GLU_LIBRARIES} ${GL_LIBRARIES} ${EIGEN3_LIBRARIES} ${LIBPNG_LIBRARIES} ${LIBLOG4CXX_LIBRARIES})
 
 set(SOURCES hashlib/md5.cpp dbtweener/dbtweener.cpp UUID.cpp ImageUtils.cpp OpenGLUtils.cpp OpenGLDebug.cpp OpenGLTexture.cpp OpenGLTexturePool.cpp OpenGLShaderProgram.cpp OpenGLShaderProgramPool.cpp OpenGLRenderTarget.cpp OpenGLRenderer.cpp duktape.c libdawn.cpp)
 

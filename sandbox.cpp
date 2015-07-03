@@ -86,12 +86,6 @@ int main (int argc, char *argv[]) {
     q1->filters(Filter(FILTER_GRAYSCALE, uniforms));
     q3->filters(Filter(FILTER_GRAYSCALE, uniforms));
 
-    cout << "q1 " << q1->id() << endl;
-    cout << "q2 " << q2->id() << endl;
-    cout << "q3 " << q3->id() << endl;
-    cout << "group " << group->id() << endl;
-    cout << "scene " << scene->id() << endl;
-
     float angle = 0.0f;
     float rootGray = 0.0f;
 
