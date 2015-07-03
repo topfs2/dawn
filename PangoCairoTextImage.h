@@ -98,7 +98,19 @@ namespace dawn
                 pango_layout_set_height(m_pangoLayout, layout_height * PANGO_SCALE);
             }
 
-            pango_layout_set_alignment (m_pangoLayout, PANGO_ALIGN_CENTER);
+            switch (m_layout->align()) {
+                case CONSTANTS::TextAlign::Left:
+                    pango_layout_set_alignment (m_pangoLayout, PANGO_ALIGN_LEFT);
+                    break;
+
+                case CONSTANTS::TextAlign::Right:
+                    pango_layout_set_alignment (m_pangoLayout, PANGO_ALIGN_RIGHT);
+                    break;
+
+                case CONSTANTS::TextAlign::Center:
+                    pango_layout_set_alignment (m_pangoLayout, PANGO_ALIGN_CENTER);
+                    break;
+            }
 
             int content_width = 0;
             int content_height = 0;
