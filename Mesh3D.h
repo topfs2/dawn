@@ -18,7 +18,7 @@ namespace dawn
     void material(Material *m) { markDirty(m_material != m); m_material = m; }
 
     virtual bool isDirty(bool recursive = false) const {
-        if (Object::isDirty(recursive)) {
+        if (Object3D::isDirty(recursive)) {
             return true;
         } else if (recursive) {
             return m_geometry->isDirty(recursive) || m_material->isDirty(recursive);
