@@ -47,18 +47,25 @@ extern duk_ret_t sdl_image_create(duk_context *ctx) {
     return 1;
 }
 
-extern duk_ret_t image_width(duk_context *ctx) {
+extern duk_ret_t pixmap_width(duk_context *ctx) {
     Image *p = static_cast<Image *>(duk_require_pointer(ctx, 0));
 
     duk_push_number(ctx, p->width());
     return 1;
 }
 
-extern duk_ret_t image_height(duk_context *ctx) {
+extern duk_ret_t pixmap_height(duk_context *ctx) {
     Image *p = static_cast<Image *>(duk_require_pointer(ctx, 0));
 
     duk_push_number(ctx, p->height());
     return 1;
+}
+
+extern duk_ret_t image_path(duk_context *ctx) {
+    Image *p = static_cast<Image *>(duk_require_pointer(ctx, 0));
+    p->path(duk_require_string(ctx, 1));
+
+    return 0;
 }
 
 extern duk_ret_t planegeometry_create(duk_context *ctx) {

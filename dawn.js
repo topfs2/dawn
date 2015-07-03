@@ -182,14 +182,16 @@ var dawn = { };
     dawn.Image = function (src) {
         prepareObject(this, libdawn.image_create(src));
 
+        prepare_prop(this, 'image', 'path', camera);
+
         Object.defineProperty(this, "width", {
-            get: function() { return libdawn.image_width(obj2ptr(this)); },
+            get: function() { return libdawn.pixmap_width(obj2ptr(this)); },
             enumerable: true,
             configurable: false
         });
 
         Object.defineProperty(this, "height", {
-            get: function() { return libdawn.image_height(obj2ptr(this)); },
+            get: function() { return libdawn.pixmap_height(obj2ptr(this)); },
             enumerable: true,
             configurable: false
         });

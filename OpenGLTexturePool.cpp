@@ -15,7 +15,7 @@ OpenGLTexturePool::~OpenGLTexturePool() { }
 
 string OpenGLTexturePool::id(Image *k)
 {
-  return k->id();
+  return k->path();
 }
 
 OpenGLTexturePtr OpenGLTexturePool::LoadResource(Image *k)

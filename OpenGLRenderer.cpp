@@ -23,7 +23,6 @@ void OpenGLRenderer::render(Scene3D *scene)
 
 void OpenGLRenderer::render(Camera *camera, Object3D *stage, unsigned int width, unsigned int height)
 {
-  cout << "Rendering " << width << " " << height << endl;
   OpenGLRenderTarget::revertToDisplayRenderTarget();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

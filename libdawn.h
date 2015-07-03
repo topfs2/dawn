@@ -7,8 +7,10 @@ extern duk_ret_t object_id(duk_context *ctx);
 extern duk_ret_t object_isdirty(duk_context *ctx);
 extern duk_ret_t object_clean(duk_context *ctx);
 
-extern duk_ret_t image_width(duk_context *ctx);
-extern duk_ret_t image_height(duk_context *ctx);
+extern duk_ret_t pixmap_width(duk_context *ctx);
+extern duk_ret_t pixmap_height(duk_context *ctx);
+
+extern duk_ret_t image_path(duk_context *ctx);
 
 extern duk_ret_t planegeometry_create(duk_context *ctx);
 extern duk_ret_t planegeometry_width(duk_context *ctx);
@@ -52,8 +54,10 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "object_destroy", object_destroy, 1 },
     { "object_id", object_id, 1 },
 
-    { "image_width", image_width, 1 },
-    { "image_height", image_height, 1 },
+    { "pixmap_width", pixmap_width, 1 },
+    { "pixmap_height", pixmap_height, 1 },
+
+    { "image_path", image_path, 2 },
 
     { "planegeometry_create", planegeometry_create, 2 },
     { "planegeometry_width", planegeometry_width, 2 },
