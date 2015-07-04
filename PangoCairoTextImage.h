@@ -22,7 +22,7 @@ namespace dawn
         }
 
         virtual BufferPtr buffer() {
-            std::cout << "Rendering text" << std::endl;
+            std::cout << "Rendering text " << m_layout->text() << std::endl;
 
             int width;
             int height;

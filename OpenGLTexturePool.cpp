@@ -15,11 +15,16 @@ OpenGLTexturePool::~OpenGLTexturePool() { }
 
 string OpenGLTexturePool::id(Pixmap *k)
 {
-  return k->id();
+    return k->id();
+}
+
+bool OpenGLTexturePool::IsResourceValid(Pixmap *k, OpenGLTexturePtr v)
+{
+    return !k->isDirty(true);
 }
 
 OpenGLTexturePtr OpenGLTexturePool::LoadResource(Pixmap *k)
 {
-  GLuint texture = OpenGLUtils::CreateTexture(k);
-  return OpenGLTexturePtr(new OpenGLTexture(texture));
+    GLuint texture = OpenGLUtils::CreateTexture(k);
+    return OpenGLTexturePtr(new OpenGLTexture(texture));
 }

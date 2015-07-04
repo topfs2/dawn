@@ -8,14 +8,15 @@
 
 namespace dawn
 {
-  class OpenGLTexturePool : public IResourcePool<Pixmap *, OpenGLTexturePtr>
-  {
-  public:
-	  OpenGLTexturePool();
-	  virtual ~OpenGLTexturePool();
+    class OpenGLTexturePool : public IResourcePool<Pixmap *, OpenGLTexturePtr>
+    {
+    public:
+        OpenGLTexturePool();
+        virtual ~OpenGLTexturePool();
 
-  protected:
-	  virtual std::string id(Pixmap *k);
-	  virtual OpenGLTexturePtr LoadResource(Pixmap *k);
-  };
+    protected:
+        virtual std::string id(Pixmap *k);
+        virtual bool IsResourceValid(Pixmap *k, OpenGLTexturePtr v);
+        virtual OpenGLTexturePtr LoadResource(Pixmap *k);
+    };
 }

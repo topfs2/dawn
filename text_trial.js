@@ -21,7 +21,10 @@ var frame = 0;
 var start = time();
 update = function () {
     var now = time();
-    var t = (now - start) / 1000;
+    var t = Math.floor((now - start) / 1000);
+
+    layout.text = "Hello World " + t;
+    mesh.geometry.size(text_image.width, text_image.height);
 
     return scene.instance;
 }

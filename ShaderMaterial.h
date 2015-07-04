@@ -1,7 +1,8 @@
 #pragma once
 #include <map>
 #include "Material.h"
-#include "Image.h"
+#include "Pixmap.h"
+#include "Scene3D.h"
 #include "types.h"
 
 namespace dawn
@@ -29,7 +30,9 @@ namespace dawn
                 for (UniformMap::const_iterator itr = m_uniforms.begin(); itr != m_uniforms.end(); itr++) {
                     uniform_t u = itr->second;
 
-                    if (u.type() == typeid(Object *) && boost::any_cast<Object *>(u)->isDirty(recursive)) {
+                    if (u.type() == typeid(Pixmap *) && boost::any_cast<Pixmap *>(u)->isDirty(recursive)) {
+                        return true;
+                    } else if (u.type() == typeid(Scene3D *) && boost::any_cast<Scene3D *>(u)->isDirty(recursive)) {
                         return true;
                     }
                 }
@@ -44,8 +47,10 @@ namespace dawn
             for (UniformMap::const_iterator itr = m_uniforms.begin(); itr != m_uniforms.end(); itr++) {
                 uniform_t u = itr->second;
 
-                if (u.type() == typeid(Object *)) {
-                    boost::any_cast<Object *>(u)->clean();
+                if (u.type() == typeid(Pixmap *)) {
+                    boost::any_cast<Pixmap *>(u)->clean();
+                } else if (u.type() == typeid(Scene3D *)) {
+                    boost::any_cast<Scene3D *>(u)->clean();
                 }
             }
         }
