@@ -54,17 +54,6 @@ namespace dawn
                 std::copy(srcBeg, srcEnd, flippedRaw + stride * i);
             }
 
-            for(unsigned int pos = 0; pos < (width * height); pos += 4) {
-                unsigned char a = flippedRaw[pos+0];
-                unsigned char r = flippedRaw[pos+1];
-                unsigned char g = flippedRaw[pos+2];
-                unsigned char b = flippedRaw[pos+3];
-                flippedRaw[pos+0] = r;
-                flippedRaw[pos+1] = g;
-                flippedRaw[pos+2] = b;
-                flippedRaw[pos+3] = a;
-            }
-
             BufferPtr buffer = BufferPtr(new Buffer(flippedRaw, raw_length));
 
             delete [] raw;
@@ -89,7 +78,7 @@ namespace dawn
             return height;
         }
 
-        virtual CONSTANTS::PixelFormat format() { return CONSTANTS::RGBAFormat; }
+        virtual CONSTANTS::PixelFormat format() { return CONSTANTS::BGRAFormat; }
 
     private:
         void setupContext(int *w, int *h) {
