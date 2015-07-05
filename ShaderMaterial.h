@@ -15,44 +15,30 @@ namespace dawn
         CONSTANTS::MaterialType type() const { return CONSTANTS::ShaderMaterial; }
 
         std::string path() const { return m_path; }
-        void path(std::string path) { markDirty(m_path != path); m_path = path; } // TODO Should it exist?
+        void path(std::string path) { setChanged(m_path != path); m_path = path; } // TODO Should it exist?
 
         UniformMap uniforms() const { return m_uniforms; }
 
         // TODO make read const
         uniform_t uniform(std::string key) { return m_uniforms[key]; }
-        void uniform(std::string key, uniform_t value) { markDirty(); m_uniforms[key] = value; }
+        void uniform(std::string key, uniform_t value) { setChanged(); m_uniforms[key] = value; }
 
-        virtual bool isDirty(bool recursive = false) const {
-            if (Material::isDirty(recursive)) {
-                return true;
-            } else if (recursive) {
+        virtual bool isChanged(etag_t *etag, bool recursive) {
+            bool changed = Material::isChanged(etag, recursive);
+
+            if (recursive) {
                 for (UniformMap::const_iterator itr = m_uniforms.begin(); itr != m_uniforms.end(); itr++) {
                     uniform_t u = itr->second;
 
-                    if (u.type() == typeid(Pixmap *) && boost::any_cast<Pixmap *>(u)->isDirty(recursive)) {
-                        return true;
-                    } else if (u.type() == typeid(Scene3D *) && boost::any_cast<Scene3D *>(u)->isDirty(recursive)) {
-                        return true;
+                    if (u.type() == typeid(Pixmap *)) {
+                        changed |= boost::any_cast<Pixmap *>(u)->isChanged(etag, recursive);
+                    } else if (u.type() == typeid(Scene3D *)) {
+                        changed |= boost::any_cast<Pixmap *>(u)->isChanged(etag, recursive);
                     }
                 }
             }
 
-            return false;
-        }
-
-        virtual void clean() {
-            Material::clean();
-
-            for (UniformMap::const_iterator itr = m_uniforms.begin(); itr != m_uniforms.end(); itr++) {
-                uniform_t u = itr->second;
-
-                if (u.type() == typeid(Pixmap *)) {
-                    boost::any_cast<Pixmap *>(u)->clean();
-                } else if (u.type() == typeid(Scene3D *)) {
-                    boost::any_cast<Scene3D *>(u)->clean();
-                }
-            }
+            return changed;
         }
 
     private:

@@ -41,14 +41,14 @@ namespace dawn
     virtual CONSTANTS::Type type() const { return CONSTANTS::Object3D; }
 
     mat4f transform() const { return m_transform; }
-    void transform(mat4f transform) { m_transform = transform; markDirty(); }
+    void transform(mat4f transform) { setChanged(); m_transform = transform; }
 
     bool visible() const { return m_visible; }
-    void visible(bool visible) { markDirty(visible != m_visible); m_visible = visible; }
+    void visible(bool visible) { setChanged(visible != m_visible); m_visible = visible; }
 
     FilterList filters() const { return m_filters; }
-    void filters(Filter filter) { m_filters.clear(); m_filters.push_back(filter); markDirty(); } // Helper
-    void filters(FilterList filters) { m_filters = filters; markDirty(); }
+    void filters(Filter filter) { setChanged(); m_filters.clear(); m_filters.push_back(filter); } // Helper
+    void filters(FilterList filters) { setChanged(); m_filters = filters; }
 
     typedef std::vector<Object3D *> Object3DList; // TODO Move to types.h?
     typedef Object3DList::iterator iterator;
@@ -59,19 +59,19 @@ namespace dawn
     const_iterator begin() const { return m_children.begin(); }
     iterator end() { return m_children.end(); }
     const_iterator end() const { return m_children.end(); }
-    void children(Object3DList children) { m_children = children; markDirty(); }
+    void children(Object3DList children) { setChanged(); m_children = children; }
 
     void appendChild(Object3D *c) {
         if (c) {
             m_children.push_back(c);
-            markDirty();
+            setChanged();
         }
     }
 
     void removeChild(Object3D *c) {
         if (c) {
             std::remove(m_children.begin(), m_children.end(), c);
-            markDirty();
+            setChanged();
         }
     }
 
@@ -79,30 +79,20 @@ namespace dawn
         // TODO Should we replace if a exist
         if (a && b) {
             std::replace(m_children.begin(), m_children.end(), a, b);
-            markDirty();
+            setChanged();
         }
     }
 
-    virtual bool isDirty(bool recursive = false) const {
-        if (Object::isDirty(recursive)) {
-            return true;
-        } else if (recursive) {
+    virtual bool isChanged(etag_t *etag, bool recursive) {
+        bool changed = Object::isChanged(etag, recursive);
+
+        if (recursive) {
             for (const_iterator itr = m_children.begin(); itr != m_children.end(); itr++) {
-              if ((*itr)->isDirty(recursive)) {
-                  return true;
-              }
+                changed |= (*itr)->isChanged(etag, recursive);
             }
         }
 
-        return false;
-    }
-
-    virtual void clean() {
-        Object::clean();
-
-        for (iterator itr = m_children.begin(); itr != m_children.end(); itr++) {
-            (*itr)->clean();
-        }
+        return changed;
     }
 
   protected:

@@ -3,6 +3,7 @@
 #include <boost/any.hpp>
 #include <Eigen/Dense>
 #include <map>
+#include <chrono>
 
 namespace dawn
 {
@@ -23,6 +24,8 @@ namespace dawn
   private:
     uint64_t id_;
   };
+
+  typedef std::chrono::nanoseconds::rep etag_t;
 
   typedef Eigen::Vector2f vec2f;
   typedef Eigen::Vector3f vec3f;

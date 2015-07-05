@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
     duk_gc(ctx, 0);
     resize(ctx, WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    etag_t dirty_etag = 0;
     bool lastDirty = false;
     bool running = true;
     while (running) {
@@ -106,18 +107,17 @@ int main(int argc, char *argv[]) {
                 Object *p = static_cast<Object *>(duk_get_pointer(ctx, -1));
                 Scene3D *scene = dynamic_cast<Scene3D *>(p);
                 if (scene) {
-                    if (scene->isDirty(true)) {
+                    if (scene->isChanged(&dirty_etag, true)) {
                         if (!lastDirty) {
-                            cout << "Rendering as scene is dirty" << endl;
+                            cout << "Rendering as scene is dirty " << dirty_etag << endl;
                             lastDirty = true;
                         }
 
                         renderer->render(scene);
                         SDL_GL_SwapWindow(window);
-                        scene->clean();
                     } else {
                         if (lastDirty) {
-                            cout << "Skipping rendering as scene is not dirty" << endl;
+                            cout << "Skipping rendering as scene is not dirty " << dirty_etag << endl;
                             lastDirty = false;
                         }
 

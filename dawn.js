@@ -19,8 +19,12 @@ var dawn = { };
         o[PTRNAME] = p;
         Duktape.fin(o, object_destroy);
 
-        o.isDirty = function (recursive) {
-          return libdawn.object_isdirty(p, recursive);
+        o.isChanged = function () {
+          if (arguments.length == 2) {
+              return libdawn.object_isdirty(p, arguments[0], arguments[1]);
+          } else {
+              return libdawn.object_isdirty(p, arguments[0]);
+          }
         };
 
         o.clean = function () {

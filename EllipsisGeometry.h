@@ -11,13 +11,13 @@ namespace dawn
     CONSTANTS::GeometryType type() const { return CONSTANTS::EllipsisGeometry; }
 
     float width() const { return m_width; }
-    void width(float width) { markDirty(m_width != width); m_width = width; }
+    void width(float width) { setChanged(m_width != width); m_width = width; }
 
     float height() const { return m_height; }
-    void height(float height) { markDirty(m_height != height); m_height = height; }
+    void height(float height) { setChanged(m_height != height); m_height = height; }
 
     unsigned int segments() const { return m_segments; }
-    void segments(unsigned int segments) { markDirty(m_segments != segments); m_segments = segments; }
+    void segments(unsigned int segments) { setChanged(m_segments != segments); m_segments = segments; }
 
   protected:
     float m_width;

@@ -40,19 +40,21 @@ extern duk_ret_t object_id(duk_context *ctx) {
     return 1;
 }
 
-extern duk_ret_t object_isdirty(duk_context *ctx) {
+extern duk_ret_t object_ischanged(duk_context *ctx) {
     Object *p = static_cast<Object *>(duk_require_pointer(ctx, 0));
-    bool recursive = duk_require_boolean(ctx, 1) != 0;
+    duk_idx_t args = duk_get_top(ctx);
 
-    duk_push_boolean(ctx, p->isDirty(recursive) ? 1 : 0);
+    if (args == 2) {
+        bool recursive = duk_require_boolean(ctx, 1) != 0;
+        duk_push_number(ctx, p->isChanged((etag_t)0, recursive));
+    } else {
+        etag_t etag = duk_require_number(ctx, 1);
+        bool recursive = duk_require_boolean(ctx, 2) != 0;
+
+        duk_push_boolean(ctx, p->isChanged(etag, recursive) ? 1 : 0);
+    }
+
     return 1;
-}
-
-extern duk_ret_t object_clean(duk_context *ctx) {
-    Object *p = static_cast<Object *>(duk_require_pointer(ctx, 0));
-    p->clean();
-
-    return 0;
 }
 
 extern duk_ret_t textlayout_create(duk_context *ctx) {

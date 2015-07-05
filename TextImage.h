@@ -11,22 +11,16 @@ namespace dawn
         virtual ~TextImage() { }
 
         TextLayout *layout() const { return m_layout; }
-        virtual void layout(TextLayout *layout) { markDirty(m_layout != layout); m_layout = layout; }
+        virtual void layout(TextLayout *layout) { setChanged(m_layout != layout); m_layout = layout; }
 
-        virtual bool isDirty(bool recursive = false) const {
-            if (Pixmap::isDirty(recursive)) {
-                return true;
-            } else if (recursive) {
-                return m_layout->isDirty(recursive);
+        virtual bool isChanged(etag_t *etag, bool recursive) {
+            bool changed = Pixmap::isChanged(etag, recursive);
+
+            if (recursive) {
+                changed |= m_layout->isChanged(etag, recursive);
             }
 
-            return false;
-        }
-
-        virtual void clean() {
-            Pixmap::clean();
-
-            m_layout->clean();
+            return changed;
         }
 
     protected:

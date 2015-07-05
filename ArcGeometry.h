@@ -11,16 +11,16 @@ namespace dawn
         CONSTANTS::GeometryType type() const { return CONSTANTS::ArcGeometry; }
 
         float radius() const { return m_radius; }
-        void radius(float radius) { markDirty(m_radius != radius); m_radius = radius; }
+        void radius(float radius) { setChanged(m_radius != radius); m_radius = radius; }
 
         float angle1() const { return m_angle1; }
-        void angle1(float angle1) { markDirty(m_angle1 != angle1); m_angle1 = angle1; }
+        void angle1(float angle1) { setChanged(m_angle1 != angle1); m_angle1 = angle1; }
 
         float angle2() const { return m_angle2; }
-        void angle2(float angle2) { markDirty(m_angle2 != angle2); m_angle2 = angle2; }
+        void angle2(float angle2) { setChanged(m_angle2 != angle2); m_angle2 = angle2; }
 
         unsigned int segments() const { return m_segments; }
-        void segments(unsigned int segments) { markDirty(m_segments != segments); m_segments = segments; }
+        void segments(unsigned int segments) { setChanged(m_segments != segments); m_segments = segments; }
 
     protected:
         float m_radius;

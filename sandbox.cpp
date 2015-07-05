@@ -24,8 +24,6 @@
 using namespace std;
 using namespace dawn;
 
-
-
 int main (int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
 

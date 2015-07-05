@@ -4,8 +4,7 @@
 
 extern duk_ret_t object_destroy(duk_context *ctx);
 extern duk_ret_t object_id(duk_context *ctx);
-extern duk_ret_t object_isdirty(duk_context *ctx);
-extern duk_ret_t object_clean(duk_context *ctx);
+extern duk_ret_t object_ischanged(duk_context *ctx);
 
 extern duk_ret_t textlayout_create(duk_context *ctx);
 extern duk_ret_t textlayout_text(duk_context *ctx);
@@ -129,8 +128,7 @@ static const duk_function_list_entry libdawn_funcs[] = {
 
 static const duk_function_list_entry libdawn_debug_funcs[] = {
     // TODO Remove the below two from api, UI Shouldn't need to worry
-    { "object_isdirty", object_isdirty, 2 },
-    { "object_clean", object_clean, 1 },
+    { "object_ischanged", object_ischanged, DUK_VARARGS },
 
     { NULL, NULL, 0 }
 };

@@ -16,7 +16,7 @@ namespace dawn
 
         virtual void path(const std::string &path) {
             if (m_path != path) {
-                markDirty();
+                setChanged();
                 m_path = path;
                 LoadImage();
             }

@@ -2,7 +2,7 @@
 
 using namespace dawn;
 
-OpenGLTexture::OpenGLTexture(GLuint texture) : texture(texture)
+OpenGLTexture::OpenGLTexture(GLuint texture, etag_t etag) : texture(texture), m_etag(etag)
 {
 }
 

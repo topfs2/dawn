@@ -8,19 +8,51 @@ namespace dawn
     class Object
     {
     public:
-        Object() : m_id(to_string(this)), m_dirty(true) { }
-        Object(std::string id) : m_id(id), m_dirty(true) { }
+        Object() : m_id(to_string(this)), m_etag(now()) { }
+        Object(std::string id) : m_id(id), m_etag(now()) { }
 
-        virtual bool isDirty(bool recursive = false) const { return m_dirty; }
-        void markDirty(bool dirty = true) { m_dirty = dirty; }
+        virtual bool isChanged(etag_t *etag, bool recursive) const {
+            assert(etag);
 
-        // TODO combine with markDirty?
-        virtual void clean() { markDirty(false); }
+            if (*etag < m_etag) {
+                *etag = m_etag;
+                return true;
+            }
+
+            return false;
+        }
+
+        bool isChanged(etag_t etag, bool recursive) const {
+            return isChanged(&etag, recursive);
+        }
+
+        etag_t lastChange(bool recursive) const {
+            etag_t etag = 0;
+            isChanged(&etag, recursive);
+
+            return etag;
+        }
 
         std::string id() const { return m_id; }
 
+    protected:
+        void setChanged(etag_t etag) {
+            m_etag = etag;
+        }
+
+        void setChanged(bool changed = true) {
+            if (changed) {
+                setChanged(now());
+            }
+        }
+
     private:
+        // TODO Move elsewhere?
+        etag_t now() {
+            return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+        }
+
         std::string m_id;
-        bool m_dirty;
+        etag_t m_etag;
     };
 }
