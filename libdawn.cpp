@@ -57,6 +57,58 @@ vec2farray duk_require_vec2farray(duk_context *ctx, duk_idx_t index) {
     return array;
 }
 
+FilterList duk_require_filterlist(duk_context *ctx, duk_idx_t index) {
+    FilterList array;
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array.push_back(static_cast<Filter *>(duk_require_pointer(ctx, -1)));
+            duk_pop(ctx);
+        }
+    }
+
+    return array;
+}
+
+uniform_t duk_require_uniform(duk_context *ctx, duk_idx_t index) {
+    if (duk_is_number(ctx, index)) {
+        return duk_get_number(ctx, index);
+    } else if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        float array[length];
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array[i] = duk_require_number(ctx, -1);
+            duk_pop(ctx);
+        }
+
+        if (length == 2) {
+            return vec2f(array[0], array[1]);
+        } else if (length == 3) {
+            return vec3f(array[0], array[1], array[2]);
+        } else if (length == 4) {
+            return vec4f(array[0], array[1], array[2], array[3]);
+        } else if (length == 16) {
+            return mat4f(mat4f(array).transpose()); // TODO Use Map http://eigen.tuxfamily.org/dox/group__TutorialMapClass.html
+        } else {
+            cout << "Bad array length" << endl;
+        }
+    } else if (duk_is_pointer(ctx, index)) {
+        Object *p = static_cast<Object *>(duk_get_pointer(ctx, index));
+
+        if (dynamic_cast<Object3D *>(p)) {
+            return uniform_t(dynamic_cast<Object3D *>(p));
+        } else if (dynamic_cast<Pixmap *>(p)) {
+            return uniform_t(dynamic_cast<Pixmap *>(p));
+        } else {
+            cout << "Bad pointer" << endl;
+        }
+    }
+
+    return uniform_t();
+}
+
 extern duk_ret_t object_destroy(duk_context *ctx) {
     Object *p = static_cast<Object *>(duk_require_pointer(ctx, 0));
     cout << "Object.Destroy" << p << endl;
@@ -177,6 +229,40 @@ extern duk_ret_t image_path(duk_context *ctx) {
     Image *p = static_cast<Image *>(duk_require_pointer(ctx, 0));
     p->path(duk_require_string(ctx, 1));
 
+    return 0;
+}
+
+extern duk_ret_t shaderfilter_create(duk_context *ctx) {
+    const char *path = duk_get_string(ctx, 0);
+
+    ShaderFilter *p = new ShaderFilter(path);
+    cout << "ShaderFilter.Create " << p << " " << p->path() << endl;
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t shaderfilter_uniform(duk_context *ctx) {
+    ShaderFilter *m = static_cast<ShaderFilter *>(duk_require_pointer(ctx, 0));
+    m->uniform(duk_require_string(ctx, 1), duk_require_uniform(ctx, 2));
+
+    return 0;
+}
+
+extern duk_ret_t grayscalefilter_create(duk_context *ctx) {
+    float saturation = duk_require_number(ctx, 0);
+
+    GrayscaleFilter *p = new GrayscaleFilter(saturation);
+    cout << "GrayscaleFilter.Create " << p << " " << p->saturation() << endl;
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t grayscalefilter_saturation(duk_context *ctx) {
+    GrayscaleFilter *p = static_cast<GrayscaleFilter *>(duk_require_pointer(ctx, 0));
+
+    p->saturation(duk_get_number(ctx, 1));
     return 0;
 }
 
@@ -325,45 +411,26 @@ extern duk_ret_t shadermaterial_create(duk_context *ctx) {
 
 extern duk_ret_t shadermaterial_uniform(duk_context *ctx) {
     ShaderMaterial *m = static_cast<ShaderMaterial *>(duk_require_pointer(ctx, 0));
+    m->uniform(duk_require_string(ctx, 1), duk_require_uniform(ctx, 2));
 
-    std::string key = duk_require_string(ctx, 1);
+    return 0;
+}
 
-    if (duk_is_number(ctx, 2)) {
-        m->uniform(key, duk_get_number(ctx, 2));
-        cout << key << "=> Number" << endl;
-    } else if (duk_is_array(ctx, 2)) {
-        int length = duk_get_length(ctx, 2);
-        float array[length];
-        for (unsigned int i = 0; i < length; i++) {
-            duk_get_prop_index(ctx, 2, i);
-            array[i] = duk_require_number(ctx, -1);
-            duk_pop(ctx);
-        }
+extern duk_ret_t filtermaterial_create(duk_context *ctx) {
+    Pixmap *pixmap = static_cast<Pixmap *>(duk_require_pointer(ctx, 0));
+    FilterList filters = duk_require_filterlist(ctx, 1);
 
-        if (length == 2) {
-            m->uniform(key, vec2f(array[0], array[1]));
-        } else if (length == 3) {
-            m->uniform(key, vec3f(array[0], array[1], array[2]));
-        } else if (length == 4) {
-            m->uniform(key, vec4f(array[0], array[1], array[2], array[3]));
-        } else if (length == 16) {
-            m->uniform(key, mat4f(mat4f(array).transpose())); // TODO Use Map http://eigen.tuxfamily.org/dox/group__TutorialMapClass.html
-        } else {
-            cout << "Bad array length" << endl;
-        }
-    } else if (duk_is_pointer(ctx, 2)) {
-        Object *p = static_cast<Object *>(duk_get_pointer(ctx, 2));
-        cout << "Setting uniform " << key << " Pointer " << p << endl;
+    FilterMaterial *p = new FilterMaterial(pixmap, filters);
+    cout << "FilterMaterial.Create " << p << " " << p->pixmap() << endl;
 
-        if (dynamic_cast<Object3D *>(p)) {
-            m->uniform(key, dynamic_cast<Object3D *>(p));
-        } else if (dynamic_cast<Pixmap *>(p)) {
-            m->uniform(key, dynamic_cast<Pixmap *>(p));
-        } else {
-            cout << "Bad pointer" << endl;
-        }
-    }
+    duk_push_pointer(ctx, p);
+    return 1;
+}
 
+extern duk_ret_t filtermaterial_filters(duk_context *ctx) {
+    FilterMaterial *m = static_cast<FilterMaterial *>(duk_require_pointer(ctx, 0));
+
+    m->filters(duk_require_filterlist(ctx, 1));
     return 0;
 }
 

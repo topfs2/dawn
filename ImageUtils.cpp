@@ -19,7 +19,7 @@ int ImageUtils::WriteImage(const string &path, int width, int height, uint8_t *p
   /* The following number is set by trial and error only. I cannot
      see where it it is documented in the libpng manual.
   */
-  int pixel_size = 3;
+  int pixel_size = 4;
   int depth = 8;
   
   fp = fopen (path.c_str(), "wb");
@@ -50,7 +50,7 @@ int ImageUtils::WriteImage(const string &path, int width, int height, uint8_t *p
                 width,
                 height,
                 depth,
-                PNG_COLOR_TYPE_RGB,
+                PNG_COLOR_TYPE_RGBA,
                 PNG_INTERLACE_NONE,
                 PNG_COMPRESSION_TYPE_DEFAULT,
                 PNG_FILTER_TYPE_DEFAULT);
@@ -62,7 +62,7 @@ int ImageUtils::WriteImage(const string &path, int width, int height, uint8_t *p
       png_byte *row = (png_byte *)png_malloc (png_ptr, sizeof(uint8_t) * width * pixel_size);
       row_pointers[y] = row;
 
-      memcpy(row, pixels + width * y * 3, width * 3);
+      memcpy(row, pixels + width * y * 4, width * 4);
   }
   
   /* Write the image data to "fp". */

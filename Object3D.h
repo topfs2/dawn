@@ -8,26 +8,6 @@
 
 namespace dawn
 {
-  enum FilterType
-  {
-    FILTER_INVALID = 0,
-    FILTER_GRAYSCALE,
-    FILTER_GAUSIAN_BLUR
-  };
-
-  class Filter
-  {
-  public:
-    Filter() : type(FILTER_INVALID) { }
-    Filter(FilterType type, UniformMap uniforms) : type(type), uniforms(uniforms) { }
-
-    FilterType type;
-    UniformMap uniforms;
-  };
-
-  typedef std::vector<Filter> FilterList;
-
-
   class Object3D : public Object
   {
   public:
@@ -45,10 +25,6 @@ namespace dawn
 
     bool visible() const { return m_visible; }
     void visible(bool visible) { setChanged(visible != m_visible); m_visible = visible; }
-
-    FilterList filters() const { return m_filters; }
-    void filters(Filter filter) { setChanged(); m_filters.clear(); m_filters.push_back(filter); } // Helper
-    void filters(FilterList filters) { setChanged(); m_filters = filters; }
 
     typedef std::vector<Object3D *> Object3DList; // TODO Move to types.h?
     typedef Object3DList::iterator iterator;
@@ -98,7 +74,6 @@ namespace dawn
   protected:
     mat4f m_transform;
     bool m_visible;
-    FilterList m_filters;
 
     Object3DList m_children;
   };

@@ -19,6 +19,12 @@ extern duk_ret_t textimage_layout(duk_context *ctx);
 
 extern duk_ret_t image_path(duk_context *ctx);
 
+extern duk_ret_t shaderfilter_create(duk_context *ctx);
+extern duk_ret_t shaderfilter_uniform(duk_context *ctx);
+
+extern duk_ret_t grayscalefilter_create(duk_context *ctx);
+extern duk_ret_t grayscalefilter_saturation(duk_context *ctx);
+
 extern duk_ret_t planegeometry_create(duk_context *ctx);
 extern duk_ret_t planegeometry_width(duk_context *ctx);
 extern duk_ret_t planegeometry_height(duk_context *ctx);
@@ -40,6 +46,9 @@ extern duk_ret_t polygongeometry_vertices(duk_context *ctx);
 
 extern duk_ret_t shadermaterial_create(duk_context *ctx);
 extern duk_ret_t shadermaterial_uniform(duk_context *ctx);
+
+extern duk_ret_t filtermaterial_create(duk_context *ctx);
+extern duk_ret_t filtermaterial_filters(duk_context *ctx);
 
 extern duk_ret_t scene3d_create(duk_context *ctx);
 extern duk_ret_t scene3d_camera(duk_context *ctx);
@@ -79,9 +88,15 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "pixmap_width", pixmap_width, 1 },
     { "pixmap_height", pixmap_height, 1 },
 
-    { "textimage_layout", textimage_layout, 2 }, 
+    { "textimage_layout", textimage_layout, 2 },
 
-    { "image_path", image_path, 2 }, 
+    { "image_path", image_path, 2 },
+
+    { "shaderfilter_create", shaderfilter_create, 1 }, 
+    { "shaderfilter_uniform", shaderfilter_uniform, 3 },
+
+    { "grayscalefilter_create", grayscalefilter_create, 1 }, 
+    { "grayscalefilter_saturation", grayscalefilter_saturation, 2 },
 
     { "planegeometry_create", planegeometry_create, 2 },
     { "planegeometry_width", planegeometry_width, 2 },
@@ -104,6 +119,9 @@ static const duk_function_list_entry libdawn_funcs[] = {
 
     { "shadermaterial_create", shadermaterial_create, 1 },
     { "shadermaterial_uniform", shadermaterial_uniform, 3 },
+
+    { "filtermaterial_create", filtermaterial_create, 2 },
+    { "filtermaterial_filters", filtermaterial_filters, 2 },
 
     { "scene3d_create", scene3d_create, 4 },
     { "scene3d_camera", scene3d_camera, 2 },

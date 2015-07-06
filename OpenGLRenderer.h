@@ -24,6 +24,7 @@ namespace dawn
     void RenderFullscreenQuad(OpenGLShaderProgramPtr shader, UniformMap uniforms);
 
     void ApplyBasicMaterial(Material *material);
+    void ApplyFilterMaterial(const mat4f &mvp, FilterMaterial *material);
     void ApplyShaderMaterial(const mat4f &mvp, ShaderMaterial *material);
     void ApplyShader(OpenGLShaderProgramPtr shader, UniformMap uniforms);
     void ApplyMaterial(const mat4f &mvp, Material *material);
@@ -39,21 +40,17 @@ namespace dawn
     void InitializeGL();
 
     typedef std::pair<OpenGLShaderProgramPtr, UniformMap> OpenGLFilter; // TODO Move to opengl_types.h?
-    void GetFilterPasses(Filter filter, std::vector<OpenGLFilter> &passes);
+    void GetFilterPasses(Filter *filter, std::vector<OpenGLFilter> &passes);
 
-    OpenGLRenderTargetPtr AcquireRenderTarget(); // TODO Move to a util of sorts?
+    OpenGLRenderTargetPtr AcquireRenderTarget(unsigned int width, unsigned int height); // TODO Move to a util of sorts?
     void ReleaseRenderTarget(OpenGLRenderTargetPtr target);
 
     unsigned int m_width;
     unsigned int m_height;
 
-    std::vector<OpenGLRenderTargetPtr> m_targets;
+    typedef std::vector<OpenGLRenderTargetPtr> RenderTargetList;
+    RenderTargetList m_targets;
 
-    OpenGLShaderProgramPtr filterBW;
-    OpenGLShaderProgramPtr filterBlurV;
-    OpenGLShaderProgramPtr filterBlurH;
-
-//    Material *m_clearMaterial;
     OpenGLTexturePool m_textures;
     OpenGLShaderProgramPool m_shaders;
   };

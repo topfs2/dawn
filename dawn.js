@@ -7,6 +7,16 @@ var dawn = { };
         return o[PTRNAME];
     };
 
+    var array2ptr = function (array) {
+        var out = [];
+
+        for (var i = 0; i < array.length; i++) {
+          out.push(obj2ptr(array[i]));
+        }
+
+        return out;
+    };
+
     var identity = function (i) {
         return i;
     };
@@ -229,6 +239,27 @@ var dawn = { };
         });
     };
 
+    dawn.ShaderFilter = function (path) {
+        print("Creating ShaderFilter");
+        prepareObject(this, libdawn.shaderfilter_create(path));
+
+        var uniforms = { };
+        this.uniform = function (key, value) {
+            if (value) {
+                uniforms[key] = value;
+                libdawn.shaderfilter_uniform(obj2ptr(this), key, obj2ptr(value) || value);
+            } else {
+                return uniforms[key];
+            }
+        };
+    };
+
+    dawn.GrayscaleFilter = function (saturation) {
+        prepareObject(this, libdawn.grayscalefilter_create(saturation));
+
+        prepare_prop(this, 'grayscalefilter', 'saturation', saturation);
+    };
+
     dawn.Scene3D = function (camera, stage, width, height) {
         prepareObject(this, libdawn.scene3d_create(obj2ptr(camera), obj2ptr(stage), width, height));
 
@@ -294,6 +325,12 @@ var dawn = { };
                 return uniforms[key];
             }
         };
+    };
+
+    dawn.FilterMaterial = function (pixmap, filters) {
+        prepareObject(this, libdawn.filtermaterial_create(obj2ptr(pixmap), array2ptr(filters)));
+
+        prepare_prop(this, 'filtermaterial', 'filters', filters, array2ptr);
     };
 
     dawn.Mesh3D = function (geometry, material) {

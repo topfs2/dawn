@@ -25,8 +25,15 @@ namespace dawn
 
     enum MaterialType {
       ShaderMaterial = 0,
+      FilterMaterial,
       VideoMaterial, // TODO Probably only need clear _or_ video material?
       ClearMaterial
+    };
+
+    enum FilterType
+    {
+      ShaderFilter = 0,
+      GrayscaleFilter
     };
 
     enum PixelFormat {

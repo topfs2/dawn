@@ -21,6 +21,8 @@ namespace dawn
     typedef std::vector<OpenGLTexturePtr> TextureList;
     TextureList colorAttachments;
     OpenGLTexturePtr depthBuffer;
+    GLuint width;
+    GLuint height;
 
   private:
     GLuint m_frameBufferObject;

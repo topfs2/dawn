@@ -60,7 +60,13 @@ void OpenGLShaderProgram::uniform(const std::string &name, vec4f v)
 void OpenGLShaderProgram::uniform(const std::string &name, mat4f m)
 {
   GLint loc = GetUniformLocation(name);
-  glUniformMatrix4fv(loc, 1, GL_FALSE, m.data());
+
+  GLfloat fv[16];
+  for (unsigned int i = 0; i < 16; i++) {
+    fv[i] = m(i);
+  }
+
+  glUniformMatrix4fv(loc, 1, GL_FALSE, fv);
 }
 
 GLint OpenGLShaderProgram::GetUniformLocation(const string &name)

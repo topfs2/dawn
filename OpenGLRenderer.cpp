@@ -50,76 +50,19 @@ void OpenGLRenderer::RenderFullscreenQuad(OpenGLShaderProgramPtr shader, Uniform
 
 void OpenGLRenderer::Render(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target)
 {
-  FilterList filters = object->filters();
-  vector<OpenGLFilter> passes;
-
-  for (FilterList::iterator itr = filters.begin(); itr != filters.end(); itr++) {
-    GetFilterPasses(*itr, passes);
-  }
-
-  if (filters.size() > 0 && passes.size() == 0) {
-    // TODO This may be normal but warn during development
-    cout << "WARNING Object has filters but was unable to create passes" << endl;
-  }
-
-  if (passes.size() > 0) {
-    unsigned int targets_index = 0;
-    OpenGLRenderTargetPtr targets[2];
-    targets[0] = AcquireRenderTarget();
-    targets[1] = AcquireRenderTarget();
-
-    targets[0]->Bind();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    RenderObject(projection, viewmodel, object, targets[0]);
-
-    OpenGLDebug::WriteFilterInput(object);
-
-    int pass = 0;
-    for (vector<OpenGLFilter>::iterator itr = passes.begin(); itr != passes.end(); itr++) {
-      OpenGLShaderProgramPtr shader = itr->first;
-
-      UniformMap uniforms = itr->second;
-      uniforms["map"] = targets[targets_index]->colorAttachments[0];
-      uniforms["texelSize"] = vec2f(1.0f / WINDOW_WIDTH, 1.0f / WINDOW_HEIGHT);
-
-      targets[1 - targets_index]->Bind();
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-      RenderFullscreenQuad(shader, uniforms);
-      targets_index = 1 - targets_index;
-
-      OpenGLDebug::WriteFilterPass(object, pass);
-    }
-
-    // TODO Optimize so that final output in above loop pushes to screen
-    OpenGLShaderProgramPtr shader = m_shaders.GetResource("shaders/map");
-    UniformMap uniforms;
-    uniforms["map"] = targets[targets_index]->colorAttachments[0];
-
-    if (target) {
-      target->Bind();
-    } else {
-      OpenGLRenderTarget::revertToDisplayRenderTarget();
-    }
-    RenderFullscreenQuad(shader, uniforms);
-
-    OpenGLDebug::WriteFilterOutput(object);
-
-    ReleaseRenderTarget(targets[0]);
-    ReleaseRenderTarget(targets[1]);
-  } else {
-    RenderObject(projection, viewmodel, object, target);
-  }
+  RenderObject(projection, viewmodel, object, target);
 }
 
-void OpenGLRenderer::GetFilterPasses(Filter filter, vector<OpenGLFilter> &passes)
+void OpenGLRenderer::GetFilterPasses(Filter *filter, vector<OpenGLFilter> &passes)
 {
-  if (filter.type == FILTER_GRAYSCALE) {
+/*
+  if (filter->type() == CONSTANTS::GrayscaleFilter) {
     passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bw"), filter.uniforms));
   } else if (filter.type == FILTER_GAUSIAN_BLUR) {
     passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bh"), filter.uniforms));
     passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bv"), filter.uniforms));
   }
+*/
 }
 
 void OpenGLRenderer::ApplyBasicMaterial(Material *material)
@@ -128,6 +71,67 @@ void OpenGLRenderer::ApplyBasicMaterial(Material *material)
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   check_gl_error();
+}
+
+void OpenGLRenderer::ApplyFilterMaterial(const mat4f &mvp, FilterMaterial *material)
+{
+  FilterList filters = material->filters();
+  Pixmap *pixmap = material->pixmap();
+  unsigned int width = pixmap->width();
+  unsigned int height = pixmap->height();
+
+  glViewport(0.0f, 0.0f, (float)width, (float)height);
+
+  unsigned int targets_index = 0;
+  OpenGLRenderTargetPtr targets[2];
+  targets[0] = AcquireRenderTarget(width, height);
+  targets[1] = AcquireRenderTarget(width, height);
+
+  uniform_t read = pixmap;
+
+  for (FilterList::iterator itr = filters.begin(); itr != filters.end(); itr++) {
+    OpenGLShaderProgramPtr shader;
+    UniformMap uniforms;
+
+    Filter *filter = *itr;
+
+    switch (filter->type()) {
+    case CONSTANTS::ShaderFilter:
+      shader = m_shaders.GetResource(static_cast<ShaderFilter *>(filter)->path());
+      uniforms = static_cast<ShaderFilter *>(filter)->uniforms();
+      break;
+
+    case CONSTANTS::GrayscaleFilter:
+      shader = m_shaders.GetResource("shaders/filter.bw");
+      uniforms["saturation"] = static_cast<GrayscaleFilter *>(filter)->saturation();
+      break;
+    }
+
+    uniforms["map"] = read;
+    uniforms["texelSize"] = vec2f(1.0f / width, 1.0f / height);
+
+
+    targets[targets_index]->Bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    RenderFullscreenQuad(shader, uniforms);
+    read = targets[targets_index]->colorAttachments[0];
+    targets_index = 1 - targets_index;
+  }
+
+  glViewport(0.0f, 0.0f, (float)m_width, (float)m_height);
+  OpenGLRenderTarget::revertToDisplayRenderTarget();
+
+  OpenGLShaderProgramPtr shader = m_shaders.GetResource("shaders/map");
+  UniformMap uniforms;
+  uniforms["map"] = read;
+  uniforms["uMVP"] = mvp;
+
+  ApplyShader(shader, uniforms);
+
+  // TODO needs to fix this, one we can't actually release and should cache for further use.
+  ReleaseRenderTarget(targets[0]);
+  ReleaseRenderTarget(targets[1]);
 }
 
 void OpenGLRenderer::ApplyShaderMaterial(const mat4f &mvp, ShaderMaterial *material)
@@ -184,6 +188,10 @@ void OpenGLRenderer::ApplyMaterial(const mat4f &mvp, Material *material)
   {
   case CONSTANTS::ShaderMaterial:
     ApplyShaderMaterial(mvp, (ShaderMaterial *)material);
+    break;
+
+  case CONSTANTS::FilterMaterial:
+    ApplyFilterMaterial(mvp, (FilterMaterial *)material);
     break;
   }
 }
@@ -381,19 +389,18 @@ void OpenGLRenderer::InitializeGL()
   glEnable(GL_TEXTURE_2D);
 }
 
-OpenGLRenderTargetPtr OpenGLRenderer::AcquireRenderTarget()
+OpenGLRenderTargetPtr OpenGLRenderer::AcquireRenderTarget(unsigned int width, unsigned int height)
 {
-  OpenGLRenderTargetPtr target;
-
-  if (m_targets.size() > 0) {
-    target = m_targets.back();
-    m_targets.pop_back();
-  } else {
-    cout << "Creating a render target" << endl;
-    target = OpenGLRenderTargetPtr(new OpenGLRenderTarget(m_width, m_height));
+  for (RenderTargetList::iterator itr = m_targets.begin(); itr != m_targets.end(); itr++) {
+    if ((*itr)->width == width && (*itr)->height == height) {
+      OpenGLRenderTargetPtr target = *itr;
+      m_targets.erase(itr);
+      return target;
+    }
   }
 
-  return target;
+  cout << "Creating a render target [" << width << ", " << height << "]" << endl;
+  return OpenGLRenderTargetPtr(new OpenGLRenderTarget(width, height));
 }
 
 void OpenGLRenderer::ReleaseRenderTarget(OpenGLRenderTargetPtr target)

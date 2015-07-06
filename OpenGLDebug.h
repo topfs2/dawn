@@ -12,5 +12,7 @@ namespace dawn
     static void WriteFilterInput(Object3D *object);
     static void WriteFilterPass(Object3D *object, unsigned int pass);
     static void WriteFilterOutput(Object3D *object);
+
+    static void PrintUniformMap(UniformMap uniforms);
   };
 }
