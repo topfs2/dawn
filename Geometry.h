@@ -11,6 +11,10 @@ namespace dawn
   public:
     virtual ~Geometry() { }
 
+    virtual bool isChanged(etag_t *etag, bool recursive) {
+      return Object::isChanged(etag, recursive);
+    }
+
     virtual CONSTANTS::GeometryType type() const = 0;
   };
 }
