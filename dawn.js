@@ -275,6 +275,12 @@ var dawn = { };
         prepare_prop(this, 'arcgeometry', 'segments', segments);
     };
 
+    dawn.PolygonGeometry = function (vertices) {
+        prepareObject(this, libdawn.polygongeometry_create(vertices));
+
+        prepare_prop(this, 'polygongeometry', 'vertices', vertices);
+    };
+
     dawn.ShaderMaterial = function (path) {
         prepareObject(this, libdawn.shadermaterial_create(path));
 

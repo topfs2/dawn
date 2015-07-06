@@ -25,6 +25,38 @@ vec4f duk_require_vec4f(duk_context *ctx, duk_idx_t index) {
     return vec4f(0, 0, 0, 0);
 }
 
+// TODO Error when not length == 2
+vec2f duk_require_vec2f(duk_context *ctx, duk_idx_t index) {
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        float array[length];
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array[i] = duk_require_number(ctx, -1);
+            duk_pop(ctx);
+        }
+
+        return vec2f(array[0], array[1]);
+    }
+
+    return vec2f(0, 0);
+}
+
+// TODO Switch to templates
+vec2farray duk_require_vec2farray(duk_context *ctx, duk_idx_t index) {
+    vec2farray array;
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array.push_back(duk_require_vec2f(ctx, -1));
+            duk_pop(ctx);
+        }
+    }
+
+    return array;
+}
+
 extern duk_ret_t object_destroy(duk_context *ctx) {
     Object *p = static_cast<Object *>(duk_require_pointer(ctx, 0));
     cout << "Object.Destroy" << p << endl;
@@ -254,6 +286,27 @@ extern duk_ret_t arcgeometry_segments(duk_context *ctx) {
     return 0;
 }
 
+extern duk_ret_t polygongeometry_create(duk_context *ctx) {
+    vec2farray vertices = duk_require_vec2farray(ctx, 0);
+    PolygonGeometry *p = new PolygonGeometry(vertices);
+    cout << "PolygonGeometry.Create " << p << " ";
+
+    for (vec2farray::iterator itr = vertices.begin(); itr != vertices.end(); itr++) {
+        cout << *itr << ", ";
+    }
+    cout << endl;
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t polygongeometry_vertices(duk_context *ctx) {
+    PolygonGeometry *p = static_cast<PolygonGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->vertices(duk_require_vec2farray(ctx, 1));
+    return 0;
+}
+
 extern duk_ret_t shadermaterial_create(duk_context *ctx) {
     const char *path = duk_get_string(ctx, 0);
 
@@ -288,7 +341,7 @@ extern duk_ret_t shadermaterial_uniform(duk_context *ctx) {
         } else if (length == 4) {
             m->uniform(key, vec4f(array[0], array[1], array[2], array[3]));
         } else if (length == 16) {
-            m->uniform(key, mat4f(mat4f(array).transpose()));
+            m->uniform(key, mat4f(mat4f(array).transpose())); // TODO Use Map http://eigen.tuxfamily.org/dox/group__TutorialMapClass.html
         } else {
             cout << "Bad array length" << endl;
         }

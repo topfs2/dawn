@@ -2,6 +2,8 @@
 #include "OpenGLUtils.h"
 #include "OpenGLDebug.h"
 
+#include "GeometryUtils.h"
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -186,6 +188,39 @@ void OpenGLRenderer::ApplyMaterial(const mat4f &mvp, Material *material)
   }
 }
 
+void OpenGLRenderer::RenderPolygon(PolygonGeometry *polygon)
+{
+  vec2farray vertices = polygon->vertices();
+  vec2farray uvs;
+  std::vector<uint8_t> indices;
+
+  GeometryUtils::triangulate_ec(vertices, indices);
+  GeometryUtils::create_uvs(vertices, uvs);
+
+  GLfloat aVertices[vertices.size() * 2];
+  GLfloat aUV[vertices.size() * 2];
+
+  unsigned int i = 0;
+  for (vec2farray::iterator itr = vertices.begin(); itr != vertices.end(); itr++) {
+    aVertices[i++] = (*itr)[0];
+    aVertices[i++] = (*itr)[1];
+  }
+
+  i = 0;
+  for (vec2farray::iterator itr = uvs.begin(); itr != uvs.end(); itr++) {
+    aUV[i++] = (*itr)[0];
+    aUV[i++] = (*itr)[1];
+  }
+
+  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aVertices);
+  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
+
+  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
+  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
+
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, &indices.front());
+}
+
 void OpenGLRenderer::RenderPlane(PlaneGeometry *plane)
 {
   RenderPlane(plane->width(), plane->height());
@@ -287,6 +322,10 @@ void OpenGLRenderer::RenderGeometry(Geometry *geometry)
 
   case CONSTANTS::ArcGeometry:
     RenderArc((ArcGeometry *)geometry);
+    break;
+
+  case CONSTANTS::PolygonGeometry:
+    RenderPolygon((PolygonGeometry *)geometry);
     break;
   }
 }

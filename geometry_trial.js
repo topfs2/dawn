@@ -3,8 +3,14 @@ var camera = new dawn.OrthographicCamera(4 * 16 / 9, 4, -1, 1000);
 var plane = new dawn.PlaneGeometry(1, 1);
 var ellipsis = new dawn.EllipsisGeometry(1, 1, 32);
 var arc = new dawn.ArcGeometry(1, 1, 2, 32);
+var polygon = new dawn.PolygonGeometry([
+    [ -1,    -1.5 ],
+    [  1.5,  -1.5 ],
+    [  1,     1.5 ],
+    [ -1.5,   1.5 ]
+]);
 
-var mesh = new dawn.Mesh3D(arc, new dawn.ShaderMaterial("shaders/color"));
+var mesh = new dawn.Mesh3D(polygon, new dawn.ShaderMaterial("shaders/color"));
 mesh.material.uniform("color", new dawn.vec4(1));
 
 var scene = new dawn.Scene3D(camera, mesh, 1280, 720);
@@ -29,9 +35,12 @@ update = function () {
         mesh.geometry = ellipsis;
     } else if (index == 2) {
         mesh.geometry = arc;
-    } else {
+    } else if (index == 2) {
         mesh.geometry = plane;
+    } else {
+        mesh.geometry = polygon;
     }
+
 
     return scene.instance;
 }

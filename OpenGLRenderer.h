@@ -5,12 +5,7 @@
 #include "OpenGLTexturePool.h"
 #include "OpenGLShaderProgramPool.h"
 
-#include "Mesh3D.h"
-#include "OrthographicCamera.h"
-#include "ShaderMaterial.h"
-#include "PlaneGeometry.h"
-#include "EllipsisGeometry.h"
-#include "ArcGeometry.h"
+#include "dawn.h"
 
 namespace dawn
 {
@@ -32,6 +27,7 @@ namespace dawn
     void ApplyShaderMaterial(const mat4f &mvp, ShaderMaterial *material);
     void ApplyShader(OpenGLShaderProgramPtr shader, UniformMap uniforms);
     void ApplyMaterial(const mat4f &mvp, Material *material);
+    void RenderPolygon(PolygonGeometry *polygon);
     void RenderEllipsisArc(float w2, float h2, float angle1, float angle2, unsigned int segments);
     void RenderArc(ArcGeometry *arc);
     void RenderEllipsis(EllipsisGeometry *ellipsis);

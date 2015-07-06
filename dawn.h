@@ -13,3 +13,4 @@
 #include "PlaneGeometry.h"
 #include "EllipsisGeometry.h"
 #include "ArcGeometry.h"
+#include "PolygonGeometry.h"

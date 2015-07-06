@@ -3,6 +3,7 @@
 
 namespace dawn
 {
+    // TODO Switcht to androids parameters public void drawArc (RectF oval, float startAngle, float sweepAngle, boolean useCenter, Paint paint)
     class ArcGeometry : public Geometry
     {
     public:

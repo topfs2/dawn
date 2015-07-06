@@ -35,6 +35,9 @@ extern duk_ret_t arcgeometry_angle1(duk_context *ctx);
 extern duk_ret_t arcgeometry_angle2(duk_context *ctx);
 extern duk_ret_t arcgeometry_segments(duk_context *ctx);
 
+extern duk_ret_t polygongeometry_create(duk_context *ctx);
+extern duk_ret_t polygongeometry_vertices(duk_context *ctx);
+
 extern duk_ret_t shadermaterial_create(duk_context *ctx);
 extern duk_ret_t shadermaterial_uniform(duk_context *ctx);
 
@@ -95,6 +98,9 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "arcgeometry_angle1", arcgeometry_angle1, 2 },
     { "arcgeometry_angle2", arcgeometry_angle2, 2 },
     { "arcgeometry_segments", arcgeometry_segments, 3 },
+
+    { "polygongeometry_create", polygongeometry_create, 1 },
+    { "polygongeometry_vertices", polygongeometry_vertices, 2 },
 
     { "shadermaterial_create", shadermaterial_create, 1 },
     { "shadermaterial_uniform", shadermaterial_uniform, 3 },
