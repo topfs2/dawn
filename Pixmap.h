@@ -40,6 +40,10 @@ namespace dawn
   public:
     virtual ~Pixmap() { }
 
+    virtual bool isChanged(etag_t *etag, bool recursive) {
+      return Object::isChanged(etag, recursive);
+    }
+
     virtual BufferPtr buffer() = 0;
     virtual unsigned int width() = 0;
     virtual unsigned int height() = 0;

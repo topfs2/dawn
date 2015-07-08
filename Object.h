@@ -22,10 +22,6 @@ namespace dawn
             return false;
         }
 
-        bool isChanged(etag_t etag, bool recursive) const {
-            return isChanged(&etag, recursive);
-        }
-
         etag_t lastChange(bool recursive) const {
             etag_t etag = 0;
             isChanged(&etag, recursive);

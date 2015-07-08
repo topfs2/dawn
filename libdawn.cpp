@@ -76,16 +76,16 @@ extern duk_ret_t object_ischanged(duk_context *ctx) {
     Object *p = static_cast<Object *>(duk_require_pointer(ctx, 0));
     duk_idx_t args = duk_get_top(ctx);
 
+    etag_t etag = 0;
+    bool recursive = false;
     if (args == 2) {
-        bool recursive = duk_require_boolean(ctx, 1) != 0;
-        duk_push_number(ctx, p->isChanged((etag_t)0, recursive));
+        recursive = duk_require_boolean(ctx, 1) != 0;
     } else {
-        etag_t etag = duk_require_number(ctx, 1);
-        bool recursive = duk_require_boolean(ctx, 2) != 0;
-
-        duk_push_boolean(ctx, p->isChanged(etag, recursive) ? 1 : 0);
+        etag = duk_require_number(ctx, 1);
+        recursive = duk_require_boolean(ctx, 2) != 0;
     }
 
+    duk_push_boolean(ctx, p->isChanged(&etag, recursive) ? 1 : 0);
     return 1;
 }
 

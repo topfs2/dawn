@@ -20,7 +20,8 @@ string OpenGLTexturePool::id(Pixmap *k)
 
 bool OpenGLTexturePool::IsResourceValid(Pixmap *k, OpenGLTexturePtr v)
 {
-    return !k->isChanged(v->m_etag, true);
+    etag_t etag = v->m_etag;
+    return !k->isChanged(&etag, true);
 }
 
 OpenGLTexturePtr OpenGLTexturePool::LoadResource(Pixmap *k)
