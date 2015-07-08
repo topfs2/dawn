@@ -90,11 +90,17 @@ extern duk_ret_t object_ischanged(duk_context *ctx) {
 }
 
 extern duk_ret_t textlayout_create(duk_context *ctx) {
-    TextLayout *p = new TextLayout(duk_require_string(ctx, 0), duk_require_string(ctx, 1), duk_require_vec4f(ctx, 2), (CONSTANTS::TextAlign)duk_require_int(ctx, 3));
+    TextLayout *p = new TextLayout(
+        duk_require_string(ctx, 0),
+        duk_require_string(ctx, 1),
+        duk_require_vec4f(ctx, 2),
+        (CONSTANTS::TextAlign)duk_require_int(ctx, 3),
+        duk_require_int(ctx, 4),
+        duk_require_int(ctx, 5)
+    );
     cout << "TextLayout.Create " << p << endl;
 
     duk_push_pointer(ctx, p);
-
     return 1;
 }
 

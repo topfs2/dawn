@@ -70,7 +70,7 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "object_destroy", object_destroy, 1 },
     { "object_id", object_id, 1 },
 
-    { "textlayout_create", textlayout_create, 4 },
+    { "textlayout_create", textlayout_create, 6 },
     { "textlayout_text", textlayout_text, 2 },
     { "textlayout_font", textlayout_font, 2 },
     { "textlayout_foreground", textlayout_foreground, 2 },

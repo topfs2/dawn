@@ -183,13 +183,14 @@ var dawn = { };
                              0, 0, 0, 1);
     };
 
-    dawn.TextLayout = function (text, font, foreground, align) {
-        prepareObject(this, libdawn.textlayout_create(text, font, obj2ptr(foreground), align));
+    dawn.TextLayout = function (text, font, foreground, align, maxWidth, maxHeight) {
+        prepareObject(this, libdawn.textlayout_create(text, font, obj2ptr(foreground), align, maxWidth, maxHeight));
 
         prepare_prop(this, 'textlayout', 'text', text);
         prepare_prop(this, 'textlayout', 'font', font);
         prepare_prop(this, 'textlayout', 'foreground', foreground, obj2ptr);
-        prepare_prop(this, 'textlayout', 'align', align);
+        prepare_prop(this, 'textlayout', 'maxWidth', maxWidth);
+        prepare_prop(this, 'textlayout', 'maxHeight', maxHeight);
     };
 
     dawn.TextImage = function (layout) {

@@ -91,8 +91,8 @@ namespace dawn
             pango_layout_set_font_description (m_pangoLayout, desc);
             pango_font_description_free (desc);
 
-            int layout_width = -1;
-            int layout_height = -1;
+            int layout_width = m_layout->maxWidth();
+            int layout_height = m_layout->maxHeight();
 
             if (layout_width > 0) {
                 pango_layout_set_width(m_pangoLayout, layout_width * PANGO_SCALE);
