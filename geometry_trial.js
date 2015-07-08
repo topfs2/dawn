@@ -19,7 +19,7 @@ var time = function () {
     return (new Date()).getTime();
 };
 
-resize = function (width, height) {
+emitResizeEvent = function (width, height) {
     scene.camera.projection(4.0 * width / height, 4.0, -1.0, 1000.0);
     scene.size(width, height);
 }

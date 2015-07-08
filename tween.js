@@ -843,7 +843,7 @@ var tween5 = new TWEEN.Tween( { a: 1 } )
             .delay(4000)
             .start();
 
-resize = function (width, height) {
+emitResizeEvent = function (width, height) {
     scene.camera.projection(4.0 * width / height, 4.0, -1.0, 1000.0);
     scene.size(width, height);
 }

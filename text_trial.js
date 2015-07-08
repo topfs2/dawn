@@ -9,7 +9,7 @@ mesh.material.uniform("map", text_image);
 
 var scene = new dawn.Scene3D(camera, mesh, 1280, 720);
 
-resize = function (width, height) {
+emitResizeEvent = function (width, height) {
     scene.camera.projection(width, height, -1.0, 1000.0);
     scene.size(width, height);
 }

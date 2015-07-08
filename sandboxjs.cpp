@@ -18,14 +18,45 @@ void fatal(duk_context *ctx, int code, const char *msg) {
     printf("FATAL: %i %s\n", code, msg);
 }
 
-bool resize(duk_context *ctx, int width, int height) {
-    duk_push_global_object(ctx);
-    duk_get_prop_string(ctx, -1, "resize");
+bool emitResizeEvent(duk_context *ctx, int width, int height) {
+    duk_push_global_object(ctx); // TODO Switch to push dawn
+    duk_get_prop_string(ctx, -1, "emitResizeEvent");
     duk_push_int(ctx, width);
     duk_push_int(ctx, height);
 
     if (duk_pcall(ctx, 2) != 0) {
         printf("resize.error: %s\n", duk_safe_to_string(ctx, -1));
+        return false;
+    }
+
+    return true;
+}
+
+bool emitMotionEvent(duk_context *ctx, std::string device, std::string key, unsigned int x, unsigned int y) {
+    duk_push_global_object(ctx); // TODO Switch to push dawn
+    duk_get_prop_string(ctx, -1, "emitMotionEvent");
+    duk_push_string(ctx, device.c_str());
+    duk_push_string(ctx, key.c_str());
+    duk_push_int(ctx, x);
+    duk_push_int(ctx, y);
+
+    if (duk_pcall(ctx, 4) != 0) {
+        printf("emitMotionEvent.error: %s\n", duk_safe_to_string(ctx, -1));
+        return false;
+    }
+
+    return true;
+}
+
+bool emitKeyEvent(duk_context *ctx, bool down, std::string device, std::string key) {
+    duk_push_global_object(ctx); // TODO Switch to push dawn
+    duk_get_prop_string(ctx, -1, "emitKeyEvent");
+    duk_push_string(ctx, device.c_str());
+    duk_push_string(ctx, key.c_str());
+    duk_push_boolean(ctx, down);
+
+    if (duk_pcall(ctx, 3) != 0) {
+        printf("emitKeyEvent.error: %s\n", duk_safe_to_string(ctx, -1));
         return false;
     }
 
@@ -71,12 +102,15 @@ int main(int argc, char *argv[]) {
     }
 
     duk_gc(ctx, 0);
-    resize(ctx, WINDOW_WIDTH, WINDOW_HEIGHT);
+    emitResizeEvent(ctx, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     etag_t dirty_etag = 0;
     bool lastDirty = false;
     bool running = true;
     while (running) {
+        std::stringstream device;
+        std::stringstream key;
+
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -86,12 +120,34 @@ int main(int argc, char *argv[]) {
 
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    resize(ctx, event.window.data1, event.window.data2);
+                    emitResizeEvent(ctx, event.window.data1, event.window.data2);
                 }
 
                 break;
 
+            case SDL_MOUSEMOTION:
+                device << "mouse-" << (int)event.motion.which;
+                key << "mouse";
+
+                emitMotionEvent(ctx, device.str(), key.str(), event.motion.x, event.motion.y);
+                break;
+
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+                device << "mouse-" << (int)event.button.which;
+                key << (int)event.button.button;
+
+                emitKeyEvent(ctx, event.type == SDL_MOUSEBUTTONDOWN, device.str(), key.str());
+                break;
+
             case SDL_KEYDOWN:
+            case SDL_KEYUP:
+                device << "keyboard";
+                key << SDL_GetKeyName(event.key.keysym.sym);
+
+                if (event.key.repeat == 0) {
+                    emitKeyEvent(ctx, event.type == SDL_KEYDOWN, device.str(), key.str());
+                }
                 break;
             }
         }

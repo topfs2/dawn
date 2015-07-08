@@ -330,4 +330,8 @@ var dawn = { };
             libdawn.perspectivecamera_projection(obj2ptr(this), fovy, aspect, near, far);
         };
     };
+
+    emitResizeEvent = function (width, height) { };
+    emitMotionEvent = function (device, key, x, y) { };
+    emitKeyEvent = function (device, key, down) { };
 })();

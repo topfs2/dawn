@@ -5,7 +5,7 @@ mesh.material.uniform("map", new dawn.Image("kodi-thumbnail.png"));
 
 var scene = new dawn.Scene3D(camera, mesh, 1280, 720);
 
-resize = function (width, height) {
+emitResizeEvent = function (width, height) {
     scene.camera.projection(4.0 * width / height, 4.0, -1.0, 1000.0);
     scene.size(width, height);
 }
