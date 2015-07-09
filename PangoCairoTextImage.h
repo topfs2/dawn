@@ -8,7 +8,7 @@ namespace dawn
     class PangoCairoTextImage : public TextImage
     {
     public:
-        PangoCairoTextImage(TextLayout *layout) : TextImage(layout) {
+        PangoCairoTextImage(std::string text, TextStyle *style) : TextImage(text, style) {
             cairo_surface_t *temp_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 0, 0);
             m_cairoContext = cairo_create (temp_surface);
             cairo_surface_destroy (temp_surface);
@@ -22,7 +22,7 @@ namespace dawn
         }
 
         virtual BufferPtr buffer() {
-            std::cout << "Rendering text " << m_layout->text() << std::endl;
+            std::cout << "Rendering text " << m_text << std::endl;
 
             int width;
             int height;
@@ -40,7 +40,7 @@ namespace dawn
                                                          stride);
             cairo_t *render_context = cairo_create(surface);
 
-            vec4f foreground = m_layout->foreground();
+            vec4f foreground = m_style->foreground();
             cairo_set_source_rgba (render_context, foreground[0], foreground[1], foreground[2], foreground[3]); // TODO Move to setup?
             pango_cairo_show_layout (render_context, m_pangoLayout);
 
@@ -83,16 +83,15 @@ namespace dawn
     private:
         void setupContext(int *w, int *h) {
             //pango_layout_set_text (layout, text, -1);
-            std::string text = m_layout->text();
-            pango_layout_set_markup(m_pangoLayout, text.c_str(), -1);
+            pango_layout_set_markup(m_pangoLayout, m_text.c_str(), -1);
 
             /* Load the font */
-            PangoFontDescription *desc = pango_font_description_from_string (m_layout->font().c_str());
+            PangoFontDescription *desc = pango_font_description_from_string (m_style->font().c_str());
             pango_layout_set_font_description (m_pangoLayout, desc);
             pango_font_description_free (desc);
 
-            int layout_width = m_layout->maxWidth();
-            int layout_height = m_layout->maxHeight();
+            int layout_width = m_style->maxWidth();
+            int layout_height = m_style->maxHeight();
 
             if (layout_width > 0) {
                 pango_layout_set_width(m_pangoLayout, layout_width * PANGO_SCALE);
@@ -102,7 +101,7 @@ namespace dawn
                 pango_layout_set_height(m_pangoLayout, layout_height * PANGO_SCALE);
             }
 
-            switch (m_layout->align()) {
+            switch (m_style->align()) {
                 case CONSTANTS::TextAlign::Left:
                     pango_layout_set_alignment (m_pangoLayout, PANGO_ALIGN_LEFT);
                     break;

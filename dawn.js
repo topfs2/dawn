@@ -193,20 +193,20 @@ var dawn = { };
                              0, 0, 0, 1);
     };
 
-    dawn.TextLayout = function (text, font, foreground, align, maxWidth, maxHeight) {
-        prepareObject(this, libdawn.textlayout_create(text, font, obj2ptr(foreground), align, maxWidth, maxHeight));
+    dawn.TextStyle = function (font, foreground, align, maxWidth, maxHeight) {
+        prepareObject(this, libdawn.textstyle_create(font, obj2ptr(foreground), align, maxWidth, maxHeight));
 
-        prepare_prop(this, 'textlayout', 'text', text);
-        prepare_prop(this, 'textlayout', 'font', font);
-        prepare_prop(this, 'textlayout', 'foreground', foreground, obj2ptr);
-        prepare_prop(this, 'textlayout', 'maxWidth', maxWidth);
-        prepare_prop(this, 'textlayout', 'maxHeight', maxHeight);
+        prepare_prop(this, 'textstyle', 'font', font);
+        prepare_prop(this, 'textstyle', 'foreground', foreground, obj2ptr);
+        prepare_prop(this, 'textstyle', 'maxWidth', maxWidth);
+        prepare_prop(this, 'textstyle', 'maxHeight', maxHeight);
     };
 
-    dawn.TextImage = function (layout) {
-        prepareObject(this, libdawn.textimage_create(obj2ptr(layout)));
+    dawn.TextImage = function (text, style) {
+        prepareObject(this, libdawn.textimage_create(text, obj2ptr(style)));
 
-        prepare_prop(this, 'textimage', 'layout', layout, obj2ptr);
+        prepare_prop(this, 'textimage', 'text', text);
+        prepare_prop(this, 'textimage', 'style', style, obj2ptr);
 
         Object.defineProperty(this, "width", {
             get: function() { return libdawn.pixmap_width(obj2ptr(this)); },

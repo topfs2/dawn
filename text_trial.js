@@ -1,8 +1,8 @@
 var camera = new dawn.OrthographicCamera(4 * 16 / 9, 4, -1, 1000);
 
 var s = '<span color="orange" font="24">YEAR</span>1983\n147<span color="orange" font="24">MIN</span>\nMP3\n36<span color="orange" font="24">TRACKS</span>'
-var layout = new dawn.TextLayout(s, "Ubuntu bold 72", new dawn.vec4(1, 1, 1, 1), 1, 400, -1);
-var text_image = new dawn.TextImage(layout);
+var style = new dawn.TextStyle("Ubuntu bold 72", new dawn.vec4(1, 1, 1, 1), 1, 400, -1);
+var text_image = new dawn.TextImage(s, style);
 
 var mesh = new dawn.Mesh3D(new dawn.PlaneGeometry(text_image.width, text_image.height), new dawn.ShaderMaterial("shaders/map"));
 mesh.material.uniform("map", text_image);
@@ -31,7 +31,7 @@ emitKeyEvent = function (device, key, down) {
             s += key;
         }
 
-        layout.text = s;
+        text_image.text = s;
         mesh.geometry.size(text_image.width, text_image.height);
     }
 };

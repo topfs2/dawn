@@ -141,62 +141,62 @@ extern duk_ret_t object_ischanged(duk_context *ctx) {
     return 1;
 }
 
-extern duk_ret_t textlayout_create(duk_context *ctx) {
-    TextLayout *p = new TextLayout(
+extern duk_ret_t textstyle_create(duk_context *ctx) {
+    TextStyle *p = new TextStyle(
         duk_require_string(ctx, 0),
-        duk_require_string(ctx, 1),
-        duk_require_vec4f(ctx, 2),
-        (CONSTANTS::TextAlign)duk_require_int(ctx, 3),
-        duk_require_int(ctx, 4),
-        duk_require_int(ctx, 5)
+        duk_require_vec4f(ctx, 1),
+        (CONSTANTS::TextAlign)duk_require_int(ctx, 2),
+        duk_require_int(ctx, 3),
+        duk_require_int(ctx, 4)
     );
-    cout << "TextLayout.Create " << p << endl;
+    cout << "TextStyle.Create " << p << endl;
 
     duk_push_pointer(ctx, p);
     return 1;
 }
 
-extern duk_ret_t textlayout_text(duk_context *ctx) {
-    TextLayout *p = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
-
-    p->text(duk_require_string(ctx, 1));
-    return 0;
-}
-
-extern duk_ret_t textlayout_font(duk_context *ctx) {
-    TextLayout *p = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+extern duk_ret_t textstyle_font(duk_context *ctx) {
+    TextStyle *p = static_cast<TextStyle *>(duk_require_pointer(ctx, 0));
 
     p->font(duk_require_string(ctx, 1));
     return 0;
 }
 
-extern duk_ret_t textlayout_foreground(duk_context *ctx) {
-    TextLayout *p = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+extern duk_ret_t textstyle_foreground(duk_context *ctx) {
+    TextStyle *p = static_cast<TextStyle *>(duk_require_pointer(ctx, 0));
     p->foreground(duk_require_vec4f(ctx, 1));
 
     return 0;
 }
 
-extern duk_ret_t textlayout_align(duk_context *ctx) {
-    TextLayout *p = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+extern duk_ret_t textstyle_align(duk_context *ctx) {
+    TextStyle *p = static_cast<TextStyle *>(duk_require_pointer(ctx, 0));
     p->align((CONSTANTS::TextAlign)duk_require_int(ctx, 1));
 
     return 0;
 }
 
 extern duk_ret_t pango_textimage_create(duk_context *ctx) {
-    TextLayout *layout = static_cast<TextLayout *>(duk_require_pointer(ctx, 0));
+    std::string text = duk_require_string(ctx, 0);
+    TextStyle *style = static_cast<TextStyle *>(duk_require_pointer(ctx, 1));
 
-    TextImage *p = new PangoCairoTextImage(layout);
-    cout << "PangoCairoTextImage.Create " << p << " " << p->layout() << endl;
+    TextImage *p = new PangoCairoTextImage(text, style);
+    cout << "PangoCairoTextImage.Create " << p << " " << p->text() << " " << p->style() << endl;
 
     duk_push_pointer(ctx, p);
     return 1;
 }
 
-extern duk_ret_t textimage_layout(duk_context *ctx) {
+extern duk_ret_t textimage_text(duk_context *ctx) {
     TextImage *p = static_cast<TextImage *>(duk_require_pointer(ctx, 0));
-    p->layout(static_cast<TextLayout *>(duk_require_pointer(ctx, 1)));
+    p->text(duk_require_string(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t textimage_style(duk_context *ctx) {
+    TextImage *p = static_cast<TextImage *>(duk_require_pointer(ctx, 0));
+    p->style(static_cast<TextStyle *>(duk_require_pointer(ctx, 1)));
 
     return 0;
 }
