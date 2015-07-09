@@ -45,7 +45,7 @@ void OpenGLRenderer::RenderFullscreenQuad(OpenGLShaderProgramPtr shader, Uniform
 {
   uniforms["uMVP"] = ortho(-0.5f, 0.5f, 0.5f, -0.5f, -1.0f, 1.0f);
   ApplyShader(shader, uniforms);
-  RenderPlane(1.0f, 1.0f);
+  RenderPlane(1.0f, 1.0f, vec4f(0, 1, 0, 1));
 }
 
 void OpenGLRenderer::Render(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target)
@@ -196,6 +196,88 @@ void OpenGLRenderer::ApplyMaterial(const mat4f &mvp, Material *material)
   }
 }
 
+void OpenGLRenderer::RenderPlane(float w, float h, vec4f uv)
+{
+  float w2 = w * 0.5f;
+  float h2 = h * 0.5f;
+
+  float u0 = uv[0];
+  float u1 = uv[1];
+  float v0 = uv[2];
+  float v1 = uv[3];
+
+  /* TODO Use indices to avoid duplicate vertex upload */
+  GLfloat aVertices[] = { -w2,  h2,
+                          -w2, -h2,
+                           w2, -h2,
+                          -w2,  h2,
+                           w2, -h2,
+                           w2,  h2 };
+
+  GLfloat aUV[] =       { u0,  v0,
+                          u0,  v1,
+                          u1,  v1,
+                          u0,  v0,
+                          u1,  v1,
+                          u1,  v0 };
+
+  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aVertices);
+  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
+
+  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
+  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
+
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+
+  check_gl_error();
+}
+
+void OpenGLRenderer::RenderEllipsisArc(float w2, float h2, float angle1, float angle2, unsigned int segments, vec4f uv)
+{
+  float degrees = (angle2 - angle1) / (float)segments;
+
+  float u0 = uv[0];
+  float u1 = uv[1];
+  float v0 = uv[2];
+  float v1 = uv[3];
+
+  unsigned int vertexCount = segments * 2 + 1;
+  GLfloat aVertices[vertexCount * 2];
+  GLfloat aUV[vertexCount * 2];
+
+  aVertices[0] = 0.0f;
+  aVertices[1] = 0.0f;
+
+  aUV[0] = lerp(u0, u1, 0.5f);
+  aUV[1] = lerp(u0, u1, 0.5f);
+
+  unsigned int idx = 2;
+  unsigned int outerVertexCount = vertexCount - 1;
+
+  for (int i = 0; i < outerVertexCount; ++i) {
+    float x = cos(degrees * (float)i + angle1);
+    float y = sin(degrees * (float)i + angle1);
+
+    aVertices[idx]     = x * w2;
+    aVertices[idx + 1] = y * h2;
+
+    aUV[idx]     = lerp(u0, u1, x *  0.5f + 0.5f);
+    aUV[idx + 1] = lerp(v0, v1, y * -0.5f + 0.5f);
+
+    idx += 2;
+  }
+
+  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aVertices);
+  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
+
+  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
+  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
+
+  glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
+
+  check_gl_error();
+}
+
 void OpenGLRenderer::RenderPolygon(PolygonGeometry *polygon)
 {
   vec2farray vertices = polygon->vertices();
@@ -203,7 +285,7 @@ void OpenGLRenderer::RenderPolygon(PolygonGeometry *polygon)
   std::vector<uint8_t> indices;
 
   GeometryUtils::triangulate_ec(vertices, indices);
-  GeometryUtils::create_uvs(vertices, uvs);
+  GeometryUtils::create_uvs(vertices, uvs, polygon->uv());
 
   GLfloat aVertices[vertices.size() * 2];
   GLfloat aUV[vertices.size() * 2];
@@ -231,89 +313,17 @@ void OpenGLRenderer::RenderPolygon(PolygonGeometry *polygon)
 
 void OpenGLRenderer::RenderPlane(PlaneGeometry *plane)
 {
-  RenderPlane(plane->width(), plane->height());
-}
-
-void OpenGLRenderer::RenderPlane(float w, float h)
-{
-  float w2 = w * 0.5f;
-  float h2 = h * 0.5f;
-
-  /* TODO Use indices to avoid duplicate vertex upload */
-  GLfloat aVertices[] = { -w2,  h2,
-                          -w2, -h2,
-                           w2, -h2,
-                          -w2,  h2,
-                           w2, -h2,
-                           w2,  h2 };
-
-  GLfloat aUV[] =       { 0.0f,  0.0f,
-                          0.0f,  1.0f,
-                          1.0f,  1.0f,
-                          0.0f,  0.0f,
-                          1.0f,  1.0f,
-                          1.0f,  0.0f };
-
-  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aVertices);
-  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
-
-  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
-  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
-
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-
-  check_gl_error();
-}
-
-void OpenGLRenderer::RenderEllipsisArc(float w2, float h2, float angle1, float angle2, unsigned int segments)
-{
-  float degrees = (angle2 - angle1) / (float)segments;
-
-  unsigned int vertexCount = segments * 2 + 1;
-  GLfloat aVertices[vertexCount * 2];
-  GLfloat aUV[vertexCount * 2];
-
-  aVertices[0] = 0.0f;
-  aVertices[1] = 0.0f;
-
-  aUV[0] = 0.5f;
-  aUV[1] = 0.5f;
-
-  unsigned int idx = 2;
-  unsigned int outerVertexCount = vertexCount - 1;
-
-  for (int i = 0; i < outerVertexCount; ++i) {
-    float x = cos(degrees * (float)i + angle1);
-    float y = sin(degrees * (float)i + angle1);
-
-    aVertices[idx]     = x * w2;
-    aVertices[idx + 1] = y * h2;
-
-    aUV[idx]     = x *  0.5f + 0.5f;
-    aUV[idx + 1] = y * -0.5f + 0.5f;
-
-    idx += 2;
-  }
-
-  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aVertices);
-  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
-
-  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
-  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
-
-  glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
-
-  check_gl_error();
+  RenderPlane(plane->width(), plane->height(), plane->uv());
 }
 
 void OpenGLRenderer::RenderArc(ArcGeometry *arc)
 {
-  RenderEllipsisArc(arc->radius(), arc->radius(), arc->angle1(), arc->angle2(), arc->segments());
+  RenderEllipsisArc(arc->radius(), arc->radius(), arc->angle1(), arc->angle2(), arc->segments(), arc->uv());
 }
 
 void OpenGLRenderer::RenderEllipsis(EllipsisGeometry *ellipsis)
 {
-  RenderEllipsisArc(ellipsis->width() / 2.0f, ellipsis->height() / 2.0f, 0, 2.0f * M_PI, ellipsis->segments());
+  RenderEllipsisArc(ellipsis->width() / 2.0f, ellipsis->height() / 2.0f, 0, 2.0f * M_PI, ellipsis->segments(), ellipsis->uv());
 }
 
 void OpenGLRenderer::RenderGeometry(Geometry *geometry)

@@ -1,4 +1,5 @@
 #include "GeometryUtils.h"
+#include "LinearAlgebra.h"
 
 using namespace dawn;
 using namespace std;
@@ -64,11 +65,16 @@ void GeometryUtils::triangulate_ec(const vec2farray &vertices, std::vector<uint8
     }
 }
 
-void GeometryUtils::create_uvs(const vec2farray &vertices, vec2farray &uvs) {
+void GeometryUtils::create_uvs(const vec2farray &vertices, vec2farray &uvs, vec4f uv) {
     float x0, x1, y0, y1;
 
     x0 = x1 = vertices[0][0];
     y0 = y1 = vertices[0][1];
+
+    float u0 = uv[0];
+    float u1 = uv[1];
+    float v0 = uv[2];
+    float v1 = uv[3];
 
     for (vec2farray::const_iterator itr = vertices.begin(); itr != vertices.end(); itr++) {
         x0 = std::min((*itr)[0], x0);
@@ -79,8 +85,8 @@ void GeometryUtils::create_uvs(const vec2farray &vertices, vec2farray &uvs) {
     }
 
     for (vec2farray::const_iterator itr = vertices.begin(); itr != vertices.end(); itr++) {
-        float u = ((*itr)[0] - x0) / (x1 - x0);
-        float v = ((*itr)[1] - y0) / (y1 - y0);
+        float u = lerp(u0, u1, ((*itr)[0] - x0) / (x1 - x0));
+        float v = lerp(v0, v1, ((*itr)[1] - y0) / (y1 - y0));
 
         uvs.push_back(vec2f(u, v));
     }

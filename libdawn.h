@@ -29,20 +29,24 @@ extern duk_ret_t planegeometry_create(duk_context *ctx);
 extern duk_ret_t planegeometry_width(duk_context *ctx);
 extern duk_ret_t planegeometry_height(duk_context *ctx);
 extern duk_ret_t planegeometry_size(duk_context *ctx);
+extern duk_ret_t planegeometry_uv(duk_context *ctx);
 
 extern duk_ret_t ellipsisgeometry_create(duk_context *ctx);
 extern duk_ret_t ellipsisgeometry_width(duk_context *ctx);
 extern duk_ret_t ellipsisgeometry_height(duk_context *ctx);
 extern duk_ret_t ellipsisgeometry_segments(duk_context *ctx);
+extern duk_ret_t ellipsisgeometry_uv(duk_context *ctx);
 
 extern duk_ret_t arcgeometry_create(duk_context *ctx);
 extern duk_ret_t arcgeometry_radius(duk_context *ctx);
 extern duk_ret_t arcgeometry_angle1(duk_context *ctx);
 extern duk_ret_t arcgeometry_angle2(duk_context *ctx);
 extern duk_ret_t arcgeometry_segments(duk_context *ctx);
+extern duk_ret_t arcgeometry_uv(duk_context *ctx);
 
 extern duk_ret_t polygongeometry_create(duk_context *ctx);
 extern duk_ret_t polygongeometry_vertices(duk_context *ctx);
+extern duk_ret_t polygongeometry_uv(duk_context *ctx);
 
 extern duk_ret_t shadermaterial_create(duk_context *ctx);
 extern duk_ret_t shadermaterial_uniform(duk_context *ctx);
@@ -98,24 +102,28 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "grayscalefilter_create", grayscalefilter_create, 1 }, 
     { "grayscalefilter_saturation", grayscalefilter_saturation, 2 },
 
-    { "planegeometry_create", planegeometry_create, 2 },
+    { "planegeometry_create", planegeometry_create, 3 },
     { "planegeometry_width", planegeometry_width, 2 },
     { "planegeometry_height", planegeometry_height, 2 },
     { "planegeometry_size", planegeometry_size, 3 },
+    { "planegeometry_uv", planegeometry_uv, 2 },
 
-    { "ellipsisgeometry_create", ellipsisgeometry_create, 3 },
+    { "ellipsisgeometry_create", ellipsisgeometry_create, 4 },
     { "ellipsisgeometry_width", ellipsisgeometry_width, 2 },
     { "ellipsisgeometry_height", ellipsisgeometry_height, 2 },
     { "ellipsisgeometry_segments", ellipsisgeometry_segments, 3 },
+    { "ellipsisgeometry_uv", ellipsisgeometry_uv, 2 },
 
-    { "arcgeometry_create", arcgeometry_create, 4 },
+    { "arcgeometry_create", arcgeometry_create, 5 },
     { "arcgeometry_radius", arcgeometry_radius, 2 },
     { "arcgeometry_angle1", arcgeometry_angle1, 2 },
     { "arcgeometry_angle2", arcgeometry_angle2, 2 },
     { "arcgeometry_segments", arcgeometry_segments, 3 },
+    { "arcgeometry_uv", arcgeometry_uv, 2 },
 
-    { "polygongeometry_create", polygongeometry_create, 1 },
+    { "polygongeometry_create", polygongeometry_create, 2 },
     { "polygongeometry_vertices", polygongeometry_vertices, 2 },
+    { "polygongeometry_uv", polygongeometry_uv, 2 },
 
     { "shadermaterial_create", shadermaterial_create, 1 },
     { "shadermaterial_uniform", shadermaterial_uniform, 3 },

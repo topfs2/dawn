@@ -279,38 +279,46 @@ var dawn = { };
         prepareObject3D(this);
     };
 
-    dawn.PlaneGeometry = function (width, height) {
-        prepareObject(this, libdawn.planegeometry_create(width, height));
+    dawn.PlaneGeometry = function (width, height, uv) {
+        uv = uv || new dawn.vec4(0, 1, 0, 1);
+        prepareObject(this, libdawn.planegeometry_create(width, height, obj2ptr(uv)));
 
         prepare_prop(this, 'planegeometry', 'width', width);
         prepare_prop(this, 'planegeometry', 'height', height);
+        prepare_prop(this, 'planegeometry', 'uv', uv, obj2ptr);
 
         this.size = function (width, height) {
             libdawn.planegeometry_size(obj2ptr(this), width, height);
         };
     };
 
-    dawn.EllipsisGeometry = function (width, height, segments) {
-        prepareObject(this, libdawn.ellipsisgeometry_create(width, height, segments));
+    dawn.EllipsisGeometry = function (width, height, segments, uv) {
+        uv = uv || new dawn.vec4(0, 1, 0, 1);
+        prepareObject(this, libdawn.ellipsisgeometry_create(width, height, segments, obj2ptr(uv)));
 
         prepare_prop(this, 'ellipsisgeometry', 'width', width);
         prepare_prop(this, 'ellipsisgeometry', 'height', height);
         prepare_prop(this, 'ellipsisgeometry', 'segments', segments);
+        prepare_prop(this, 'ellipsisgeometry', 'uv', uv, obj2ptr);
     };
 
-    dawn.ArcGeometry = function (radius, angle1, angle2, segments) {
-        prepareObject(this, libdawn.arcgeometry_create(radius, angle1, angle2, segments));
+    dawn.ArcGeometry = function (radius, angle1, angle2, segments, uv) {
+        uv = uv || new dawn.vec4(0, 1, 0, 1);
+        prepareObject(this, libdawn.arcgeometry_create(radius, angle1, angle2, segments, obj2ptr(uv)));
 
         prepare_prop(this, 'arcgeometry', 'radius', radius);
         prepare_prop(this, 'arcgeometry', 'angle1', angle1);
         prepare_prop(this, 'arcgeometry', 'angle2', angle2);
         prepare_prop(this, 'arcgeometry', 'segments', segments);
+        prepare_prop(this, 'arcgeometry', 'uv', uv, obj2ptr);
     };
 
-    dawn.PolygonGeometry = function (vertices) {
-        prepareObject(this, libdawn.polygongeometry_create(vertices));
+    dawn.PolygonGeometry = function (vertices, uv) {
+        uv = uv || new dawn.vec4(0, 1, 0, 1);
+        prepareObject(this, libdawn.polygongeometry_create(vertices, obj2ptr(uv)));
 
         prepare_prop(this, 'polygongeometry', 'vertices', vertices);
+        prepare_prop(this, 'polygongeometry', 'uv', uv, obj2ptr);
     };
 
     dawn.ShaderMaterial = function (path) {

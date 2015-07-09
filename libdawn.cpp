@@ -269,8 +269,9 @@ extern duk_ret_t grayscalefilter_saturation(duk_context *ctx) {
 extern duk_ret_t planegeometry_create(duk_context *ctx) {
     int w = duk_get_number(ctx, 0);
     int h = duk_get_number(ctx, 1);
+    vec4f uv = duk_require_vec4f(ctx, 2);
 
-    PlaneGeometry *p = new PlaneGeometry(w, h);
+    PlaneGeometry *p = new PlaneGeometry(w, h, uv);
     cout << "PlaneGeometry.Create " << p << " " << p->width() << " " << p->height() << endl;
 
     duk_push_pointer(ctx, p);
@@ -295,8 +296,15 @@ extern duk_ret_t planegeometry_height(duk_context *ctx) {
 
 extern duk_ret_t planegeometry_size(duk_context *ctx) {
     PlaneGeometry *p = static_cast<PlaneGeometry *>(duk_require_pointer(ctx, 0));
-
     p->size(duk_get_number(ctx, 1), duk_get_number(ctx, 2));
+
+    return 0;
+}
+
+extern duk_ret_t planegeometry_uv(duk_context *ctx) {
+    PlaneGeometry *p = static_cast<PlaneGeometry *>(duk_require_pointer(ctx, 0));
+    p->uv(duk_require_vec4f(ctx, 1));
+
     return 0;
 }
 
@@ -304,8 +312,9 @@ extern duk_ret_t ellipsisgeometry_create(duk_context *ctx) {
     int width = duk_get_number(ctx, 0);
     int height = duk_get_number(ctx, 1);
     int segments = duk_get_number(ctx, 2);
+    vec4f uv = duk_require_vec4f(ctx, 3);
 
-    EllipsisGeometry *p = new EllipsisGeometry(width, height, segments);
+    EllipsisGeometry *p = new EllipsisGeometry(width, height, segments, uv);
     cout << "EllipsisGeometry.Create " << p << " " << p->width() << " " << p->height() <<  " " << p->segments() << endl;
 
     duk_push_pointer(ctx, p);
@@ -334,14 +343,22 @@ extern duk_ret_t ellipsisgeometry_segments(duk_context *ctx) {
     return 0;
 }
 
+extern duk_ret_t ellipsisgeometry_uv(duk_context *ctx) {
+    EllipsisGeometry *p = static_cast<EllipsisGeometry *>(duk_require_pointer(ctx, 0));
+    p->uv(duk_require_vec4f(ctx, 1));
+
+    return 0;
+}
+
 
 extern duk_ret_t arcgeometry_create(duk_context *ctx) {
     float radius = duk_get_number(ctx, 0);
     float angle1 = duk_get_number(ctx, 1);
     float angle2 = duk_get_number(ctx, 2);
     int segments = duk_get_number(ctx, 3);
+    vec4f uv = duk_require_vec4f(ctx, 4);
 
-    ArcGeometry *p = new ArcGeometry(radius, angle1, angle2, segments);
+    ArcGeometry *p = new ArcGeometry(radius, angle1, angle2, segments, uv);
     cout << "ArcGeometry.Create " << p << " " << p->radius() << " " << p->angle1() << " " << p->angle2() <<  " " << p->segments() << endl;
 
     duk_push_pointer(ctx, p);
@@ -378,9 +395,18 @@ extern duk_ret_t arcgeometry_segments(duk_context *ctx) {
     return 0;
 }
 
+extern duk_ret_t arcgeometry_uv(duk_context *ctx) {
+    ArcGeometry *p = static_cast<ArcGeometry *>(duk_require_pointer(ctx, 0));
+    p->uv(duk_require_vec4f(ctx, 1));
+
+    return 0;
+}
+
 extern duk_ret_t polygongeometry_create(duk_context *ctx) {
     vec2farray vertices = duk_require_vec2farray(ctx, 0);
-    PolygonGeometry *p = new PolygonGeometry(vertices);
+    vec4f uv = duk_require_vec4f(ctx, 1);
+
+    PolygonGeometry *p = new PolygonGeometry(vertices, uv);
     cout << "PolygonGeometry.Create " << p << " ";
 
     for (vec2farray::iterator itr = vertices.begin(); itr != vertices.end(); itr++) {
@@ -394,8 +420,15 @@ extern duk_ret_t polygongeometry_create(duk_context *ctx) {
 
 extern duk_ret_t polygongeometry_vertices(duk_context *ctx) {
     PolygonGeometry *p = static_cast<PolygonGeometry *>(duk_require_pointer(ctx, 0));
-
     p->vertices(duk_require_vec2farray(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t polygongeometry_uv(duk_context *ctx) {
+    PolygonGeometry *p = static_cast<PolygonGeometry *>(duk_require_pointer(ctx, 0));
+    p->uv(duk_require_vec4f(ctx, 1));
+
     return 0;
 }
 
