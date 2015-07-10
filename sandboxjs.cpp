@@ -107,6 +107,16 @@ int main(int argc, char *argv[]) {
     // polyfill
     duk_eval_string(ctx, "document = window = this;");
 
+    string modsearch = path + "modsearch.js";
+    if (duk_peval_file(ctx, modsearch.c_str()) != 0) {
+        printf("core.error: %s\n", duk_safe_to_string(ctx, -1));
+    }
+
+    string tween = path + "tween.js";
+    if (duk_peval_file(ctx, tween.c_str()) != 0) {
+        printf("core.error: %s\n", duk_safe_to_string(ctx, -1));
+    }
+
     string dawn = path + "dawn.js";
     if (duk_peval_file(ctx, dawn.c_str()) != 0) {
         printf("core.error: %s\n", duk_safe_to_string(ctx, -1));

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "duktape.h"
+extern duk_ret_t readFile(duk_context *ctx);
 
 extern duk_ret_t object_destroy(duk_context *ctx);
 extern duk_ret_t object_id(duk_context *ctx);
@@ -83,6 +84,8 @@ extern duk_ret_t perspectivecamera_projection(duk_context *ctx);
 
 /* Module initialization */
 static const duk_function_list_entry libdawn_funcs[] = {
+    { "readFile", readFile, 1 }, // TODO Move this to another bind
+
     { "object_destroy", object_destroy, 1 },
     { "object_id", object_id, 1 },
 

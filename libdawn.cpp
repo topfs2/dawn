@@ -109,6 +109,19 @@ uniform_t duk_require_uniform(duk_context *ctx, duk_idx_t index) {
     return uniform_t();
 }
 
+#include <string>
+#include <fstream>
+#include <streambuf>
+
+extern duk_ret_t readFile(duk_context *ctx) {
+    std::ifstream t(duk_require_string(ctx, 0));
+    std::string str((std::istreambuf_iterator<char>(t)),
+                     std::istreambuf_iterator<char>());
+
+    duk_push_string(ctx, str.c_str());
+    return 1;
+}
+
 extern duk_ret_t object_destroy(duk_context *ctx) {
     Object *p = static_cast<Object *>(duk_require_pointer(ctx, 0));
     cout << "Object.Destroy" << p << endl;
