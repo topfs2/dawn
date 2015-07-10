@@ -19,6 +19,7 @@ namespace dawn
     enum GeometryType {
       PlaneGeometry = 0,
       RoundedRectangleGeometry,
+      BorderedRectangleGeometry,
       EllipsisGeometry,
       ArcGeometry,
       PolygonGeometry
