@@ -91,3 +91,17 @@ void GeometryUtils::create_uvs(const vec2farray &vertices, vec2farray &uvs, vec4
         uvs.push_back(vec2f(u, v));
     }
 }
+
+void GeometryUtils::arc(vec2farray &positions, float cx, float cy, float r, float start, float sweep)
+{
+    float segments = 12; // TODO Calculate this based on r and sweep angle etc.
+    float degrees = (sweep) / (float)segments;
+
+    // TODO Should it start at 0 or should it skip first if positions.size() > 0 (as in cairo)
+    for (int i = 0; i < segments; i++) {
+        float x = cx + cos(degrees * (float)i + start) * r;
+        float y = cy + sin(degrees * (float)i + start) * r;
+
+        positions.push_back(vec2f(x, y));
+    }
+}

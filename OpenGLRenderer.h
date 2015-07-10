@@ -29,6 +29,7 @@ namespace dawn
     void ApplyShader(OpenGLShaderProgramPtr shader, UniformMap uniforms);
     void ApplyMaterial(const mat4f &mvp, Material *material);
 
+    void RenderPolygon(const vec2farray &positions, vec4f uv);
     void RenderPlane(float w, float h, vec4f uv);
     void RenderEllipsisArc(float w2, float h2, float angle1, float angle2, unsigned int segments, vec4f uv);
 
@@ -36,6 +37,7 @@ namespace dawn
     void RenderArc(ArcGeometry *arc);
     void RenderEllipsis(EllipsisGeometry *ellipsis);
     void RenderPlane(PlaneGeometry *plane);
+    void RenderRoundedRectangle(RoundedRectangleGeometry *rect);
 
     void RenderGeometry(Geometry *geometry);
 

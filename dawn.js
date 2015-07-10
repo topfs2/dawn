@@ -292,6 +292,21 @@ var dawn = { };
         };
     };
 
+    dawn.RoundedRectangleGeometry = function (width, height, radius, uv) {
+        uv = uv || new dawn.vec4(0, 1, 0, 1);
+        prepareObject(this, libdawn.roundedrectanglegeometry_create(width, height, obj2ptr(radius), obj2ptr(uv)));
+
+        prepare_prop(this, 'planegeometry', 'width', width);
+        prepare_prop(this, 'planegeometry', 'height', height);
+        prepare_prop(this, 'planegeometry', 'uv', uv, obj2ptr);
+
+        this.size = function (width, height) {
+            libdawn.planegeometry_size(obj2ptr(this), width, height);
+        };
+
+        prepare_prop(this, 'roundedrectanglegeometry', 'radius', radius, obj2ptr);
+    };
+
     dawn.EllipsisGeometry = function (width, height, segments, uv) {
         uv = uv || new dawn.vec4(0, 1, 0, 1);
         prepareObject(this, libdawn.ellipsisgeometry_create(width, height, segments, obj2ptr(uv)));

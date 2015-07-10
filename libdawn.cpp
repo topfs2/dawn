@@ -267,8 +267,8 @@ extern duk_ret_t grayscalefilter_saturation(duk_context *ctx) {
 }
 
 extern duk_ret_t planegeometry_create(duk_context *ctx) {
-    int w = duk_get_number(ctx, 0);
-    int h = duk_get_number(ctx, 1);
+    float w = duk_get_number(ctx, 0);
+    float h = duk_get_number(ctx, 1);
     vec4f uv = duk_require_vec4f(ctx, 2);
 
     PlaneGeometry *p = new PlaneGeometry(w, h, uv);
@@ -305,6 +305,27 @@ extern duk_ret_t planegeometry_uv(duk_context *ctx) {
     PlaneGeometry *p = static_cast<PlaneGeometry *>(duk_require_pointer(ctx, 0));
     p->uv(duk_require_vec4f(ctx, 1));
 
+    return 0;
+}
+
+extern duk_ret_t roundedrectanglegeometry_create(duk_context *ctx) {
+    float w = duk_get_number(ctx, 0);
+    float h = duk_get_number(ctx, 1);
+    vec4f radius = duk_require_vec4f(ctx, 2);
+    vec4f uv = duk_require_vec4f(ctx, 3);
+
+    RoundedRectangleGeometry *p = new RoundedRectangleGeometry(w, h, radius, uv);
+    cout << "RoundedRectangleGeometry.Create " << p << " " << p->width() << " " << p->height() << " " << endl;
+
+    duk_push_pointer(ctx, p);
+
+    return 1;
+}
+
+extern duk_ret_t roundedrectanglegeometry_radius(duk_context *ctx) {
+    RoundedRectangleGeometry *p = static_cast<RoundedRectangleGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->radius(duk_require_vec4f(ctx, 1));
     return 0;
 }
 

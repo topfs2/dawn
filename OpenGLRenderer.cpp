@@ -196,6 +196,40 @@ void OpenGLRenderer::ApplyMaterial(const mat4f &mvp, Material *material)
   }
 }
 
+void OpenGLRenderer::RenderPolygon(const vec2farray &positions, vec4f uv)
+{
+  vec2farray uvs;
+  std::vector<uint8_t> indices;
+
+  GeometryUtils::triangulate_ec(positions, indices);
+  GeometryUtils::create_uvs(positions, uvs, uv);
+
+  GLfloat aPosition[positions.size() * 2];
+  GLfloat aUV[positions.size() * 2];
+
+  std::cout << "posititions.length=" << positions.size() << " uv.length=" << uvs.size() << " indices.length=" << indices.size() << endl;
+
+  unsigned int i = 0;
+  for (vec2farray::const_iterator itr = positions.begin(); itr != positions.end(); itr++) {
+    aPosition[i++] = (*itr)[0];
+    aPosition[i++] = (*itr)[1];
+  }
+
+  i = 0;
+  for (vec2farray::iterator itr = uvs.begin(); itr != uvs.end(); itr++) {
+    aUV[i++] = (*itr)[0];
+    aUV[i++] = (*itr)[1];
+  }
+
+  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aPosition);
+  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
+
+  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
+  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
+
+  glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, &indices.front());
+}
+
 void OpenGLRenderer::RenderPlane(float w, float h, vec4f uv)
 {
   float w2 = w * 0.5f;
@@ -280,40 +314,64 @@ void OpenGLRenderer::RenderEllipsisArc(float w2, float h2, float angle1, float a
 
 void OpenGLRenderer::RenderPolygon(PolygonGeometry *polygon)
 {
-  vec2farray vertices = polygon->vertices();
-  vec2farray uvs;
-  std::vector<uint8_t> indices;
-
-  GeometryUtils::triangulate_ec(vertices, indices);
-  GeometryUtils::create_uvs(vertices, uvs, polygon->uv());
-
-  GLfloat aVertices[vertices.size() * 2];
-  GLfloat aUV[vertices.size() * 2];
-
-  unsigned int i = 0;
-  for (vec2farray::iterator itr = vertices.begin(); itr != vertices.end(); itr++) {
-    aVertices[i++] = (*itr)[0];
-    aVertices[i++] = (*itr)[1];
-  }
-
-  i = 0;
-  for (vec2farray::iterator itr = uvs.begin(); itr != uvs.end(); itr++) {
-    aUV[i++] = (*itr)[0];
-    aUV[i++] = (*itr)[1];
-  }
-
-  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aVertices);
-  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
-
-  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
-  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
-
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, &indices.front());
+  RenderPolygon(polygon->vertices(), polygon->uv());
 }
 
 void OpenGLRenderer::RenderPlane(PlaneGeometry *plane)
 {
   RenderPlane(plane->width(), plane->height(), plane->uv());
+}
+
+void OpenGLRenderer::RenderRoundedRectangle(RoundedRectangleGeometry *rect)
+{
+  float w2 = rect->width() * 0.5f;
+  float h2 = rect->height() * 0.5f;
+  vec4f radius = rect->radius();
+
+  float xs[4] = { -w2,  w2,  w2, -w2 };
+  float ys[4] = { -h2, -h2,  h2,  h2 };
+
+  vec2farray positions;
+
+  float sweep = M_PI / 2.0f;
+
+  for (unsigned int i = 0; i < 4; i++) {
+    float r = max(0.0f, min(radius[i], min(w2, h2)));
+    float start = (M_PI * (float)i - M_PI - M_PI) / 2.0f;
+
+    cout << "radius[i]=" << radius[i] << " r=" << r << " start=" << start << endl;
+
+    if (r > 0) {
+        float x = xs[i];
+        float y = ys[i];
+
+        float cx = x + r * (x > 0 ? -1.0 : 1.0);
+        float cy = y + r * (y > 0 ? -1.0 : 1.0);
+
+        cout << "x=" << x << " y=" << y << endl;
+        cout << "cx=" << cx << " cy=" << cy << endl;
+
+        GeometryUtils::arc(positions, cx, cy, r, start, sweep);
+    } else {
+      positions.push_back(vec2f(xs[i], ys[i]));
+    }
+  }
+
+/*
+  if (r > 0 && r < w2 && r < h2) {
+    GeometryUtils::arc(positions, x2, y1, r, start0, sweep);
+    GeometryUtils::arc(positions, x2, y2, r, start1, sweep);
+    GeometryUtils::arc(positions, x1, y2, r, start2, sweep);
+    GeometryUtils::arc(positions, x1, y1, r, start3, sweep);
+  } else {
+    positions.push_back(vec2f(x0, y0));
+    positions.push_back(vec2f(x3, y0));
+    positions.push_back(vec2f(x3, y3));
+    positions.push_back(vec2f(x0, y3));
+  }
+*/
+
+  RenderPolygon(positions, rect->uv());
 }
 
 void OpenGLRenderer::RenderArc(ArcGeometry *arc)
@@ -332,6 +390,10 @@ void OpenGLRenderer::RenderGeometry(Geometry *geometry)
   {
   case CONSTANTS::PlaneGeometry:
     RenderPlane((PlaneGeometry *)geometry);
+    break;
+
+  case CONSTANTS::RoundedRectangleGeometry:
+    RenderRoundedRectangle((RoundedRectangleGeometry *)geometry);
     break;
 
   case CONSTANTS::EllipsisGeometry:

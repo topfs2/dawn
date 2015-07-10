@@ -31,6 +31,9 @@ extern duk_ret_t planegeometry_height(duk_context *ctx);
 extern duk_ret_t planegeometry_size(duk_context *ctx);
 extern duk_ret_t planegeometry_uv(duk_context *ctx);
 
+extern duk_ret_t roundedrectanglegeometry_create(duk_context *ctx);
+extern duk_ret_t roundedrectanglegeometry_radius(duk_context *ctx);
+
 extern duk_ret_t ellipsisgeometry_create(duk_context *ctx);
 extern duk_ret_t ellipsisgeometry_width(duk_context *ctx);
 extern duk_ret_t ellipsisgeometry_height(duk_context *ctx);
@@ -107,6 +110,9 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "planegeometry_height", planegeometry_height, 2 },
     { "planegeometry_size", planegeometry_size, 3 },
     { "planegeometry_uv", planegeometry_uv, 2 },
+
+    { "roundedrectanglegeometry_create", roundedrectanglegeometry_create, 4 },
+    { "roundedrectanglegeometry_radius", roundedrectanglegeometry_radius, 2 },
 
     { "ellipsisgeometry_create", ellipsisgeometry_create, 4 },
     { "ellipsisgeometry_width", ellipsisgeometry_width, 2 },

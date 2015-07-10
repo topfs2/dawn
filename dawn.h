@@ -11,6 +11,7 @@
 #include "Mesh3D.h"
 
 #include "PlaneGeometry.h"
+#include "RoundedRectangleGeometry.h"
 #include "EllipsisGeometry.h"
 #include "ArcGeometry.h"
 #include "PolygonGeometry.h"

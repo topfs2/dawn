@@ -1,16 +1,18 @@
 var camera = new dawn.OrthographicCamera(4 * 16 / 9, 4, -1, 1000);
 
-var plane = new dawn.PlaneGeometry(1, 1);
-var ellipsis = new dawn.EllipsisGeometry(1, 1, 32);
-var arc = new dawn.ArcGeometry(1, 1, 2, 32);
-var polygon = new dawn.PolygonGeometry([
+var geometries = [];
+geometries.push(new dawn.PlaneGeometry(1, 1));
+geometries.push(new dawn.RoundedRectangleGeometry(1, 1, new dawn.vec4(0, 0.1, 0.2, 0.3)));
+geometries.push(new dawn.EllipsisGeometry(1, 1, 32));
+geometries.push(new dawn.ArcGeometry(1, 1, 2, 32));
+geometries.push(new dawn.PolygonGeometry([
     [ -1,    -1.5 ],
     [  1.5,  -1.5 ],
     [  1,     1.5 ],
     [ -1.5,   1.5 ]
-]);
+]));
 
-var mesh = new dawn.Mesh3D(polygon, new dawn.ShaderMaterial("shaders/color"));
+var mesh = new dawn.Mesh3D(geometries[0], new dawn.ShaderMaterial("shaders/color"));
 mesh.material.uniform("color", new dawn.vec4(1));
 
 var scene = new dawn.Scene3D(camera, mesh, 1280, 720);
@@ -30,17 +32,9 @@ update = function () {
     var now = time();
     var t = (now - start) / 1000;
 
-    var index = Math.floor(t) % 3;
-    if (index == 1) {
-        mesh.geometry = ellipsis;
-    } else if (index == 2) {
-        mesh.geometry = arc;
-    } else if (index == 2) {
-        mesh.geometry = plane;
-    } else {
-        mesh.geometry = polygon;
-    }
-
+    var index = Math.floor(t) % geometries.length;
+    mesh.geometry = geometries[index];
 
     return scene.instance;
 }
+
