@@ -63,7 +63,25 @@ bool emitKeyEvent(duk_context *ctx, bool down, std::string device, std::string k
     return true;
 }
 
+
 int main(int argc, char *argv[]) {
+    // Get the last position of '/'
+    string aux(argv[0]);
+
+    // get '/' or '\\' depending on unix/mac or windows.
+#if defined(_WIN32) || defined(WIN32)
+    int pos = aux.rfind('\\');
+#else
+    int pos = aux.rfind('/');
+#endif
+
+    // Get the path and the name
+    string path = aux.substr(0,pos+1);
+    string name = aux.substr(pos+1);
+    // show results
+    std::cout << "Path: " << path << std::endl;
+    std::cout << "Name: " << name << std::endl;
+
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_Window *window = SDL_CreateWindow( 
@@ -89,7 +107,8 @@ int main(int argc, char *argv[]) {
     // polyfill
     duk_eval_string(ctx, "document = window = this;");
 
-    if (duk_peval_file(ctx, "dawn.js") != 0) {
+    string dawn = path + "dawn.js";
+    if (duk_peval_file(ctx, dawn.c_str()) != 0) {
         printf("core.error: %s\n", duk_safe_to_string(ctx, -1));
     }
 
