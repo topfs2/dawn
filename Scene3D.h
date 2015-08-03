@@ -8,7 +8,7 @@ namespace dawn
     {
     public:
         Scene3D(Camera *camera, Object3D *stage, unsigned int width, unsigned int height) : m_camera(camera), m_stage(stage), m_width(width), m_height(height) { }
-        virtual CONSTANTS::Type type() const { return CONSTANTS::Scene; }
+        virtual CONSTANTS::Type type() const { return CONSTANTS::Scene3D; }
 
         Camera *camera() const { return m_camera; }
         void camera(Camera *camera) { setChanged(m_camera != camera); m_camera = camera; }

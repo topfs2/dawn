@@ -7,7 +7,7 @@ namespace dawn
     enum Type {
       Object3D = 0,
       Camera,
-      Scene,
+      Scene3D,
       Mesh
     };
 
