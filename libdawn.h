@@ -26,6 +26,14 @@ extern duk_ret_t shaderfilter_uniform(duk_context *ctx);
 extern duk_ret_t grayscalefilter_create(duk_context *ctx);
 extern duk_ret_t grayscalefilter_saturation(duk_context *ctx);
 
+extern duk_ret_t beziercurvetosegment_create(duk_context *ctx);
+extern duk_ret_t beziercurvetosegment_points(duk_context *ctx);
+
+extern duk_ret_t segmentedpath_create(duk_context *ctx);
+extern duk_ret_t segmentedpath_start(duk_context *ctx);
+extern duk_ret_t segmentedpath_segments(duk_context *ctx);
+extern duk_ret_t segmentedpath_finish(duk_context *ctx);
+
 extern duk_ret_t rawgeometry_create(duk_context *ctx);
 extern duk_ret_t rawgeometry_position(duk_context *ctx);
 extern duk_ret_t rawgeometry_color(duk_context *ctx);
@@ -57,6 +65,15 @@ extern duk_ret_t arcgeometry_uv(duk_context *ctx);
 extern duk_ret_t polygongeometry_create(duk_context *ctx);
 extern duk_ret_t polygongeometry_vertices(duk_context *ctx);
 extern duk_ret_t polygongeometry_uv(duk_context *ctx);
+
+extern duk_ret_t fillpathgeometry_create(duk_context *ctx);
+extern duk_ret_t fillpathgeometry_path(duk_context *ctx);
+extern duk_ret_t fillpathgeometry_uv(duk_context *ctx);
+
+extern duk_ret_t strokepathgeometry_create(duk_context *ctx);
+extern duk_ret_t strokepathgeometry_path(duk_context *ctx);
+extern duk_ret_t strokepathgeometry_strokewidth(duk_context *ctx);
+extern duk_ret_t strokepathgeometry_uv(duk_context *ctx);
 
 extern duk_ret_t shadermaterial_create(duk_context *ctx);
 extern duk_ret_t shadermaterial_uniform(duk_context *ctx);
@@ -114,6 +131,14 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "grayscalefilter_create", grayscalefilter_create, 1 }, 
     { "grayscalefilter_saturation", grayscalefilter_saturation, 2 },
 
+    { "beziercurvetosegment_create", beziercurvetosegment_create, 1 },
+    { "beziercurvetosegment_points", beziercurvetosegment_points, 2 },
+
+    { "segmentedpath_create", segmentedpath_create, 3 },
+    { "segmentedpath_start", segmentedpath_start, 2 },
+    { "segmentedpath_segments", segmentedpath_segments, 2 },
+    { "segmentedpath_finish", segmentedpath_finish, 2 },
+
     { "rawgeometry_create", rawgeometry_create, 4 },
     { "rawgeometry_position", rawgeometry_position, 2 },
     { "rawgeometry_color", rawgeometry_color, 2 },
@@ -145,6 +170,15 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "polygongeometry_create", polygongeometry_create, 2 },
     { "polygongeometry_vertices", polygongeometry_vertices, 2 },
     { "polygongeometry_uv", polygongeometry_uv, 2 },
+
+    { "fillpathgeometry_create", fillpathgeometry_create, 2 },
+    { "fillpathgeometry_path", fillpathgeometry_path, 2 },
+    { "fillpathgeometry_uv", fillpathgeometry_uv, 2 },
+
+    { "strokepathgeometry_create", strokepathgeometry_create, 2 },
+    { "strokepathgeometry_path", strokepathgeometry_path, 2 },
+    { "strokepathgeometry_strokewidth", strokepathgeometry_strokewidth, 2 },
+    { "strokepathgeometry_uv", strokepathgeometry_uv, 2 },
 
     { "shadermaterial_create", shadermaterial_create, 1 },
     { "shadermaterial_uniform", shadermaterial_uniform, 3 },

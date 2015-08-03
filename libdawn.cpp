@@ -172,6 +172,22 @@ uniform_t duk_require_uniform(duk_context *ctx, duk_idx_t index) {
     return uniform_t();
 }
 
+// TODO Use templates
+SegmentList duk_require_segmentlist(duk_context *ctx, duk_idx_t index) {
+    SegmentList segments;
+
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            segments.push_back(static_cast<BezierCurveToSegment *>(duk_require_pointer(ctx, -1)));
+            duk_pop(ctx);
+        }
+    }
+
+    return segments;
+}
+
 #include <string>
 #include <fstream>
 #include <streambuf>
@@ -339,6 +355,59 @@ extern duk_ret_t grayscalefilter_saturation(duk_context *ctx) {
     GrayscaleFilter *p = static_cast<GrayscaleFilter *>(duk_require_pointer(ctx, 0));
 
     p->saturation(duk_get_number(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t beziercurvetosegment_create(duk_context *ctx) {
+    vec2farray points = duk_require_vec2farray(ctx, 0);
+
+    BezierCurveToSegment *p = new BezierCurveToSegment(points);
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t beziercurvetosegment_points(duk_context *ctx) {
+    BezierCurveToSegment *p = static_cast<BezierCurveToSegment *>(duk_require_pointer(ctx, 0));
+
+    p->points(duk_require_vec2farray(ctx, 1));
+    return 1;
+}
+
+extern duk_ret_t segmentedpath_create(duk_context *ctx);
+extern duk_ret_t segmentedpath_start(duk_context *ctx);
+extern duk_ret_t segmentedpath_segments(duk_context *ctx);
+extern duk_ret_t segmentedpath_finish(duk_context *ctx);
+
+extern duk_ret_t segmentedpath_create(duk_context *ctx) {
+    vec2f start = duk_require_vec2f(ctx, 0);
+    SegmentList segments = duk_require_segmentlist(ctx, 1);
+    bool finish = duk_require_boolean(ctx, 2) != 0;
+
+    SegmentedPath *p = new SegmentedPath(start, segments, finish);
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t segmentedpath_start(duk_context *ctx) {
+    SegmentedPath *p = static_cast<SegmentedPath *>(duk_require_pointer(ctx, 0));
+
+    p->start(duk_require_vec2f(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t segmentedpath_segments(duk_context *ctx) {
+    SegmentedPath *p = static_cast<SegmentedPath *>(duk_require_pointer(ctx, 0));
+
+    p->segments(duk_require_segmentlist(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t segmentedpath_finish(duk_context *ctx) {
+    SegmentedPath *p = static_cast<SegmentedPath *>(duk_require_pointer(ctx, 0));
+
+    p->finish(duk_require_boolean(ctx, 1) != 0);
     return 0;
 }
 
@@ -564,6 +633,62 @@ extern duk_ret_t polygongeometry_vertices(duk_context *ctx) {
 
 extern duk_ret_t polygongeometry_uv(duk_context *ctx) {
     PolygonGeometry *p = static_cast<PolygonGeometry *>(duk_require_pointer(ctx, 0));
+    p->uv(duk_require_vec4f(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t fillpathgeometry_create(duk_context *ctx) {
+    Path *path = static_cast<Path *>(duk_require_pointer(ctx, 0));
+    vec4f uv = duk_require_vec4f(ctx, 1);
+
+    FillPathGeometry *p = new FillPathGeometry(path, uv);
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t fillpathgeometry_path(duk_context *ctx) {
+    FillPathGeometry *p = static_cast<FillPathGeometry *>(duk_require_pointer(ctx, 0));
+    p->path(static_cast<Path *>(duk_require_pointer(ctx, 0)));
+
+    return 0;
+}
+
+extern duk_ret_t fillpathgeometry_uv(duk_context *ctx) {
+    FillPathGeometry *p = static_cast<FillPathGeometry *>(duk_require_pointer(ctx, 0));
+    p->uv(duk_require_vec4f(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t strokepathgeometry_create(duk_context *ctx) {
+    Path *path = static_cast<Path *>(duk_require_pointer(ctx, 0));
+    float strokewidth = duk_require_number(ctx, 1);
+    vec4f uv = duk_require_vec4f(ctx, 2);
+
+    StrokePathGeometry *p = new StrokePathGeometry(path, strokewidth, uv);
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t strokepathgeometry_path(duk_context *ctx) {
+    StrokePathGeometry *p = static_cast<StrokePathGeometry *>(duk_require_pointer(ctx, 0));
+    p->path(static_cast<Path *>(duk_require_pointer(ctx, 0)));
+
+    return 0;
+}
+
+extern duk_ret_t strokepathgeometry_strokewidth(duk_context *ctx) {
+    StrokePathGeometry *p = static_cast<StrokePathGeometry *>(duk_require_pointer(ctx, 0));
+    p->strokewidth(duk_require_number(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t strokepathgeometry_uv(duk_context *ctx) {
+    StrokePathGeometry *p = static_cast<StrokePathGeometry *>(duk_require_pointer(ctx, 0));
     p->uv(duk_require_vec4f(ctx, 1));
 
     return 0;

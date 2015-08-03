@@ -1,6 +1,10 @@
 #include "GeometryUtils.h"
 #include "LinearAlgebra.h"
 
+#include "SegmentedPath.h"
+
+#include <iostream>
+
 using namespace dawn;
 using namespace std;
 
@@ -46,6 +50,8 @@ void GeometryUtils::triangulate_ec(const vec2farray &vertices, std::vector<uint8
 		    r[i] = ((i + 1) + vertices_length) % vertices_length;
 	    }
 
+        int loops = 0;
+
         i = 0;
         while (triangles_length < (vertices_length - 2)) {
             if (is_ear(l[i], i, r[i], vertices)) {
@@ -61,6 +67,12 @@ void GeometryUtils::triangulate_ec(const vec2farray &vertices, std::vector<uint8
             }
 
             i = r[i];
+
+            loops++;
+            if (loops > 1000) {
+                cerr << "Aborting triangulation!" << endl;
+                return;
+            }
         }
     }
 }
@@ -104,4 +116,153 @@ void GeometryUtils::arc(vec2farray &positions, float cx, float cy, float r, floa
 
         positions.push_back(vec2f(x, y));
     }
+}
+
+vec2f getBezierPoint(vec2farray points, float t) {
+    size_t numPoints = points.size();
+
+    vec2f* tmp = new vec2f[numPoints];
+    for (unsigned int i = 0; i < numPoints; i++) {
+        tmp[i] = points[i];
+    }
+
+    int i = numPoints - 1;
+    while (i > 0) {
+        for (int k = 0; k < i; k++)
+            tmp[k] = tmp[k] + t * ( tmp[k+1] - tmp[k] );
+        i--;
+    }
+    vec2f answer = tmp[0];
+    delete[] tmp;
+    return answer;
+}
+
+void GeometryUtils::fill(const Path *path, vec2farray &positions, std::vector<uint8_t> &indices)
+{
+    // TODO Clean up Bezier part
+    if (path->type() == CONSTANTS::SegmentedPath) {
+        const SegmentedPath *spath = static_cast<const SegmentedPath *>(path);
+        SegmentList segments = spath->segments();
+
+        positions.push_back(spath->start());
+        for (SegmentList::iterator itr = segments.begin(); itr != segments.end(); itr++) {
+            std::cout << "Adding BezierCurveToSegment" << std::endl;
+
+            vec2farray points = (*itr)->points();
+            points.insert(points.begin(), positions.back());
+
+            if (points.size() > 2) {
+                int interpolations = (points.size() - 1) * 20;
+                for (unsigned int i = 0; i < interpolations; i++) {
+                    float t = (float)i / (float)interpolations;
+                    positions.push_back(getBezierPoint(points, t));
+                }
+            }
+
+            positions.push_back(points.back());
+        }
+    }
+
+    cout << "triangulate" << endl;
+    triangulate_ec(positions, indices);
+}
+
+void GeometryUtils::stroke(const Path *path, float strokewidth, vec2farray &positions, std::vector<uint8_t> &indices)
+{
+    float w2 = strokewidth * 0.5f;
+
+    if (path->type() == CONSTANTS::SegmentedPath) {
+        const SegmentedPath *spath = static_cast<const SegmentedPath *>(path);
+
+        vec2f start = spath->start();
+        SegmentList segments = spath->segments();
+        bool finish = spath->finish();
+
+        BezierCurveToSegment *last = NULL;
+        vec2f p0 = start;
+
+        for (SegmentList::iterator itr = segments.begin(); itr != segments.end(); itr++) {
+            std::cout << "Adding BezierCurveToSegment" << std::endl;
+
+            vec2farray points = (*itr)->points();
+            vec2f p1 = points.back();
+
+            vec2f delta = p1 - p0;
+            delta.normalize();
+
+            vec2f l = vec2f(-delta[1] * w2,  delta[0] * w2);
+            vec2f r = vec2f( delta[1] * w2, -delta[0] * w2);
+
+            cout << "delta=" << delta[0] << ", " << delta[1] <<endl;
+            cout << "l=" << l[0] << ", " << l[1] <<endl;
+            cout << "r=" << r[0] << ", " << r[1] <<endl;
+
+            vec2f a = p0 + l;
+            vec2f b = p1 + l;
+            vec2f c = p1 + r;
+            vec2f d = p0 + r;
+
+            cout << "p0=" << p0[0] << ", " << p0[1] <<endl;
+            cout << "p1=" << p1[0] << ", " << p1[1] <<endl;
+
+            cout << "a=" << a[0] << ", " << a[1] <<endl;
+            cout << "b=" << b[0] << ", " << b[1] <<endl;
+            cout << "c=" << c[0] << ", " << c[1] <<endl;
+            cout << "d=" << d[0] << ", " << d[1] <<endl;
+
+            if (!finish && !last) {
+                cout << "Could add start cap" << p0[0] << ", " << p0[1] <<endl;
+
+                positions.push_back(a);
+                positions.push_back(p0 - delta * w2);
+                positions.push_back(d);
+
+                indices.push_back(0);
+                indices.push_back(1);
+                indices.push_back(2);
+            }
+
+            uint8_t index = positions.size();
+
+            positions.push_back(a);
+            positions.push_back(b);
+            positions.push_back(c);
+            positions.push_back(d);
+
+            indices.push_back(index);
+            indices.push_back(index + 1);
+            indices.push_back(index + 2);
+
+            indices.push_back(index);
+            indices.push_back(index + 2);
+            indices.push_back(index + 3);
+
+
+            if (!finish && (itr + 1) == segments.end()) {
+                cout << "Could add end cap" << p1[0] << ", " << p1[1] <<endl;
+
+                positions.push_back(b);
+                positions.push_back(p1 + delta * w2);
+                positions.push_back(c);
+
+                indices.push_back(index + 4);
+                indices.push_back(index + 5);
+                indices.push_back(index + 6);
+            }
+
+            p0 = p1;
+        }
+    }
+
+//    fill(path, positions, indices);
+/*
+    positions.push_back(vec2f(-1,  0));
+    positions.push_back(vec2f( 0, -1));
+    positions.push_back(vec2f( 1,  0));
+
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(2);
+*/
+
 }

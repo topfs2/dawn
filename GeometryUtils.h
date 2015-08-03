@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include "types.h"
+#include "Path.h"
 
 namespace dawn
 {
@@ -15,5 +16,8 @@ namespace dawn
         static void create_uvs(const vec2farray &vertices, vec2farray &uvs, vec4f uv);
 
         static void arc(vec2farray &positions, float cx, float cy, float r, float start, float sweep);
+
+        static void fill(const Path *path, vec2farray &positions, std::vector<uint8_t> &indices);
+        static void stroke(const Path *path, float strokewidth, vec2farray &positions, std::vector<uint8_t> &indices);
     };
 }

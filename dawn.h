@@ -16,9 +16,14 @@
 #include "EllipsisGeometry.h"
 #include "ArcGeometry.h"
 #include "PolygonGeometry.h"
+#include "FillPathGeometry.h"
+#include "StrokePathGeometry.h"
 
 #include "ShaderMaterial.h"
 #include "FilterMaterial.h"
+
+#include "Path.h"
+#include "SegmentedPath.h"
 
 #include "ShaderFilter.h"
 #include "GrayscaleFilter.h"

@@ -286,6 +286,20 @@ var dawn = { };
         prepare_prop(this, 'grayscalefilter', 'saturation', saturation);
     };
 
+    dawn.BezierCurveToSegment = function (points) {
+        prepareObject(this, libdawn.beziercurvetosegment_create(array2ptr(points)));
+
+        prepare_prop(this, 'beziercurvetosegment', 'points', points, array2ptr);
+    };
+
+    dawn.SegmentedPath = function (start, segments, finish) {
+        prepareObject(this, libdawn.segmentedpath_create(obj2ptr(start), array2ptr(segments), finish));
+
+        prepare_prop(this, 'segmentedpath', 'start', start, obj2ptr);
+        prepare_prop(this, 'segmentedpath', 'segments', segments, array2ptr);
+        prepare_prop(this, 'segmentedpath', 'finish', finish);
+    };
+
     dawn.Scene3D = function (camera, stage, width, height) {
         prepareObject(this, libdawn.scene3d_create(obj2ptr(camera), obj2ptr(stage), width, height));
 
@@ -369,6 +383,23 @@ var dawn = { };
 
         prepare_prop(this, 'polygongeometry', 'vertices', vertices);
         prepare_prop(this, 'polygongeometry', 'uv', uv, obj2ptr);
+    };
+
+    dawn.FillPathGeometry = function (path, uv) {
+        uv = uv || new dawn.vec4(0, 1, 0, 1);
+        prepareObject(this, libdawn.fillpathgeometry_create(obj2ptr(path), obj2ptr(uv)));
+
+        prepare_prop(this, 'fillpathgeometry', 'path', path, obj2ptr);
+        prepare_prop(this, 'fillpathgeometry', 'uv', uv, obj2ptr);
+    };
+
+    dawn.StrokePathGeometry = function (path, strokewidth, uv) {
+        uv = uv || new dawn.vec4(0, 1, 0, 1);
+        prepareObject(this, libdawn.strokepathgeometry_create(obj2ptr(path), strokewidth, obj2ptr(uv)));
+
+        prepare_prop(this, 'strokepathgeometry', 'path', path, obj2ptr);
+        prepare_prop(this, 'strokepathgeometry', 'strokewidth', path);
+        prepare_prop(this, 'strokepathgeometry', 'uv', uv, obj2ptr);
     };
 
     dawn.ShaderMaterial = function (path) {

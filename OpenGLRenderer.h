@@ -41,6 +41,8 @@ namespace dawn
     void RenderEllipsis(EllipsisGeometry *ellipsis);
     void RenderPlane(PlaneGeometry *plane);
     void RenderRoundedRectangle(RoundedRectangleGeometry *rect);
+    void RenderFillPathGeometry(FillPathGeometry *path);
+    void RenderStrokePathGeometry(StrokePathGeometry *path);
 
     void RenderGeometry(Geometry *geometry);
 

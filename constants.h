@@ -22,7 +22,27 @@ namespace dawn
       EllipsisGeometry,
       ArcGeometry,
       PolygonGeometry,
-      RawGeometry
+      RawGeometry,
+      FillPathGeometry,
+      StrokePathGeometry
+    };
+
+    enum PathSegmentType {
+      MoveToSegment = 0,
+      CloseSegment,
+      LineToSegment,
+      QuadradicCurveToSegment,
+      CubicCurveToSegment,
+      BezierCurveToSegment
+    };
+
+    enum PathType {
+      RectanglePath = 0,
+      RoundedRectanglePath,
+      EllipsisPath,
+      ArcPath,
+      PolygonPath,
+      SegmentedPath
     };
 
     enum MaterialType {

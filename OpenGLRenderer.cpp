@@ -428,6 +428,87 @@ void OpenGLRenderer::RenderEllipsis(EllipsisGeometry *ellipsis)
   RenderEllipsisArc(ellipsis->width() / 2.0f, ellipsis->height() / 2.0f, 0, 2.0f * M_PI, ellipsis->segments(), ellipsis->uv());
 }
 
+void OpenGLRenderer::RenderFillPathGeometry(FillPathGeometry *g)
+{
+  std::cout << "RenderFillPathGeometry" << endl;
+
+  Path *path = g->path();
+  vec4f uv = g->uv();
+
+  vec2farray positions;
+  vec2farray uvs;
+  std::vector<uint8_t> indices;
+
+  GeometryUtils::fill(path, positions, indices);
+  GeometryUtils::create_uvs(positions, uvs, uv);
+
+  GLfloat aPosition[positions.size() * 2];
+  GLfloat aUV[positions.size() * 2];
+
+  std::cout << "posititions.length=" << positions.size() << " uv.length=" << uvs.size() << " indices.length=" << indices.size() << endl;
+
+  unsigned int i = 0;
+  for (vec2farray::const_iterator itr = positions.begin(); itr != positions.end(); itr++) {
+    aPosition[i++] = (*itr)[0];
+    aPosition[i++] = (*itr)[1];
+  }
+
+  i = 0;
+  for (vec2farray::iterator itr = uvs.begin(); itr != uvs.end(); itr++) {
+    aUV[i++] = (*itr)[0];
+    aUV[i++] = (*itr)[1];
+  }
+
+  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aPosition);
+  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
+
+  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
+  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
+
+  glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, &indices.front());
+}
+
+void OpenGLRenderer::RenderStrokePathGeometry(StrokePathGeometry *g)
+{
+  std::cout << "StrokePathGeometry" << endl;
+
+  Path *path = g->path();
+  float strokewidth = g->strokewidth();
+  vec4f uv = g->uv();
+
+  vec2farray positions;
+  vec2farray uvs;
+  std::vector<uint8_t> indices;
+
+  GeometryUtils::stroke(path, strokewidth, positions, indices);
+  GeometryUtils::create_uvs(positions, uvs, uv);
+
+  GLfloat aPosition[positions.size() * 2];
+  GLfloat aUV[positions.size() * 2];
+
+  std::cout << "posititions.length=" << positions.size() << " uv.length=" << uvs.size() << " indices.length=" << indices.size() << endl;
+
+  unsigned int i = 0;
+  for (vec2farray::const_iterator itr = positions.begin(); itr != positions.end(); itr++) {
+    aPosition[i++] = (*itr)[0];
+    aPosition[i++] = (*itr)[1];
+  }
+
+  i = 0;
+  for (vec2farray::iterator itr = uvs.begin(); itr != uvs.end(); itr++) {
+    aUV[i++] = (*itr)[0];
+    aUV[i++] = (*itr)[1];
+  }
+
+  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aPosition);
+  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
+
+  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
+  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
+
+  glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, &indices.front());
+}
+
 void OpenGLRenderer::RenderGeometry(Geometry *geometry)
 {
   switch (geometry->type())
@@ -454,6 +535,14 @@ void OpenGLRenderer::RenderGeometry(Geometry *geometry)
 
   case CONSTANTS::PolygonGeometry:
     RenderPolygon((PolygonGeometry *)geometry);
+    break;
+
+  case CONSTANTS::FillPathGeometry:
+    RenderFillPathGeometry((FillPathGeometry *)geometry);
+    break;
+
+  case CONSTANTS::StrokePathGeometry:
+    RenderStrokePathGeometry((StrokePathGeometry *)geometry);
     break;
   }
 }
@@ -491,9 +580,9 @@ void OpenGLRenderer::InitializeGL()
 {
   glShadeModel(GL_SMOOTH);
 
-  glCullFace(GL_BACK);
-  glFrontFace(GL_CW);
-  glEnable(GL_CULL_FACE);
+//  glCullFace(GL_BACK);
+//  glFrontFace(GL_CW);
+//  glEnable(GL_CULL_FACE);
 
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
