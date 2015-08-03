@@ -36,5 +36,9 @@ namespace dawn
   typedef boost::any uniform_t;
   typedef std::map<std::string, uniform_t> UniformMap;
 
+  typedef std::vector<uint8_t> iarray;
+
   typedef std::vector<vec2f> vec2farray;
+  typedef std::vector<vec3f> vec3farray;
+  typedef std::vector<vec4f> vec4farray;
 }

@@ -25,6 +25,23 @@ vec4f duk_require_vec4f(duk_context *ctx, duk_idx_t index) {
     return vec4f(0, 0, 0, 0);
 }
 
+// TODO Error when not length == 3
+vec3f duk_require_vec3f(duk_context *ctx, duk_idx_t index) {
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        float array[length];
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array[i] = duk_require_number(ctx, -1);
+            duk_pop(ctx);
+        }
+
+        return vec3f(array[0], array[1], array[2]);
+    }
+
+    return vec3f(0, 0, 0);
+}
+
 // TODO Error when not length == 2
 vec2f duk_require_vec2f(duk_context *ctx, duk_idx_t index) {
     if (duk_is_array(ctx, index)) {
@@ -42,6 +59,20 @@ vec2f duk_require_vec2f(duk_context *ctx, duk_idx_t index) {
     return vec2f(0, 0);
 }
 
+iarray duk_require_iarray(duk_context *ctx, duk_idx_t index) {
+    iarray array;
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array.push_back((uint8_t)duk_require_int(ctx, -1));
+            duk_pop(ctx);
+        }
+    }
+
+    return array;
+}
+
 // TODO Switch to templates
 vec2farray duk_require_vec2farray(duk_context *ctx, duk_idx_t index) {
     vec2farray array;
@@ -50,6 +81,36 @@ vec2farray duk_require_vec2farray(duk_context *ctx, duk_idx_t index) {
         for (unsigned int i = 0; i < length; i++) {
             duk_get_prop_index(ctx, index, i);
             array.push_back(duk_require_vec2f(ctx, -1));
+            duk_pop(ctx);
+        }
+    }
+
+    return array;
+}
+
+// TODO Switch to templates
+vec3farray duk_require_vec3farray(duk_context *ctx, duk_idx_t index) {
+    vec3farray array;
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array.push_back(duk_require_vec3f(ctx, -1));
+            duk_pop(ctx);
+        }
+    }
+
+    return array;
+}
+
+// TODO Switch to templates
+vec4farray duk_require_vec4farray(duk_context *ctx, duk_idx_t index) {
+    vec4farray array;
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array.push_back(duk_require_vec4f(ctx, -1));
             duk_pop(ctx);
         }
     }
@@ -276,6 +337,46 @@ extern duk_ret_t grayscalefilter_saturation(duk_context *ctx) {
     GrayscaleFilter *p = static_cast<GrayscaleFilter *>(duk_require_pointer(ctx, 0));
 
     p->saturation(duk_get_number(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t rawgeometry_create(duk_context *ctx) {
+    vec3farray position = duk_require_vec3farray(ctx, 0);
+    vec4farray color = duk_require_vec4farray(ctx, 1);
+    vec2farray uv = duk_require_vec2farray(ctx, 2);
+    iarray indices = duk_require_iarray(ctx, 3);
+
+    RawGeometry *p = new RawGeometry(position, color, uv, indices);
+    duk_push_pointer(ctx, p);
+
+    return 1;
+}
+
+extern duk_ret_t rawgeometry_position(duk_context *ctx) {
+    RawGeometry *p = static_cast<RawGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->position(duk_require_vec3farray(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t rawgeometry_color(duk_context *ctx) {
+    RawGeometry *p = static_cast<RawGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->color(duk_require_vec4farray(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t rawgeometry_uv(duk_context *ctx) {
+    RawGeometry *p = static_cast<RawGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->uv(duk_require_vec2farray(ctx, 1));
+    return 0;
+}
+
+extern duk_ret_t rawgeometry_indices(duk_context *ctx) {
+    RawGeometry *p = static_cast<RawGeometry *>(duk_require_pointer(ctx, 0));
+
+    p->indices(duk_require_iarray(ctx, 1));
     return 0;
 }
 

@@ -26,6 +26,12 @@ extern duk_ret_t shaderfilter_uniform(duk_context *ctx);
 extern duk_ret_t grayscalefilter_create(duk_context *ctx);
 extern duk_ret_t grayscalefilter_saturation(duk_context *ctx);
 
+extern duk_ret_t rawgeometry_create(duk_context *ctx);
+extern duk_ret_t rawgeometry_position(duk_context *ctx);
+extern duk_ret_t rawgeometry_color(duk_context *ctx);
+extern duk_ret_t rawgeometry_uv(duk_context *ctx);
+extern duk_ret_t rawgeometry_indices(duk_context *ctx);
+
 extern duk_ret_t planegeometry_create(duk_context *ctx);
 extern duk_ret_t planegeometry_width(duk_context *ctx);
 extern duk_ret_t planegeometry_height(duk_context *ctx);
@@ -107,6 +113,12 @@ static const duk_function_list_entry libdawn_funcs[] = {
 
     { "grayscalefilter_create", grayscalefilter_create, 1 }, 
     { "grayscalefilter_saturation", grayscalefilter_saturation, 2 },
+
+    { "rawgeometry_create", rawgeometry_create, 4 },
+    { "rawgeometry_position", rawgeometry_position, 2 },
+    { "rawgeometry_color", rawgeometry_color, 2 },
+    { "rawgeometry_uv", rawgeometry_uv, 2 },
+    { "rawgeometry_indices", rawgeometry_indices, 2 },
 
     { "planegeometry_create", planegeometry_create, 3 },
     { "planegeometry_width", planegeometry_width, 2 },

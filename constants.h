@@ -21,7 +21,8 @@ namespace dawn
       RoundedRectangleGeometry,
       EllipsisGeometry,
       ArcGeometry,
-      PolygonGeometry
+      PolygonGeometry,
+      RawGeometry
     };
 
     enum MaterialType {

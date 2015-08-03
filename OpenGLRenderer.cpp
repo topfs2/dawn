@@ -196,10 +196,49 @@ void OpenGLRenderer::ApplyMaterial(const mat4f &mvp, Material *material)
   }
 }
 
+void OpenGLRenderer::RenderRaw(const vec3farray &positions, const vec4farray color, const vec2farray &uv, const iarray &indices)
+{
+  GLfloat aPosition[positions.size() * 3];
+  GLfloat aColor[color.size() * 4];
+  GLfloat aUV[uv.size() * 2];
+
+  unsigned int i = 0;
+  for (vec3farray::const_iterator itr = positions.begin(); itr != positions.end(); itr++) {
+    aPosition[i++] = (*itr)[0];
+    aPosition[i++] = (*itr)[1];
+    aPosition[i++] = (*itr)[2];
+  }
+
+  i = 0;
+  for (vec4farray::const_iterator itr = color.begin(); itr != color.end(); itr++) {
+    aColor[i++] = (*itr)[0];
+    aColor[i++] = (*itr)[1];
+    aColor[i++] = (*itr)[2];
+    aColor[i++] = (*itr)[3];
+  }
+
+  i = 0;
+  for (vec2farray::const_iterator itr = uv.begin(); itr != uv.end(); itr++) {
+    aUV[i++] = (*itr)[0];
+    aUV[i++] = (*itr)[1];
+  }
+
+  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 3, GL_FLOAT, GL_FALSE, 0, aPosition);
+  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
+
+  glVertexAttribPointer(OpenGLShaderProgram::COLOR, 4, GL_FLOAT, GL_FALSE, 0, aColor);
+  glEnableVertexAttribArray(OpenGLShaderProgram::COLOR);
+
+  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
+  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
+
+  glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, &indices.front());
+}
+
 void OpenGLRenderer::RenderPolygon(const vec2farray &positions, vec4f uv)
 {
   vec2farray uvs;
-  std::vector<uint8_t> indices;
+  iarray indices;
 
   GeometryUtils::triangulate_ec(positions, indices);
   GeometryUtils::create_uvs(positions, uvs, uv);
@@ -312,6 +351,11 @@ void OpenGLRenderer::RenderEllipsisArc(float w2, float h2, float angle1, float a
   check_gl_error();
 }
 
+void OpenGLRenderer::RenderRaw(RawGeometry *raw)
+{
+  RenderRaw(raw->position(), raw->color(), raw->uv(), raw->indices());
+}
+
 void OpenGLRenderer::RenderPolygon(PolygonGeometry *polygon)
 {
   RenderPolygon(polygon->vertices(), polygon->uv());
@@ -388,6 +432,10 @@ void OpenGLRenderer::RenderGeometry(Geometry *geometry)
 {
   switch (geometry->type())
   {
+  case CONSTANTS::RawGeometry:
+    RenderRaw((RawGeometry *)geometry);
+    break;
+
   case CONSTANTS::PlaneGeometry:
     RenderPlane((PlaneGeometry *)geometry);
     break;

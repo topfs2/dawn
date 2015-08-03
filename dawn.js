@@ -279,6 +279,15 @@ var dawn = { };
         prepareObject3D(this);
     };
 
+    dawn.RawGeometry = function (position, color, uv, indices) {
+        prepareObject(this, libdawn.rawgeometry_create(array2ptr(position), array2ptr(color), array2ptr(uv), indices));
+
+        prepare_prop(this, 'rawgeometry', 'position', position, array2ptr);
+        prepare_prop(this, 'rawgeometry', 'color', color, array2ptr);
+        prepare_prop(this, 'rawgeometry', 'uv', uv, array2ptr);
+        prepare_prop(this, 'rawgeometry', 'indices', uv);
+    };
+
     dawn.PlaneGeometry = function (width, height, uv) {
         uv = uv || new dawn.vec4(0, 1, 0, 1);
         prepareObject(this, libdawn.planegeometry_create(width, height, obj2ptr(uv)));
