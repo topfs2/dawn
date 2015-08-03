@@ -339,6 +339,8 @@ void OpenGLRenderer::RenderRoundedRectangle(RoundedRectangleGeometry *rect)
     float r = max(0.0f, min(radius[i], min(w2, h2)));
     float start = (M_PI * (float)i - M_PI - M_PI) / 2.0f;
 
+    cout << "radius[i]=" << radius[i] << " r=" << r << " start=" << start << endl;
+
     if (r > 0) {
         float x = xs[i];
         float y = ys[i];
@@ -346,99 +348,30 @@ void OpenGLRenderer::RenderRoundedRectangle(RoundedRectangleGeometry *rect)
         float cx = x + r * (x > 0 ? -1.0 : 1.0);
         float cy = y + r * (y > 0 ? -1.0 : 1.0);
 
+        cout << "x=" << x << " y=" << y << endl;
+        cout << "cx=" << cx << " cy=" << cy << endl;
+
         GeometryUtils::arc(positions, cx, cy, r, start, sweep);
     } else {
       positions.push_back(vec2f(xs[i], ys[i]));
     }
   }
 
-  RenderPolygon(positions, rect->uv());
-}
-
-void OpenGLRenderer::RenderBorderedRectangle(BorderedRectangleGeometry *rect)
-{
-  float w2 = rect->width() * 0.5f;
-  float h2 = rect->height() * 0.5f;
-  vec4f b = rect->border();
-
-  std::vector<float> xs;
-  std::vector<float> ys;
-
-  xs.push_back(-w2);
-  if (b[0] > 0) {
-      xs.push_back(-w2 + b[0]);
-  }
-  if (b[1] > 0) {
-      xs.push_back( w2 - b[1]);
-  }
-  xs.push_back( w2);
-
-  ys.push_back(-h2);
-  if (b[2] > 0) {
-      ys.push_back(-h2 + b[2]);
-  }
-  if (b[3] > 0) {
-      ys.push_back( h2 - b[3]);
-  }
-  ys.push_back( h2);
-
-  int vw = xs.size();
-  int vh = ys.size();
-  int vl = vw * vh;
-
-  unsigned int stride = xs.size() * 2;
-  GLfloat aPosition[vl * 2];
-  GLfloat aUV[vl * 2];
-
-  size_t index = 0;
-  for (unsigned int i = 0; i < vw; i++) {
-    for (unsigned int j = 0; j < vh; j++) {
-        cout << "i=" << i << " j=" << j << endl;
-
-        aPosition[index++] = xs[i];
-        aPosition[index++] = ys[j];
-
-        //cout << "v[" << i << "][" << j << "] = " << xs[j] << ", " << ys[i] << endl;
-
-        cout << "v[" << ((index - 2) / 2) << "] = " << xs[i] << ", " << ys[j] << endl;
-    }
-  }
-
-  int tw = vw - 1;
-  int th = vh - 1;
-  int tl = tw * th;
-
-  std::vector<uint8_t> indices;
-  index = 0;
-  for (unsigned int i = 0; i < tw; i++) {
-    for (unsigned int j = 0; j < th; j++) {
-      unsigned int i0 = (i + 0) + (j + 0) * tw;
-      unsigned int i1 = (i + 1) + (j + 0) * tw;
-      unsigned int i2 = (i + 0) + (j + 1) * tw;
-      unsigned int i3 = (i + 1) + (j + 1) * tw;
-
-      indices.push_back(i0);
-      indices.push_back(i1);
-      indices.push_back(i2);
-
-      indices.push_back(i2);
-      indices.push_back(i1);
-      indices.push_back(i3);
-
-//      cout << "q[" << i << "][" << j << "] = " << i0 << ", " << i1 << ", " << i2 << ", " << i3 << endl;
-      cout << "t[" << (index++) << "] = " << i0 << ", " << i1 << ", " << i2 << endl;
-      cout << "t[" << (index++) << "] = " << i2 << ", " << i1 << ", " << i3 << endl;
-    }
-  }
-
-  glVertexAttribPointer(OpenGLShaderProgram::POSITION, 2, GL_FLOAT, GL_FALSE, 0, aPosition);
-  glEnableVertexAttribArray(OpenGLShaderProgram::POSITION);
 /*
-  glVertexAttribPointer(OpenGLShaderProgram::UV, 2, GL_FLOAT, GL_FALSE, 0, aUV);
-  glEnableVertexAttribArray(OpenGLShaderProgram::UV);
+  if (r > 0 && r < w2 && r < h2) {
+    GeometryUtils::arc(positions, x2, y1, r, start0, sweep);
+    GeometryUtils::arc(positions, x2, y2, r, start1, sweep);
+    GeometryUtils::arc(positions, x1, y2, r, start2, sweep);
+    GeometryUtils::arc(positions, x1, y1, r, start3, sweep);
+  } else {
+    positions.push_back(vec2f(x0, y0));
+    positions.push_back(vec2f(x3, y0));
+    positions.push_back(vec2f(x3, y3));
+    positions.push_back(vec2f(x0, y3));
+  }
 */
 
-  glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, &indices.front());
+  RenderPolygon(positions, rect->uv());
 }
 
 void OpenGLRenderer::RenderArc(ArcGeometry *arc)
@@ -461,10 +394,6 @@ void OpenGLRenderer::RenderGeometry(Geometry *geometry)
 
   case CONSTANTS::RoundedRectangleGeometry:
     RenderRoundedRectangle((RoundedRectangleGeometry *)geometry);
-    break;
-
-  case CONSTANTS::BorderedRectangleGeometry:
-    RenderBorderedRectangle((BorderedRectangleGeometry *)geometry);
     break;
 
   case CONSTANTS::EllipsisGeometry:

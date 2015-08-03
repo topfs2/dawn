@@ -12,7 +12,6 @@
 
 #include "PlaneGeometry.h"
 #include "RoundedRectangleGeometry.h"
-#include "BorderedRectangleGeometry.h"
 #include "EllipsisGeometry.h"
 #include "ArcGeometry.h"
 #include "PolygonGeometry.h"

@@ -342,27 +342,6 @@ extern duk_ret_t roundedrectanglegeometry_radius(duk_context *ctx) {
     return 0;
 }
 
-extern duk_ret_t borderedrectanglegeometry_create(duk_context *ctx) {
-    float w = duk_get_number(ctx, 0);
-    float h = duk_get_number(ctx, 1);
-    vec4f border = duk_require_vec4f(ctx, 2);
-    vec4f uv = duk_require_vec4f(ctx, 3);
-
-    BorderedRectangleGeometry *p = new BorderedRectangleGeometry(w, h, border, uv);
-    cout << "BorderedRectangleGeometry.Create " << p << " " << p->width() << " " << p->height() << " " << endl;
-
-    duk_push_pointer(ctx, p);
-
-    return 1;
-}
-
-extern duk_ret_t borderedrectanglegeometry_border(duk_context *ctx) {
-    BorderedRectangleGeometry *p = static_cast<BorderedRectangleGeometry *>(duk_require_pointer(ctx, 0));
-
-    p->border(duk_require_vec4f(ctx, 1));
-    return 0;
-}
-
 extern duk_ret_t ellipsisgeometry_create(duk_context *ctx) {
     int width = duk_get_number(ctx, 0);
     int height = duk_get_number(ctx, 1);
