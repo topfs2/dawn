@@ -248,8 +248,6 @@ void OpenGLRenderer::RenderPolygon(const vec2farray &positions, vec4f uv)
   GLfloat aPosition[positions.size() * 2];
   GLfloat aUV[positions.size() * 2];
 
-  std::cout << "posititions.length=" << positions.size() << " uv.length=" << uvs.size() << " indices.length=" << indices.size() << endl;
-
   unsigned int i = 0;
   for (vec2farray::const_iterator itr = positions.begin(); itr != positions.end(); itr++) {
     aPosition[i++] = (*itr)[0];
