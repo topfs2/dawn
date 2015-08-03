@@ -18,6 +18,13 @@ void fatal(duk_context *ctx, int code, const char *msg) {
     printf("FATAL: %i %s\n", code, msg);
 }
 
+void duk_polyfill(duk_context *ctx, std::string path, std::string file) {
+    string polyfill = path + file;
+    if (duk_peval_file(ctx, polyfill.c_str()) != 0) {
+        printf("core.error: loading %s - %s\n", polyfill.c_str(), duk_safe_to_string(ctx, -1));
+    }
+}
+
 bool emitResizeEvent(duk_context *ctx, int width, int height) {
     duk_push_global_object(ctx); // TODO Switch to push dawn
     duk_get_prop_string(ctx, -1, "emitResizeEvent");
@@ -107,20 +114,9 @@ int main(int argc, char *argv[]) {
     // polyfill
     duk_eval_string(ctx, "document = window = this;");
 
-    string modsearch = path + "modsearch.js";
-    if (duk_peval_file(ctx, modsearch.c_str()) != 0) {
-        printf("core.error: %s\n", duk_safe_to_string(ctx, -1));
-    }
-
-    string tween = path + "tween.js";
-    if (duk_peval_file(ctx, tween.c_str()) != 0) {
-        printf("core.error: %s\n", duk_safe_to_string(ctx, -1));
-    }
-
-    string dawn = path + "dawn.js";
-    if (duk_peval_file(ctx, dawn.c_str()) != 0) {
-        printf("core.error: %s\n", duk_safe_to_string(ctx, -1));
-    }
+    duk_polyfill(ctx, path, "modsearch.js");
+    duk_polyfill(ctx, path, "tween.js");
+    duk_polyfill(ctx, path, "dawn.js");
 
     for (int i = 1; i < argc; i++) {
         printf("Running %s\n", argv[i]);
