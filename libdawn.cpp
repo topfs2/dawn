@@ -150,6 +150,8 @@ uniform_t duk_require_uniform(duk_context *ctx, duk_idx_t index) {
             return vec3f(array[0], array[1], array[2]);
         } else if (length == 4) {
             return vec4f(array[0], array[1], array[2], array[3]);
+        } else if (length == 9) {
+            return mat3f(mat3f(array).transpose()); // TODO Use Map http://eigen.tuxfamily.org/dox/group__TutorialMapClass.html
         } else if (length == 16) {
             return mat4f(mat4f(array).transpose()); // TODO Use Map http://eigen.tuxfamily.org/dox/group__TutorialMapClass.html
         } else {

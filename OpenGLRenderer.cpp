@@ -162,6 +162,8 @@ void OpenGLRenderer::ApplyShader(OpenGLShaderProgramPtr shader, UniformMap unifo
       shader->uniform(itr->first, any_cast<vec3f>(u));
     } else if (u.type() == typeid(vec4f)) {
       shader->uniform(itr->first, any_cast<vec4f>(u));
+    } else if (u.type() == typeid(mat3f)) {
+      shader->uniform(itr->first, any_cast<mat3f>(u));
     } else if (u.type() == typeid(mat4f)) {
       shader->uniform(itr->first, any_cast<mat4f>(u));
     } else if (u.type() == typeid(Pixmap *)) {

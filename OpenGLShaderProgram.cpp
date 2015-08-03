@@ -57,6 +57,18 @@ void OpenGLShaderProgram::uniform(const std::string &name, vec4f v)
   glUniform4f(loc, v[0], v[1], v[2], v[3]);
 }
 
+void OpenGLShaderProgram::uniform(const std::string &name, mat3f m)
+{
+  GLint loc = GetUniformLocation(name);
+
+  GLfloat fv[9];
+  for (unsigned int i = 0; i < 9; i++) {
+    fv[i] = m(i);
+  }
+
+  glUniformMatrix3fv(loc, 1, GL_FALSE, fv);
+}
+
 void OpenGLShaderProgram::uniform(const std::string &name, mat4f m)
 {
   GLint loc = GetUniformLocation(name);

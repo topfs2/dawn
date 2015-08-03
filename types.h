@@ -31,6 +31,7 @@ namespace dawn
   typedef Eigen::Vector3f vec3f;
   typedef Eigen::Vector4f vec4f;
 
+  typedef Eigen::Matrix3f mat3f;
   typedef Eigen::Matrix4f mat4f;
 
   typedef boost::any uniform_t;

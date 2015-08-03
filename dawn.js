@@ -129,13 +129,39 @@ var dawn = { };
         prepareVec(this, [].slice.call(arguments), 3);
     };
 
-    dawn.vec3.prototype = {
-        swizzle: function (s) {
-        }
-    };
-
     dawn.vec4 = function () {
         prepareVec(this, [].slice.call(arguments), 4);
+    };
+
+    dawn.mat3 = function () {
+        this[PTRNAME] = [].slice.call(arguments);
+    };
+
+    dawn.mat3.identity = function () {
+        return new dawn.mat3(1, 0, 0,
+                             0, 1, 0,
+                             0, 0, 1);
+    };
+
+    dawn.mat3.rotation = function (angle) {
+        var cov = Math.cos(angle);
+        var siv = Math.sin(angle);
+
+        return new dawn.mat3(cov, -siv, 0,
+                             siv,  cov, 0,
+                             0,    0,   1);
+    };
+
+    dawn.mat3.translation = function (x, y) {
+        return new dawn.mat3(1, 0, x,
+                             0, 1, y,
+                             0, 0, 1);
+    };
+
+    dawn.mat3.scaling = function (x, y) {
+        return new dawn.mat3(x, 0, 0,
+                             0, y, 0,
+                             0, 0, 1);
     };
 
     dawn.mat4 = function () {

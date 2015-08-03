@@ -22,6 +22,7 @@ namespace dawn
     void uniform(const std::string &name, vec2f v);
     void uniform(const std::string &name, vec3f v);
     void uniform(const std::string &name, vec4f v);
+    void uniform(const std::string &name, mat3f m);
     void uniform(const std::string &name, mat4f m);
 
     enum AttributeLocation
