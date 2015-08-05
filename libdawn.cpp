@@ -59,6 +59,23 @@ vec2f duk_require_vec2f(duk_context *ctx, duk_idx_t index) {
     return vec2f(0, 0);
 }
 
+// TODO Error when not length == 2
+vec2i duk_require_vec2i(duk_context *ctx, duk_idx_t index) {
+    if (duk_is_array(ctx, index)) {
+        int length = duk_get_length(ctx, index);
+        int array[length];
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array[i] = duk_require_int(ctx, -1);
+            duk_pop(ctx);
+        }
+
+        return vec2i(array[0], array[1]);
+    }
+
+    return vec2i(0, 0);
+}
+
 iarray duk_require_iarray(duk_context *ctx, duk_idx_t index) {
     iarray array;
     if (duk_is_array(ctx, index)) {
@@ -320,6 +337,30 @@ extern duk_ret_t pixmap_height(duk_context *ctx) {
 extern duk_ret_t image_path(duk_context *ctx) {
     Image *p = static_cast<Image *>(duk_require_pointer(ctx, 0));
     p->path(duk_require_string(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t backbufferpixmap_create(duk_context *ctx) {
+    vec2i position = duk_require_vec2i(ctx, 0);
+    vec2i size = duk_require_vec2i(ctx, 1);
+
+    BackbufferPixmap *p = new BackbufferPixmap(position, size);
+
+    duk_push_pointer(ctx, p);
+    return 1;
+}
+
+extern duk_ret_t backbufferpixmap_position(duk_context *ctx) {
+    BackbufferPixmap *p = static_cast<BackbufferPixmap *>(duk_require_pointer(ctx, 0));
+    p->position(duk_require_vec2i(ctx, 1));
+
+    return 0;
+}
+
+extern duk_ret_t backbufferpixmap_size(duk_context *ctx) {
+    BackbufferPixmap *p = static_cast<BackbufferPixmap *>(duk_require_pointer(ctx, 0));
+    p->size(duk_require_vec2i(ctx, 1));
 
     return 0;
 }

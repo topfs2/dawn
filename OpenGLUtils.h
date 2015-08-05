@@ -10,6 +10,7 @@ namespace dawn
   class OpenGLUtils
   {
   public:
+    static GLuint CreateTexture();
     static GLuint CreateTexture(Pixmap *pixmap);
     static GLuint CreateShaderProgram(const std::string &vertexShader, const std::string &fragmentShader);
     static void _check_gl_error(const char *file, int line);

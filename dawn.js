@@ -250,7 +250,7 @@ var dawn = { };
     dawn.Image = function (src) {
         prepareObject(this, libdawn.image_create(src));
 
-        prepare_prop(this, 'image', 'path', camera);
+        prepare_prop(this, 'image', 'path', src);
 
         Object.defineProperty(this, "width", {
             get: function() { return libdawn.pixmap_width(obj2ptr(this)); },
@@ -263,6 +263,13 @@ var dawn = { };
             enumerable: true,
             configurable: false
         });
+    };
+
+    dawn.BackbufferPixmap = function (position, size) {
+        prepareObject(this, libdawn.backbufferpixmap_create(obj2ptr(position), obj2ptr(size)));
+
+        prepare_prop(this, 'backbufferpixmap', 'position', position, obj2ptr);
+        prepare_prop(this, 'backbufferpixmap', 'size', size, obj2ptr);
     };
 
     dawn.ShaderFilter = function (path) {

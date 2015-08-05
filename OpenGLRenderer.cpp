@@ -170,7 +170,18 @@ void OpenGLRenderer::ApplyShader(OpenGLShaderProgramPtr shader, UniformMap unifo
       Pixmap *i = any_cast<Pixmap *>(u);
 
       shader->uniform(itr->first, textureUnit);
-      m_textures.GetResource(i)->Bind(textureUnit);
+
+      if (i->type() == CONSTANTS::BackbufferPixmap) {
+          m_backbufferTexture->Bind(textureUnit);
+          BackbufferPixmap *bpixmap = static_cast<BackbufferPixmap *>(i);
+
+          vec2i position = bpixmap->position();
+          vec2i size = bpixmap->size();
+          glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, position[0], position[1], size[0], size[1], 0);
+      } else {
+          m_textures.GetResource(i)->Bind(textureUnit);
+      }
+
       textureUnit++;
     } else if (u.type() == typeid(OpenGLTexturePtr)) {
       OpenGLTexturePtr t = any_cast<OpenGLTexturePtr>(u);
@@ -596,6 +607,8 @@ void OpenGLRenderer::InitializeGL()
 #endif
 
   glEnable(GL_TEXTURE_2D);
+
+  m_backbufferTexture = OpenGLTexturePtr(new OpenGLTexture(OpenGLUtils::CreateTexture()));
 }
 
 OpenGLRenderTargetPtr OpenGLRenderer::AcquireRenderTarget(unsigned int width, unsigned int height)

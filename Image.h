@@ -9,6 +9,8 @@ namespace dawn
         Image(const std::string &path) : m_path(path) { }
         virtual ~Image() { }
 
+        virtual CONSTANTS::PixmapType type() const { return CONSTANTS::ImagePixmap; }
+
         virtual std::string id() const { return m_path; }
 
         std::string path() const { return m_path; }

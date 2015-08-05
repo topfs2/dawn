@@ -58,6 +58,13 @@ namespace dawn
       GrayscaleFilter
     };
 
+    enum PixmapType
+    {
+      ImagePixmap = 0,
+      TextImagePixmap,
+      BackbufferPixmap
+    };
+
     enum PixelFormat {
       UnknownFormat = 0,
 

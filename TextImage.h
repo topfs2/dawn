@@ -10,6 +10,8 @@ namespace dawn
         TextImage(std::string text, TextStyle *style) : m_text(text), m_style(style) { }
         virtual ~TextImage() { }
 
+        virtual CONSTANTS::PixmapType type() const { return CONSTANTS::TextImagePixmap; }
+
         std::string text() const { return m_text; }
         void text(std::string text) { setChanged(m_text != text); m_text = text; }
 

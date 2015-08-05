@@ -20,6 +20,10 @@ extern duk_ret_t textimage_style(duk_context *ctx);
 
 extern duk_ret_t image_path(duk_context *ctx);
 
+extern duk_ret_t backbufferpixmap_create(duk_context *ctx);
+extern duk_ret_t backbufferpixmap_position(duk_context *ctx);
+extern duk_ret_t backbufferpixmap_size(duk_context *ctx);
+
 extern duk_ret_t shaderfilter_create(duk_context *ctx);
 extern duk_ret_t shaderfilter_uniform(duk_context *ctx);
 
@@ -124,6 +128,10 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "textimage_style", textimage_style, 2 },
 
     { "image_path", image_path, 2 },
+
+    { "backbufferpixmap_create", backbufferpixmap_create, 2 },
+    { "backbufferpixmap_position", backbufferpixmap_position, 2 },
+    { "backbufferpixmap_size", backbufferpixmap_size, 2 },
 
     { "shaderfilter_create", shaderfilter_create, 1 }, 
     { "shaderfilter_uniform", shaderfilter_uniform, 3 },

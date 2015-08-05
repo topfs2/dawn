@@ -64,5 +64,7 @@ namespace dawn
 
     OpenGLTexturePool m_textures;
     OpenGLShaderProgramPool m_shaders;
+
+    OpenGLTexturePtr m_backbufferTexture;
   };
 }

@@ -31,6 +31,10 @@ namespace dawn
   typedef Eigen::Vector3f vec3f;
   typedef Eigen::Vector4f vec4f;
 
+  typedef Eigen::Vector2i vec2i;
+  typedef Eigen::Vector3i vec3i;
+  typedef Eigen::Vector4i vec4i;
+
   typedef Eigen::Matrix3f mat3f;
   typedef Eigen::Matrix4f mat4f;
 

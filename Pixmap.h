@@ -44,6 +44,8 @@ namespace dawn
       return Object::isChanged(etag, recursive);
     }
 
+    virtual CONSTANTS::PixmapType type() const = 0;
+
     virtual BufferPtr buffer() = 0;
     virtual unsigned int width() = 0;
     virtual unsigned int height() = 0;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Image.h"
+#include "BackbufferPixmap.h"
 
 #include "PerspectiveCamera.h"
 #include "OrthographicCamera.h"
