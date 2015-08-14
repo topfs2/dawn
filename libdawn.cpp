@@ -909,11 +909,28 @@ extern duk_ret_t mesh3d_geometry(duk_context *ctx) {
     return 0;
 }
 
-
 extern duk_ret_t mesh3d_material(duk_context *ctx) {
     duk_push_this(ctx); 
     Mesh3D *p = static_cast<Mesh3D *>(duk_require_pointer(ctx, 0));
     p->material(static_cast<Material *>(duk_require_pointer(ctx, 1)));
+
+    return 0;
+}
+
+extern duk_ret_t mask3d_create(duk_context *ctx) {
+    Geometry *g = static_cast<Geometry *>(duk_require_pointer(ctx, 0));
+
+    Mask3D *p = new Mask3D(g);
+    cout << "Mask3D.Create " << p << " " << p->geometry() << endl;
+
+    duk_push_pointer(ctx, p);
+
+    return 1;
+}
+
+extern duk_ret_t mask3d_geometry(duk_context *ctx) {
+    Mask3D *p = static_cast<Mask3D *>(duk_require_pointer(ctx, 0));
+    p->geometry(static_cast<Geometry *>(duk_require_pointer(ctx, 1)));
 
     return 0;
 }

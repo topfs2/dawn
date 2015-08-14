@@ -103,6 +103,9 @@ extern duk_ret_t mesh3d_create(duk_context *ctx);
 extern duk_ret_t mesh3d_geometry(duk_context *ctx);
 extern duk_ret_t mesh3d_material(duk_context *ctx);
 
+extern duk_ret_t mask3d_create(duk_context *ctx);
+extern duk_ret_t mask3d_geometry(duk_context *ctx);
+
 extern duk_ret_t orthographiccamera_create(duk_context *ctx);
 extern duk_ret_t orthographiccamera_projection(duk_context *ctx);
 
@@ -211,6 +214,9 @@ static const duk_function_list_entry libdawn_funcs[] = {
     { "mesh3d_create", mesh3d_create, 2 },
     { "mesh3d_geometry", mesh3d_geometry, 2 },
     { "mesh3d_material", mesh3d_material, 2 },
+
+    { "mask3d_create", mask3d_create, 1 },
+    { "mask3d_geometry", mask3d_geometry, 2 },
 
     { "orthographiccamera_create", orthographiccamera_create, 6 },
     { "orthographiccamera_projection", orthographiccamera_projection, 7 },

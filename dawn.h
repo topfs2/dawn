@@ -10,6 +10,7 @@
 
 #include "Object3D.h"
 #include "Mesh3D.h"
+#include "Mask3D.h"
 
 #include "RawGeometry.h"
 #include "PlaneGeometry.h"

@@ -50,7 +50,7 @@ void OpenGLRenderer::RenderFullscreenQuad(OpenGLShaderProgramPtr shader, Uniform
 
 void OpenGLRenderer::Render(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target)
 {
-  RenderObject(projection, viewmodel, object, target);
+  RenderObject3D(projection, viewmodel, object, target);
 }
 
 void OpenGLRenderer::GetFilterPasses(Filter *filter, vector<OpenGLFilter> &passes)
@@ -63,6 +63,37 @@ void OpenGLRenderer::GetFilterPasses(Filter *filter, vector<OpenGLFilter> &passe
     passes.push_back(OpenGLFilter(m_shaders.GetResource("shaders/filter.bv"), filter.uniforms));
   }
 */
+}
+
+void OpenGLRenderer::PrepareMask()
+{
+  if (m_masks.size() > 0) {
+    glEnable(GL_STENCIL_TEST);
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glDepthMask(GL_FALSE);
+    glStencilFunc(GL_NEVER, 1, 0xFF);
+    glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
+
+    glStencilMask(0xFF);
+    glClear(GL_STENCIL_BUFFER_BIT);
+
+    OpenGLShaderProgramPtr shader = m_shaders.GetResource("shaders/color");
+    UniformMap uniforms;
+    uniforms["color"] = vec4f(1, 1, 1, 1);
+
+    for (MaskList::iterator itr = m_masks.begin(); itr != m_masks.end(); itr++) {
+      uniforms["uMVP"] = itr->second;
+      ApplyShader(shader, uniforms);
+      RenderGeometry(itr->first->geometry());
+    }
+
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDepthMask(GL_TRUE);
+    glStencilMask(0x00);
+    glStencilFunc(GL_EQUAL, 1, 0xFF);
+  } else {
+    glDisable(GL_STENCIL_TEST);
+  }
 }
 
 void OpenGLRenderer::ApplyBasicMaterial(Material *material)
@@ -558,7 +589,7 @@ void OpenGLRenderer::RenderGeometry(Geometry *geometry)
   }
 }
 
-void OpenGLRenderer::RenderMesh(const mat4f &mvp, Mesh3D *mesh)
+void OpenGLRenderer::RenderMesh3D(const mat4f &mvp, Mesh3D *mesh)
 {
   ApplyMaterial(mvp, mesh->material());
   RenderGeometry(mesh->geometry());
@@ -566,7 +597,7 @@ void OpenGLRenderer::RenderMesh(const mat4f &mvp, Mesh3D *mesh)
   check_gl_error();
 }
 
-void OpenGLRenderer::RenderObject(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target)
+void OpenGLRenderer::RenderObject3D(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target)
 {
   if (!object->visible()) {
     return;
@@ -577,13 +608,24 @@ void OpenGLRenderer::RenderObject(const mat4f &projection, const mat4f viewmodel
 
   switch (object->type())
   {
-    case CONSTANTS::Mesh:
-      RenderMesh(mvp, (Mesh3D *)object);
+    case CONSTANTS::Mesh3D:
+      RenderMesh3D(mvp, (Mesh3D *)object);
+      break;
+    case CONSTANTS::Mask3D:
+      m_masks.push_back(Mask((Mask3D *)object, mvp));
+      PrepareMask();
+      break;
   }
 
   for (Object3D::iterator itr = object->begin(); itr != object->end(); itr++) {
     Render(projection, m, *itr, target);
   }
+
+  if (object->type() == CONSTANTS::Mask3D) {
+    m_masks.pop_back();
+    PrepareMask();
+  }
+
   check_gl_error();
 }
 

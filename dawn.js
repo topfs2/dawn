@@ -437,6 +437,13 @@ var dawn = { };
         prepare_prop(this, 'mesh3d', 'material', material, obj2ptr);
     };
 
+    dawn.Mask3D = function (geometry, material) {
+        prepareObject(this, libdawn.mask3d_create(obj2ptr(geometry)));
+        prepareObject3D(this);
+
+        prepare_prop(this, 'mask3d', 'geometry', geometry, obj2ptr);
+    };
+
     dawn.OrthographicCamera = function () {
         if (arguments.length == 4) {
             prepareObject(this, libdawn.orthographiccamera_create(arguments[0] / -2, arguments[0] / 2, arguments[1] / 2, arguments[1] / -2, arguments[2], arguments[3]));

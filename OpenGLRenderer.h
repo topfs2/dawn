@@ -23,6 +23,8 @@ namespace dawn
     void Render(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target = NULL);
     void RenderFullscreenQuad(OpenGLShaderProgramPtr shader, UniformMap uniforms);
 
+    void PrepareMask();
+
     void ApplyBasicMaterial(Material *material);
     void ApplyFilterMaterial(const mat4f &mvp, FilterMaterial *material);
     void ApplyShaderMaterial(const mat4f &mvp, ShaderMaterial *material);
@@ -46,8 +48,8 @@ namespace dawn
 
     void RenderGeometry(Geometry *geometry);
 
-    void RenderMesh(const mat4f &mvp, Mesh3D *mesh);
-    void RenderObject(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target);
+    void RenderMesh3D(const mat4f &mvp, Mesh3D *mesh);
+    void RenderObject3D(const mat4f &projection, const mat4f viewmodel, Object3D *object, OpenGLRenderTargetPtr target);
     void InitializeGL();
 
     typedef std::pair<OpenGLShaderProgramPtr, UniformMap> OpenGLFilter; // TODO Move to opengl_types.h?
@@ -66,5 +68,9 @@ namespace dawn
     OpenGLShaderProgramPool m_shaders;
 
     OpenGLTexturePtr m_backbufferTexture;
+
+    typedef std::pair<Mask3D *, mat4f> Mask;
+    typedef std::vector<Mask> MaskList;
+    MaskList m_masks;
   };
 }
