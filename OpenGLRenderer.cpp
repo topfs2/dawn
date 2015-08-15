@@ -68,14 +68,14 @@ void OpenGLRenderer::GetFilterPasses(Filter *filter, vector<OpenGLFilter> &passe
 void OpenGLRenderer::PrepareMask()
 {
   if (m_masks.size() > 0) {
+    glClear(GL_STENCIL_BUFFER_BIT);
+
     glEnable(GL_STENCIL_TEST);
-    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-    glDepthMask(GL_FALSE);
+    glStencilMask(0xFF);
     glStencilFunc(GL_NEVER, 1, 0xFF);
     glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
-
-    glStencilMask(0xFF);
-    glClear(GL_STENCIL_BUFFER_BIT);
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glDepthMask(GL_FALSE);
 
     OpenGLShaderProgramPtr shader = m_shaders.GetResource("shaders/color");
     UniformMap uniforms;
@@ -651,6 +651,9 @@ void OpenGLRenderer::InitializeGL()
   glEnable(GL_TEXTURE_2D);
 
   m_backbufferTexture = OpenGLTexturePtr(new OpenGLTexture(OpenGLUtils::CreateTexture()));
+
+  glDisable(GL_STENCIL_TEST);
+  glStencilMask(0x00);
 }
 
 OpenGLRenderTargetPtr OpenGLRenderer::AcquireRenderTarget(unsigned int width, unsigned int height)
