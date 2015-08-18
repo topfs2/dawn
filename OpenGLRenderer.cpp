@@ -37,6 +37,7 @@ void OpenGLRenderer::render(Camera *camera, Object3D *stage, unsigned int width,
     glViewport(0.0f, 0.0f, (float)m_width, (float)m_height);
   }
 
+  PrepareMask();
   Render(camera->projection(), camera->view(), stage);
   OpenGLDebug::WriteFBO("final");
 }
@@ -68,6 +69,9 @@ void OpenGLRenderer::GetFilterPasses(Filter *filter, vector<OpenGLFilter> &passe
 void OpenGLRenderer::PrepareMask()
 {
   if (m_masks.size() > 0) {
+    glStencilMask(~0);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_STENCIL_TEST);
     glClear(GL_STENCIL_BUFFER_BIT);
 
     glEnable(GL_STENCIL_TEST);
