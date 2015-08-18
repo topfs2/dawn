@@ -91,6 +91,8 @@ void OpenGLRenderer::PrepareMask()
     glDepthMask(GL_TRUE);
     glStencilMask(0x00);
     glStencilFunc(GL_EQUAL, 1, 0xFF);
+
+    OpenGLDebug::WriteStencil("prepare");
   } else {
     glDisable(GL_STENCIL_TEST);
   }

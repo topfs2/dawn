@@ -13,6 +13,8 @@ namespace dawn
     static void WriteFilterPass(Object3D *object, unsigned int pass);
     static void WriteFilterOutput(Object3D *object);
 
+    static void WriteStencil(const std::string &title);
+
     static void PrintUniformMap(UniformMap uniforms);
   };
 }

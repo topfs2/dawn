@@ -46,6 +46,32 @@ void OpenGLDebug::WriteFilterOutput(Object3D *object)
   WriteFBO(ss.str());
 }
 
+int orderStencil = 0;
+
+void OpenGLDebug::WriteStencil(const std::string &title)
+{
+#ifdef DEBUG_WRITE_FBO
+  std::stringstream ss;
+  ss << orderStencil++ << "_stencil_" << title << ".png";
+
+  size_t s = WINDOW_WIDTH * WINDOW_HEIGHT;
+
+  GLubyte stencildata[s];
+  glReadPixels(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencildata);
+
+  GLubyte data[s * 4];
+  int j = 0;
+  for (int i = 0; i < s; i++) {
+    data[j++] = stencildata[i];
+    data[j++] = stencildata[i];
+    data[j++] = stencildata[i];
+    data[j++] = stencildata[i];
+  }
+
+  ImageUtils::WriteImage(ss.str(), WINDOW_WIDTH, WINDOW_HEIGHT, data);
+#endif
+}
+
 void OpenGLDebug::PrintUniformMap(UniformMap uniforms)
 {
   cout << "Uniforms = {" << endl;
