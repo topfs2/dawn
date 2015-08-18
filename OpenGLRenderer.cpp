@@ -349,14 +349,14 @@ void OpenGLRenderer::RenderPlane(float w, float h, vec4f uv)
 
 void OpenGLRenderer::RenderEllipsisArc(float w2, float h2, float angle1, float angle2, unsigned int segments, vec4f uv)
 {
-  float degrees = (angle2 - angle1) / (float)segments;
+  float degrees = (angle2 - angle1) / ((float)segments - 1);
 
   float u0 = uv[0];
   float u1 = uv[1];
   float v0 = uv[2];
   float v1 = uv[3];
 
-  unsigned int vertexCount = segments * 2 + 1;
+  unsigned int vertexCount = segments + 1;
   GLfloat aVertices[vertexCount * 2];
   GLfloat aUV[vertexCount * 2];
 
