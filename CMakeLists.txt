@@ -35,12 +35,23 @@ include_directories(${LIBPNG_INCLUDE_DIRS})
 pkg_search_module(LIBLOG4CXX REQUIRED liblog4cxx)
 include_directories(${LIBLOG4CXX_INCLUDE_DIRS})
 
-set(LIBRARIES ${CAIRO_LIBRARIES} ${PANGOCAIRO_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${GLEW_LIBRARIES} ${GLU_LIBRARIES} ${GL_LIBRARIES} ${EIGEN3_LIBRARIES} ${LIBPNG_LIBRARIES} ${LIBLOG4CXX_LIBRARIES})
+pkg_search_module(EXPAT REQUIRED expat)
+include_directories(${EXPAT_INCLUDE_DIRS})
 
-set(SOURCES UUID.cpp GeometryUtils.cpp ImageUtils.cpp OpenGLUtils.cpp OpenGLDebug.cpp OpenGLTexture.cpp OpenGLTexturePool.cpp OpenGLShaderProgram.cpp OpenGLShaderProgramPool.cpp OpenGLRenderTarget.cpp OpenGLRenderer.cpp duktape.c libdawn.cpp)
+set(LIBRARIES ${CAIRO_LIBRARIES} ${PANGOCAIRO_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${GLEW_LIBRARIES} ${GLU_LIBRARIES} ${GL_LIBRARIES} ${EIGEN3_LIBRARIES} ${LIBPNG_LIBRARIES} ${LIBLOG4CXX_LIBRARIES} ${EXPAT_LIBRARIES})
+
+set(SOURCES duktape.c ImageUtils.cpp OpenGLUtils.cpp OpenGLDebug.cpp OpenGLTexture.cpp OpenGLTexturePool.cpp OpenGLShaderProgram.cpp OpenGLShaderProgramPool.cpp OpenGLRenderTarget.cpp OpenGLRenderer.cpp)
+
+#set(SOURCES UUID.cpp GeometryUtils.cpp ImageUtils.cpp OpenGLUtils.cpp OpenGLDebug.cpp OpenGLTexture.cpp OpenGLTexturePool.cpp OpenGLShaderProgram.cpp OpenGLShaderProgramPool.cpp OpenGLRenderTarget.cpp OpenGLRenderer.cpp duktape.c libdawn.cpp)
 
 #add_executable(sandbox ${SOURCES} sandbox.cpp)
 #target_link_libraries(sandbox ${LIBRARIES})
 
-add_executable(sandboxjs ${SOURCES} sandboxjs.cpp)
-target_link_libraries(sandboxjs ${LIBRARIES})
+#add_executable(sandboxjs ${SOURCES} sandboxjs.cpp)
+#target_link_libraries(sandboxjs ${LIBRARIES})
+
+add_executable(sandboxxml ${SOURCES} sandboxxml.cpp)
+target_link_libraries(sandboxxml ${LIBRARIES})
+
+add_executable(sandboxparse ${SOURCES} sandboxparse.cpp)
+target_link_libraries(sandboxparse ${LIBRARIES})

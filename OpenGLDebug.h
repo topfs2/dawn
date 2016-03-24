@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object3D.h"
+#include "types.h"
 
 namespace dawn
 {
@@ -8,10 +8,6 @@ namespace dawn
   {
   public:
     static void WriteFBO(const std::string &title);
-
-    static void WriteFilterInput(Object3D *object);
-    static void WriteFilterPass(Object3D *object, unsigned int pass);
-    static void WriteFilterOutput(Object3D *object);
 
     static void WriteStencil(const std::string &title);
 

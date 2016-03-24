@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShaderMaterial.h" // Move uniforms?
+#include "types.h"
 
 #include <GL/glew.h>
 #include <boost/shared_ptr.hpp>

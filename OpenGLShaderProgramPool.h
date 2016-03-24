@@ -1,6 +1,5 @@
 #pragma once
 #include "IResourcePool.h"
-#include "ShaderMaterial.h"
 
 #include "OpenGLShaderProgram.h"
 

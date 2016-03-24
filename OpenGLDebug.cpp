@@ -23,30 +23,6 @@ void OpenGLDebug::WriteFBO(const std::string &title)
 #endif
 }
 
-void OpenGLDebug::WriteFilterInput(Object3D *object)
-{
-  std::stringstream ss;
-  ss << order++ << "_object_" << object->id() << "_input";
-
-  WriteFBO(ss.str());
-}
-
-void OpenGLDebug::WriteFilterPass(Object3D *object, unsigned int pass)
-{
-  std::stringstream ss;
-  ss << order++ << "_object_" << object->id() << "_pass_" << pass;
-
-  WriteFBO(ss.str());
-}
-
-void OpenGLDebug::WriteFilterOutput(Object3D *object)
-{
-  std::stringstream ss;
-  ss << order++ << "_object_" << object->id() << "_final";
-
-  WriteFBO(ss.str());
-}
-
 int orderStencil = 0;
 
 void OpenGLDebug::WriteStencil(const std::string &title)

@@ -1,0 +1,14 @@
+<Scene3D width="1280" height="720">
+  <OrthographicCamera width="7.111111111" height="4" near="-1" far="1000">
+    <Object3D translate="vec3(0, 0, -10)"
+              transform="mat4(1, 0, 0, 0,
+                              0, 1, 0, 0,
+                              0, 0, 1, 0,
+                              0, 0, 0, 1)">
+      <Mesh3D>
+        <ShaderMaterial src="shaders/map_diffuse" map="foo.png" color="vec4(1, 1, 1, 1)" />
+        <PlaneGeometry width="100" height="100" uv="vec4(0, 0, 1, 1)" />
+      </Mesh3D>
+    </Object3D>
+  </OrthographicCamera>
+</Scene3D>

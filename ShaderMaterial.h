@@ -2,7 +2,6 @@
 #include <map>
 #include "Material.h"
 #include "Pixmap.h"
-#include "Scene3D.h"
 #include "types.h"
 
 namespace dawn
@@ -31,8 +30,6 @@ namespace dawn
                     uniform_t u = itr->second;
 
                     if (u.type() == typeid(Pixmap *)) {
-                        changed |= boost::any_cast<Pixmap *>(u)->isChanged(etag, recursive);
-                    } else if (u.type() == typeid(Scene3D *)) {
                         changed |= boost::any_cast<Pixmap *>(u)->isChanged(etag, recursive);
                     }
                 }

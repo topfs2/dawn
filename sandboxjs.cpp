@@ -71,6 +71,106 @@ bool emitKeyEvent(duk_context *ctx, bool down, std::string device, std::string k
     return true;
 }
 
+bool duk_dawn_instanceof(duk_context *ctx, const char *name, duk_idx_t index) {
+    duk_get_global_string(ctx, "dawn");
+    duk_get_prop_string(ctx, -1, name);
+    duk_remove(ctx, -2);
+
+    duk_bool_t res = duk_instanceof(ctx, index - 1, -1);
+
+    duk_pop(ctx);
+
+    return res == 1;
+}
+
+vec2f duk_dawn_require_vec2f(duk_context *ctx, duk_idx_t index) {
+    return vec2f();
+}
+
+vec3f duk_dawn_require_vec3f(duk_context *ctx, duk_idx_t index) {
+    return vec3f();
+}
+
+vec4f duk_dawn_require_vec4f(duk_context *ctx, duk_idx_t index) {
+    return vec4f();
+}
+
+mat3f duk_dawn_require_mat3f(duk_context *ctx, duk_idx_t index) {
+    return mat3f();
+}
+
+mat4f duk_dawn_require_mat4f(duk_context *ctx, duk_idx_t index) {
+    return mat4f();
+}
+
+/*
+Element duk_dawn_require_element(duk_context *ctx, duk_idx_t index) {
+    return Element();
+}
+*/
+
+boost::any duk_dawn_require_any(duk_context *ctx, duk_idx_t index) {
+    if (duk_is_string(ctx, index)) {
+        printf("value at idx_val is a string \n");
+        return std::string(duk_get_string(ctx, index));
+    } else if (duk_is_boolean(ctx, index)) {
+        printf("value at idx_val is a boolean\n");
+        return duk_get_boolean(ctx, index) == 1;
+    } else if (duk_is_number(ctx, index)) {
+        printf("value at idx_val is a number\n");
+        return (float)duk_get_number(ctx, index); // TODO float or double?
+    } else if (duk_is_array(ctx, index)) {
+        printf("value at idx_val is an array\n");
+        std::vector<boost::any> array;
+        size_t length = duk_get_length(ctx, index);
+        for (unsigned int i = 0; i < length; i++) {
+            duk_get_prop_index(ctx, index, i);
+            array.push_back(duk_dawn_require_any(ctx, -1));
+            duk_pop(ctx);
+        }
+
+        return array;
+    } else if (duk_dawn_instanceof(ctx, "vec2", index)) {
+        printf("value at idx_val is an instanceof vec2\n");
+        return duk_dawn_require_vec2f(ctx, index);
+    } else if (duk_dawn_instanceof(ctx, "vec3", index)) {
+        printf("value at idx_val is an instanceof vec3\n");
+        return duk_dawn_require_vec3f(ctx, index);
+    } else if (duk_dawn_instanceof(ctx, "vec4", index)) {
+        printf("value at idx_val is an instanceof vec4\n");
+        return duk_dawn_require_vec4f(ctx, index);
+    } else if (duk_dawn_instanceof(ctx, "mat3", index)) {
+        printf("value at idx_val is an instanceof mat3\n");
+        return duk_dawn_require_mat3f(ctx, index);
+    } else if (duk_dawn_instanceof(ctx, "mat4", index)) {
+        printf("value at idx_val is an instanceof mat4\n");
+        return duk_dawn_require_mat4f(ctx, index);
+/*
+    } else if (duk_dawn_instanceof(ctx, "Element", index)) {
+        printf("value at idx_val is an instanceof Element\n");
+        return duk_dawn_require_element(ctx, index);
+*/
+    } else {
+        printf("value at idx_val is an Object\n");
+        UniformMap obj;
+
+        duk_enum(ctx, index, DUK_ENUM_OWN_PROPERTIES_ONLY);
+
+        while (duk_next(ctx, -1, 1)) {
+            /* [ ... enum key ] */
+            std::string key(duk_to_string(ctx, -2));
+            boost::any val = duk_dawn_require_any(ctx, -1);
+
+            obj[key] = val;
+
+            duk_pop_2(ctx);
+        }
+
+        duk_pop(ctx);
+
+        return obj;
+    }
+}
 
 int main(int argc, char *argv[]) {
     // Get the last position of '/'
@@ -186,6 +286,8 @@ int main(int argc, char *argv[]) {
             printf("Error: %s\n", duk_safe_to_string(ctx, -1));
             running = false;
         } else {
+            boost::any val = duk_dawn_require_any(ctx, -1);
+/*
             if (duk_is_pointer(ctx, -1)) {
                 Object *p = static_cast<Object *>(duk_get_pointer(ctx, -1));
                 Scene3D *scene = dynamic_cast<Scene3D *>(p);
@@ -209,6 +311,7 @@ int main(int argc, char *argv[]) {
                     }
                 }
             }
+*/
         }
 
         duk_pop(ctx);
