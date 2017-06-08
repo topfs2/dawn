@@ -1,6 +1,7 @@
 #include "OpenGLUtils.h"
 #include "OpenGLShaderProgram.h"
 
+#include <iostream>
 #include <cstdarg>
 
 using namespace std;

@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include <iostream>
 #include "OpenGLDebug.h"
 #include "config.h"
 #include "ImageUtils.h"
