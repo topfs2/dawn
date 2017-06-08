@@ -168,9 +168,9 @@ uniform_t duk_require_uniform(duk_context *ctx, duk_idx_t index) {
         } else if (length == 4) {
             return vec4f(array[0], array[1], array[2], array[3]);
         } else if (length == 9) {
-            return mat3f(mat3f(array).transpose()); // TODO Use Map http://eigen.tuxfamily.org/dox/group__TutorialMapClass.html
+            return mat3f(Eigen::Map<mat3f>(array).transpose());
         } else if (length == 16) {
-            return mat4f(mat4f(array).transpose()); // TODO Use Map http://eigen.tuxfamily.org/dox/group__TutorialMapClass.html
+            return mat4f(Eigen::Map<mat4f>(array).transpose());
         } else {
             cout << "Bad array length" << endl;
         }
@@ -840,7 +840,7 @@ extern duk_ret_t object3d_transform(duk_context *ctx) {
                 duk_pop(ctx);
             }
 
-            p->transform(mat4f(array).transpose());
+            p->transform(Eigen::Map<mat4f>(array).transpose());
 
         } else {
             cerr << "Bad transform value" << endl;
