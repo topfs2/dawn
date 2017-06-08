@@ -1,5 +1,6 @@
 #include "OpenGLShaderProgram.h"
 #include "OpenGLUtils.h" // TODO Remove?
+#include <iostream>
 
 using namespace std;
 using namespace dawn;

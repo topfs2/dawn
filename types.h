@@ -4,6 +4,7 @@
 #include <Eigen/Dense>
 #include <map>
 #include <chrono>
+#include <vector>
 
 namespace dawn
 {

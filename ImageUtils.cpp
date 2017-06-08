@@ -1,4 +1,5 @@
 #include <png.h>
+#include <cstring>
 #include "ImageUtils.h"
 
 using namespace std;
